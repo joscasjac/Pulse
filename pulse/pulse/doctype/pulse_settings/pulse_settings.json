@@ -1,0 +1,113 @@
+{
+ "actions": [],
+ "creation": "2026-07-02 00:00:00.000000",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "sprint_section",
+  "default_sprint_length_days",
+  "default_board_type",
+  "column_break_1",
+  "working_days_source",
+  "assignment_section",
+  "enable_hierarchical_assignment",
+  "role_ranks",
+  "notifications_section",
+  "email_notifications",
+  "column_break_2",
+  "desktop_notifications"
+ ],
+ "fields": [
+  {
+   "fieldname": "sprint_section",
+   "fieldtype": "Section Break",
+   "label": "Sprint & Board Defaults"
+  },
+  {
+   "default": "14",
+   "fieldname": "default_sprint_length_days",
+   "fieldtype": "Int",
+   "label": "Default Sprint Length (days)"
+  },
+  {
+   "default": "Scrum",
+   "fieldname": "default_board_type",
+   "fieldtype": "Select",
+   "label": "Default Board Type",
+   "options": "Scrum\nKanban"
+  },
+  {
+   "fieldname": "column_break_1",
+   "fieldtype": "Column Break"
+  },
+  {
+   "description": "Used to compute working days for burndown charts.",
+   "fieldname": "working_days_source",
+   "fieldtype": "Link",
+   "label": "Working Days (Holiday List)",
+   "options": "Pulse Holiday List"
+  },
+  {
+   "fieldname": "assignment_section",
+   "fieldtype": "Section Break",
+   "label": "Role Hierarchy & Assignment"
+  },
+  {
+   "default": "1",
+   "description": "When enabled, a user may assign work only to users whose highest role rank is at or below their own (assign down/sideways, never up).",
+   "fieldname": "enable_hierarchical_assignment",
+   "fieldtype": "Check",
+   "label": "Enable Hierarchical Assignment"
+  },
+  {
+   "description": "Higher rank = more senior. Seeded on install; edit to match your org.",
+   "fieldname": "role_ranks",
+   "fieldtype": "Table",
+   "label": "Role Ranks",
+   "options": "Pulse Role Rank"
+  },
+  {
+   "fieldname": "notifications_section",
+   "fieldtype": "Section Break",
+   "label": "Notifications"
+  },
+  {
+   "default": "1",
+   "fieldname": "email_notifications",
+   "fieldtype": "Check",
+   "label": "Enable Email Notifications"
+  },
+  {
+   "fieldname": "column_break_2",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "1",
+   "fieldname": "desktop_notifications",
+   "fieldtype": "Check",
+   "label": "Enable Desktop Notifications"
+  }
+ ],
+ "index_web_pages_for_search": 0,
+ "issingle": 1,
+ "links": [],
+ "modified": "2026-07-02 00:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "Pulse",
+ "name": "Pulse Settings",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 0, "delete": 0, "email": 1, "export": 1, "print": 1,
+   "read": 1, "report": 1, "role": "System Manager", "share": 1, "write": 1
+  },
+  {
+   "create": 0, "delete": 0, "email": 1, "export": 1, "print": 1,
+   "read": 1, "report": 1, "role": "Pulse Admin", "share": 1, "write": 1
+  },
+  {"read": 1, "role": "Pulse Manager"}
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC"
+}

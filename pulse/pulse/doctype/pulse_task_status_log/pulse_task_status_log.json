@@ -1,0 +1,115 @@
+{
+ "actions": [],
+ "autoname": "hash",
+ "creation": "2026-07-02 00:00:00.000000",
+ "description": "Append-only log of Task workflow-state transitions. Powers burndown, burnup, cumulative flow, cycle time and lead time. Never edited by users.",
+ "doctype": "DocType",
+ "editable_grid": 0,
+ "engine": "InnoDB",
+ "field_order": [
+  "task",
+  "project",
+  "sprint",
+  "column_break_1",
+  "from_state",
+  "to_state",
+  "column_break_2",
+  "changed_by",
+  "changed_on",
+  "points_at_change"
+ ],
+ "fields": [
+  {
+   "fieldname": "task",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Task",
+   "options": "Pulse Task",
+    "reqd": 1,
+    "search_index": 1
+   },
+   {
+    "fieldname": "project",
+    "fieldtype": "Link",
+    "in_standard_filter": 1,
+    "label": "Project",
+    "options": "Pulse Project",
+   "search_index": 1
+  },
+  {
+   "fieldname": "sprint",
+   "fieldtype": "Link",
+   "in_standard_filter": 1,
+   "label": "Sprint",
+   "options": "Pulse Sprint",
+   "search_index": 1
+  },
+  {
+   "fieldname": "column_break_1",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "from_state",
+   "fieldtype": "Data",
+   "label": "From State"
+  },
+  {
+   "fieldname": "to_state",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "To State",
+   "reqd": 1
+  },
+  {
+   "fieldname": "column_break_2",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "changed_by",
+   "fieldtype": "Link",
+   "label": "Changed By",
+   "options": "User"
+  },
+  {
+   "fieldname": "changed_on",
+   "fieldtype": "Datetime",
+   "in_list_view": 1,
+   "label": "Changed On",
+   "reqd": 1,
+   "search_index": 1
+  },
+  {
+   "description": "Story points on the task at the moment of the change (for burndown).",
+   "fieldname": "points_at_change",
+   "fieldtype": "Float",
+   "label": "Points At Change"
+  }
+ ],
+ "in_create": 1,
+ "index_web_pages_for_search": 0,
+ "links": [],
+ "modified": "2026-07-02 00:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "Pulse",
+ "name": "Pulse Task Status Log",
+ "naming_rule": "Random",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 0, "delete": 1, "email": 1, "export": 1, "print": 1,
+   "read": 1, "report": 1, "role": "System Manager", "share": 0, "write": 0
+  },
+  {
+   "create": 0, "delete": 0, "email": 1, "export": 1, "print": 1,
+   "read": 1, "report": 1, "role": "Pulse Admin", "share": 0, "write": 0
+  },
+  {"read": 1, "report": 1, "role": "Pulse Manager"},
+  {"read": 1, "report": 1, "role": "Pulse Team Lead"},
+  {"read": 1, "role": "Pulse Senior Developer"},
+  {"read": 1, "role": "Pulse Junior Developer"}
+ ],
+ "read_only": 1,
+ "sort_field": "changed_on",
+ "sort_order": "DESC"
+}

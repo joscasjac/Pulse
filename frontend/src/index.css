@@ -1,0 +1,61 @@
+@import 'frappe-ui/style.css';
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --bg: #f7f8fa;
+  --surface: #ffffff;
+  --surface-2: #f3f4f6;
+  --border: #e5e7eb;
+  --text: #111827;
+  --muted: #6b7280;
+  --hover: #f3f4f6;
+  --accent: #3b82f6;
+}
+.dark {
+  --bg: #0c1016;
+  --surface: #12171f;
+  --surface-2: #1a212c;
+  --border: #232b37;
+  --border-soft: #1b222d;
+  --text: #e7ebf2;
+  --muted: #8994a3;
+  --faint: #5c6675;
+  --hover: #1a212c;
+  --accent: #6d7cff;
+  --shadow: 0 14px 40px -20px rgba(0, 0, 0, 0.7);
+}
+:root {
+  --border-soft: #eef0f3;
+  --faint: #9aa2af;
+  --shadow: 0 12px 30px -18px rgba(15, 23, 42, 0.25);
+}
+
+html, body, #app { height: 100%; margin: 0; }
+body { background: var(--bg); color: var(--text); }
+
+@layer utilities {
+  .bg-app { background: var(--bg); }
+  .bg-surface { background: var(--surface); }
+  .bg-surface-2 { background: var(--surface-2); }
+  .border-app { border-color: var(--border); }
+  .border-soft { border-color: var(--border-soft); }
+  .text-app { color: var(--text); }
+  .text-muted { color: var(--muted); }
+  .text-faint { color: var(--faint); }
+  .hover-app:hover { background: var(--hover); }
+  .ring-app { --tw-ring-color: var(--border); }
+  .shadow-app { box-shadow: var(--shadow); }
+  .mono { font-family: ui-monospace, "SF Mono", "JetBrains Mono", Menlo, Consolas, monospace; }
+}
+/* professional defaults: tabular numerals + balanced headings */
+@layer base {
+  h1, h2, h3 { text-wrap: balance; letter-spacing: -0.015em; }
+  .tnum { font-variant-numeric: tabular-nums; }
+}
+
+/* thin scrollbars */
+::-webkit-scrollbar { width: 8px; height: 8px; }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+::-webkit-scrollbar-track { background: transparent; }

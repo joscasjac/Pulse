@@ -1,0 +1,33 @@
+# ---- Secrets (never commit) ----
+*.env
+!*.env.example
+.pulse.env
+
+# ---- Python ----
+__pycache__/
+*.py[cod]
+*.egg-info/
+.eggs/
+*.egg
+build/
+dist/
+
+# ---- Node / frontend ----
+node_modules/
+frontend/dist/
+.vite/
+
+# ---- MCP server ----
+mcp/.venv/
+
+# ---- Runtime / logs ----
+*.log
+dump.rdb
+*.sqlite
+
+# ---- OS / editor ----
+.DS_Store
+Thumbs.db
+*.swp
+.idea/
+.vscode/

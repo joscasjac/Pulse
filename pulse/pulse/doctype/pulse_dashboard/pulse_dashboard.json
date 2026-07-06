@@ -1,0 +1,128 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2026-07-06 00:00:00.000000",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "title_field": "dashboard_name",
+ "field_order": [
+  "dashboard_name",
+  "owner_user",
+  "column_break_1",
+  "scope",
+  "is_default",
+  "project",
+  "section_break_widgets",
+  "widgets",
+  "section_break_layout",
+  "layout_json"
+ ],
+ "fields": [
+  {
+   "fieldname": "dashboard_name",
+   "fieldtype": "Data",
+   "label": "Dashboard Name",
+   "reqd": 1,
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "owner_user",
+   "fieldtype": "Link",
+   "label": "Owner",
+   "options": "User",
+   "search_index": 1,
+   "description": "Whose personal dashboard this is. Blank = shared template / admin default.",
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "column_break_1",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "Personal",
+   "fieldname": "scope",
+   "fieldtype": "Select",
+   "label": "Scope",
+   "options": "Personal\nTeam\nCompany",
+   "in_list_view": 1
+  },
+  {
+   "default": "0",
+   "fieldname": "is_default",
+   "fieldtype": "Check",
+   "label": "Is Default Template",
+   "description": "Cloned for a user the first time they open their dashboard"
+  },
+  {
+   "fieldname": "project",
+   "fieldtype": "Link",
+   "label": "Project",
+   "options": "Pulse Project",
+   "search_index": 1
+  },
+  {
+   "fieldname": "section_break_widgets",
+   "fieldtype": "Section Break",
+   "label": "Widgets"
+  },
+  {
+   "fieldname": "widgets",
+   "fieldtype": "Table",
+   "label": "Widgets",
+   "options": "Pulse Dashboard Widget"
+  },
+  {
+   "collapsible": 1,
+   "fieldname": "section_break_layout",
+   "fieldtype": "Section Break",
+   "label": "Raw Layout"
+  },
+  {
+   "fieldname": "layout_json",
+   "fieldtype": "Long Text",
+   "label": "Layout (JSON)",
+   "description": "Optional full grid-layout snapshot maintained by the SPA"
+  }
+ ],
+ "index_web_pages_for_search": 0,
+ "links": [],
+ "modified": "2026-07-06 00:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "Pulse",
+ "name": "Pulse Dashboard",
+ "naming_rule": "Random",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1, "delete": 1, "email": 1, "export": 1, "print": 1,
+   "read": 1, "report": 1, "role": "System Manager", "share": 1, "write": 1
+  },
+  {
+   "create": 1, "delete": 1, "email": 1, "export": 1, "print": 1,
+   "read": 1, "report": 1, "role": "Pulse Admin", "share": 1, "write": 1
+  },
+  {
+   "create": 1, "delete": 1, "email": 1, "export": 1, "print": 1,
+   "read": 1, "report": 1, "role": "Pulse Manager", "share": 1, "write": 1
+  },
+  {
+   "create": 1, "delete": 1, "read": 1, "report": 1, "role": "Pulse Team Lead", "write": 1
+  },
+  {
+   "create": 1, "delete": 1, "read": 1, "role": "Pulse Senior Developer", "write": 1
+  },
+  {
+   "create": 1, "delete": 1, "read": 1, "role": "Pulse Junior Developer", "write": 1
+  },
+  {
+   "create": 1, "delete": 1, "read": 1, "role": "Pulse Intern", "write": 1
+  },
+  {
+   "read": 1, "role": "Pulse Viewer"
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "track_changes": 1
+}

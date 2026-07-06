@@ -1,0 +1,194 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "field:project_name",
+ "creation": "2026-07-03 00:00:00.000000",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "details_section",
+  "project_name",
+  "status",
+  "cb1",
+  "holiday_list",
+  "section_break_scrum",
+  "pulse_enable_scrum",
+  "pulse_board_type",
+  "pulse_default_sprint_length",
+  "cb2",
+  "pulse_project_key",
+  "section_break_team",
+  "users",
+  "task_counter"
+ ],
+ "fields": [
+  {
+   "fieldname": "details_section",
+   "fieldtype": "Section Break",
+   "label": "Details"
+  },
+  {
+   "fieldname": "project_name",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Project Name",
+   "reqd": 1
+  },
+  {
+   "default": "Open",
+   "fieldname": "status",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Status",
+   "options": "Open\nCompleted\nCancelled"
+  },
+  {
+   "fieldname": "cb1",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "holiday_list",
+   "fieldtype": "Link",
+   "label": "Holiday List",
+   "options": "Pulse Holiday List"
+  },
+  {
+   "collapsible": 1,
+   "collapsible_depends_on": "eval:doc.pulse_enable_scrum",
+   "fieldname": "section_break_scrum",
+   "fieldtype": "Section Break",
+   "label": "Scrum Settings"
+  },
+  {
+   "default": "1",
+   "fieldname": "pulse_enable_scrum",
+   "fieldtype": "Check",
+   "label": "Enable Scrum"
+  },
+  {
+   "default": "Scrum",
+   "depends_on": "eval:doc.pulse_enable_scrum",
+   "fieldname": "pulse_board_type",
+   "fieldtype": "Select",
+   "label": "Board Type",
+   "options": "Scrum\nKanban"
+  },
+  {
+   "default": "14",
+   "depends_on": "eval:doc.pulse_enable_scrum",
+   "fieldname": "pulse_default_sprint_length",
+   "fieldtype": "Int",
+   "label": "Default Sprint Length (Days)"
+  },
+  {
+   "fieldname": "cb2",
+   "fieldtype": "Column Break"
+  },
+  {
+   "depends_on": "eval:doc.pulse_enable_scrum",
+   "fieldname": "pulse_project_key",
+   "fieldtype": "Data",
+   "label": "Project Key"
+  },
+  {
+   "fieldname": "section_break_team",
+   "fieldtype": "Section Break",
+   "label": "Team"
+  },
+  {
+   "fieldname": "users",
+   "fieldtype": "Table",
+   "label": "Users",
+   "options": "Pulse Project User"
+  },
+  {
+   "fieldname": "task_counter",
+   "fieldtype": "Int",
+   "label": "Task Counter",
+   "default": "0",
+   "read_only": 1,
+   "hidden": 1
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2026-07-03 00:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "Pulse",
+ "name": "Pulse Project",
+ "naming_rule": "By fieldname",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Pulse Admin",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Pulse Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "delete": 0,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Pulse Team Lead",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "read": 1,
+   "role": "Pulse Senior Developer"
+  },
+  {
+   "read": 1,
+   "role": "Pulse Junior Developer"
+  },
+  {
+   "read": 1,
+   "role": "Pulse Intern"
+  },
+  {
+   "read": 1,
+   "role": "Pulse Viewer"
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "title_field": "project_name",
+ "track_changes": 1
+}

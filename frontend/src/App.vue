@@ -1,0 +1,137 @@
+<template>
+  <div class="flex h-full bg-app text-app text-sm">
+    <!-- Sidebar -->
+    <aside class="flex flex-col w-[232px] shrink-0 border-r border-app bg-surface">
+      <div class="flex items-center gap-2.5 px-4 h-14 border-b border-soft">
+        <div class="w-[26px] h-[26px] rounded-[7px] bg-accent text-white grid place-items-center font-bold text-[15px]" style="background:var(--accent)">P</div>
+        <span class="font-semibold tracking-tight">Pulse</span>
+      </div>
+
+      <div class="px-2.5 pt-3">
+        <button @click="openCreate()" class="new-btn w-full flex items-center justify-center gap-2 rounded-md py-2 text-[13px] font-medium text-white">
+          <Plus class="w-4 h-4" /> New task
+        </button>
+      </div>
+
+      <nav class="flex-1 px-2 py-3 space-y-5 overflow-y-auto">
+        <div v-for="group in nav" :key="group.section">
+          <div class="px-2.5 pb-1.5 text-[10px] font-semibold uppercase tracking-[0.09em] text-faint">{{ group.section }}</div>
+          <router-link v-for="item in group.items" :key="item.to" :to="item.to"
+            class="nav-item flex items-center gap-2.5 px-2.5 py-[7px] rounded-md text-[13px] hover-app"
+            active-class="active">
+            <component :is="item.icon" class="w-[15px] h-[15px] shrink-0" />
+            <span>{{ item.label }}</span>
+          </router-link>
+        </div>
+
+        <div>
+          <div class="px-2.5 pb-1.5 text-[10px] font-semibold uppercase tracking-[0.09em] text-faint">Projects</div>
+          <router-link v-for="p in projects" :key="p.name" :to="`/board?project=${encodeURIComponent(p.name)}`"
+            class="nav-item flex items-center gap-2.5 px-2.5 py-[7px] rounded-md text-[13px] hover-app">
+            <span class="w-[18px] h-[18px] grid place-items-center rounded-[5px] mono text-[8.5px] font-bold shrink-0"
+              :style="{ background: 'var(--surface-2)', color: 'var(--accent)' }">{{ (p.pulse_project_key || '·').slice(0, 3) }}</span>
+            <span class="truncate">{{ p.project_name || p.name }}</span>
+          </router-link>
+        </div>
+      </nav>
+
+      <div class="px-3 py-2.5 border-t border-soft flex items-center justify-between">
+        <span class="flex items-center gap-2 min-w-0">
+          <Avatar :name="user" :size="22" />
+          <span class="text-[12px] text-muted truncate">{{ shortUser }}</span>
+        </span>
+        <button @click="onToggle" class="p-1.5 rounded-md hover-app text-muted" :title="theme === 'dark' ? 'Light mode' : 'Dark mode'">
+          <Moon v-if="theme === 'dark'" class="w-[15px] h-[15px]" />
+          <Sun v-else class="w-[15px] h-[15px]" />
+        </button>
+      </div>
+    </aside>
+
+    <main class="flex-1 overflow-auto min-w-0">
+      <router-view />
+    </main>
+
+    <CreateIssueModal />
+    <EntityForm />
+    <Toaster />
+  </div>
+</template>
+
+<script setup>
+import { ref, computed, onMounted } from 'vue'
+import { call } from 'frappe-ui'
+import { theme, toggleTheme } from './theme'
+import { openCreate } from './ui/create'
+import Avatar from './ui/Avatar.vue'
+import Toaster from './ui/Toaster.vue'
+import CreateIssueModal from './components/CreateIssueModal.vue'
+import EntityForm from './components/EntityForm.vue'
+import Plus from '~icons/lucide/plus'
+import House from '~icons/lucide/house'
+import LayoutDashboard from '~icons/lucide/layout-dashboard'
+import ChartColumn from '~icons/lucide/chart-column'
+import SquareCheckBig from '~icons/lucide/square-check-big'
+import SquareKanban from '~icons/lucide/square-kanban'
+import List from '~icons/lucide/list'
+import CalendarDays from '~icons/lucide/calendar-days'
+import Folder from '~icons/lucide/folder'
+import Layers from '~icons/lucide/layers'
+import Target from '~icons/lucide/target'
+import ShieldAlert from '~icons/lucide/shield-alert'
+import Users from '~icons/lucide/users'
+import RefreshCw from '~icons/lucide/refresh-cw'
+import FileText from '~icons/lucide/file-text'
+import Clock from '~icons/lucide/clock'
+import ScrollText from '~icons/lucide/scroll-text'
+import Sun from '~icons/lucide/sun'
+import Moon from '~icons/lucide/moon'
+
+const user = ref('')
+const projects = ref([])
+const shortUser = computed(() => (user.value || '').split('@')[0])
+
+const nav = [
+  { section: 'Work', items: [
+    { to: '/', label: 'Home', icon: House },
+    { to: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
+    { to: '/analytics', label: 'Analytics', icon: ChartColumn },
+    { to: '/my-work', label: 'My Work', icon: SquareCheckBig },
+    { to: '/board', label: 'Board', icon: SquareKanban },
+    { to: '/backlog', label: 'Backlog', icon: List },
+    { to: '/sprints', label: 'Sprints', icon: CalendarDays },
+    { to: '/projects', label: 'Projects', icon: Folder },
+  ] },
+  { section: 'Plan', items: [
+    { to: '/m/portfolio', label: 'Portfolio', icon: Layers },
+    { to: '/m/okrs', label: 'OKRs', icon: Target },
+    { to: '/m/risks', label: 'Risks', icon: ShieldAlert },
+  ] },
+  { section: 'Collaborate', items: [
+    { to: '/m/meetings', label: 'Meetings', icon: Users },
+    { to: '/m/retros', label: 'Retrospectives', icon: RefreshCw },
+    { to: '/m/documents', label: 'Documents', icon: FileText },
+    { to: '/m/timesheets', label: 'Timesheets', icon: Clock },
+  ] },
+  { section: 'System', items: [
+    { to: '/audit', label: 'Audit Logs', icon: ScrollText },
+  ] },
+]
+
+function onToggle() { toggleTheme() }
+
+onMounted(async () => {
+  try { user.value = await call('frappe.auth.get_logged_user') } catch (e) { user.value = '' }
+  projects.value = await call('frappe.client.get_list', {
+    doctype: 'Pulse Project', fields: ['name', 'project_name', 'pulse_project_key'], limit_page_length: 0,
+  }).catch(() => [])
+})
+</script>
+
+<style scoped>
+.nav-item { color: var(--muted); transition: color 0.12s, background 0.12s; }
+.nav-item:hover { color: var(--text); }
+.nav-item.active { color: var(--text); background: var(--surface-2); font-weight: 500; }
+.nav-item.active :deep(svg) { color: var(--accent); }
+.new-btn { background: var(--accent); transition: filter 0.12s; }
+.new-btn:hover { filter: brightness(1.08); }
+</style>

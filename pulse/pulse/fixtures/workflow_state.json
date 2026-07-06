@@ -1,0 +1,32 @@
+[
+ {
+  "doctype": "Workflow State",
+  "__newname": "Backlog",
+  "workflow_state_name": "Backlog"
+ },
+ {
+  "doctype": "Workflow State",
+  "__newname": "To Do",
+  "workflow_state_name": "To Do"
+ },
+ {
+  "doctype": "Workflow State",
+  "__newname": "In Progress",
+  "workflow_state_name": "In Progress"
+ },
+ {
+  "doctype": "Workflow State",
+  "__newname": "In Review",
+  "workflow_state_name": "In Review"
+ },
+ {
+  "doctype": "Workflow State",
+  "__newname": "Done",
+  "workflow_state_name": "Done"
+ },
+ {
+  "doctype": "Workflow State",
+  "__newname": "Cancelled",
+  "workflow_state_name": "Cancelled"
+ }
+]

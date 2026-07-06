@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(cd \"\\\\\\\\wsl.localhost\\\\ubuntu-24.04\\\\home\\\\ayush\\\\frappe\\\\frappe\\\\apps\\\\pulse\\\\pulse\")",
+      "Bash(ls -la docs/)",
+      "Bash(cd \"\\\\\\\\wsl.localhost\\\\ubuntu-24.04\\\\home\\\\ayush\\\\frappe\\\\frappe\\\\apps\\\\pulse\")"
+    ]
+  }
+}

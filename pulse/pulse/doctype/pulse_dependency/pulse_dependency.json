@@ -1,0 +1,170 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "hash",
+ "creation": "2026-07-03 00:00:00.000000",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "sb_details",
+  "source_task",
+  "target_task",
+  "dependency_type",
+  "cb1",
+  "lag_days",
+  "source_project",
+  "target_project",
+  "status",
+  "notes"
+ ],
+ "fields": [
+  {
+   "fieldname": "sb_details",
+   "fieldtype": "Section Break",
+   "label": "Details"
+  },
+  {
+   "fieldname": "source_task",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Source Task",
+   "options": "Pulse Task",
+   "reqd": 1,
+   "search_index": 1
+  },
+  {
+   "fieldname": "target_task",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Target Task",
+   "options": "Pulse Task",
+   "reqd": 1,
+   "search_index": 1
+  },
+  {
+   "default": "Finish-to-Start",
+   "fieldname": "dependency_type",
+   "fieldtype": "Select",
+   "label": "Dependency Type",
+   "options": "Finish-to-Start\nStart-to-Start\nFinish-to-Finish\nStart-to-Finish"
+  },
+  {
+   "fieldname": "cb1",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "0",
+   "fieldname": "lag_days",
+   "fieldtype": "Int",
+   "label": "Lag Days"
+  },
+  {
+   "fieldname": "source_project",
+   "fieldtype": "Link",
+   "fetch_from": "source_task.project",
+   "in_list_view": 1,
+   "label": "Source Project",
+   "options": "Pulse Project",
+   "read_only": 1
+  },
+  {
+   "fieldname": "target_project",
+   "fieldtype": "Link",
+   "fetch_from": "target_task.project",
+   "in_list_view": 1,
+   "label": "Target Project",
+   "options": "Pulse Project",
+   "read_only": 1
+  },
+  {
+   "default": "Active",
+   "fieldname": "status",
+   "fieldtype": "Select",
+   "label": "Status",
+   "options": "Active\nBroken\nResolved"
+  },
+  {
+   "fieldname": "notes",
+   "fieldtype": "Text",
+   "label": "Notes"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2026-07-03 00:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "Pulse",
+ "name": "Pulse Dependency",
+ "naming_rule": "Random",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Pulse Admin",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Pulse Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "delete": 0,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Pulse Team Lead",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "read": 1,
+   "role": "Pulse Senior Developer"
+  },
+  {
+   "read": 1,
+   "role": "Pulse Junior Developer"
+  },
+  {
+   "read": 1,
+   "role": "Pulse Intern"
+  },
+  {
+   "read": 1,
+   "role": "Pulse Viewer"
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "track_changes": 1
+}

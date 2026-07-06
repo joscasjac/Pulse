@@ -1,0 +1,156 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "hash",
+ "creation": "2026-07-03 00:00:00.000000",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "sb_details",
+  "title",
+  "project",
+  "sprint",
+  "cb1",
+  "date_held",
+  "facilitator",
+  "overall_sentiment",
+  "sb_template",
+  "template",
+  "sb_participants",
+  "participants",
+  "sb_items",
+  "items",
+  "sb_actions",
+  "action_items"
+ ],
+ "fields": [
+  {
+   "fieldname": "sb_details",
+   "fieldtype": "Section Break",
+   "label": "Details"
+  },
+  {
+   "fieldname": "title",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Title",
+   "reqd": 1
+  },
+  {
+   "fieldname": "project",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Project",
+   "options": "Pulse Project",
+   "reqd": 1
+  },
+  {
+   "fieldname": "sprint",
+   "fieldtype": "Link",
+   "label": "Sprint",
+   "options": "Pulse Sprint"
+  },
+  {
+   "fieldname": "cb1",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "Today",
+   "fieldname": "date_held",
+   "fieldtype": "Date",
+   "label": "Date Held"
+  },
+  {
+   "fieldname": "facilitator",
+   "fieldtype": "Link",
+   "label": "Facilitator",
+   "options": "User"
+  },
+  {
+   "fieldname": "overall_sentiment",
+   "fieldtype": "Select",
+   "label": "Overall Sentiment",
+   "options": "\ud83d\ude0a\n\ud83d\ude10\n\ud83d\ude1e"
+  },
+  {
+   "fieldname": "sb_template",
+   "fieldtype": "Section Break",
+   "label": "Template"
+  },
+  {
+   "default": "Start/Stop/Continue",
+   "fieldname": "template",
+   "fieldtype": "Select",
+   "label": "Template",
+   "options": "Start/Stop/Continue\nGlad/Sad/Mad\n4Ls\nWent Well/To Improve\nFreeform"
+  },
+  {
+   "fieldname": "sb_participants",
+   "fieldtype": "Section Break",
+   "label": "Participants"
+  },
+  {
+   "fieldname": "participants",
+   "fieldtype": "Table",
+   "label": "Participants",
+   "options": "Pulse Retro Participant"
+  },
+  {
+   "fieldname": "sb_items",
+   "fieldtype": "Section Break",
+   "label": "Retro Items"
+  },
+  {
+   "fieldname": "items",
+   "fieldtype": "Table",
+   "label": "Items",
+   "options": "Pulse Retro Item"
+  },
+  {
+   "fieldname": "sb_actions",
+   "fieldtype": "Section Break",
+   "label": "Action Items"
+  },
+  {
+   "fieldname": "action_items",
+   "fieldtype": "Table",
+   "label": "Action Items",
+   "options": "Pulse Retro Action"
+  }
+ ],
+ "links": [],
+ "modified": "2026-07-03 00:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "Pulse",
+ "name": "Pulse Retrospective",
+ "naming_rule": "Random",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1, "delete": 1, "email": 1, "export": 1, "print": 1,
+   "read": 1, "report": 1, "role": "System Manager", "share": 1, "write": 1
+  },
+  {
+   "create": 1, "delete": 1, "email": 1, "export": 1, "print": 1,
+   "read": 1, "report": 1, "role": "Pulse Admin", "share": 1, "write": 1
+  },
+  {
+   "create": 1, "delete": 1, "email": 1, "export": 1, "print": 1,
+   "read": 1, "report": 1, "role": "Pulse Manager", "share": 1, "write": 1
+  },
+  {
+   "create": 1, "delete": 0, "email": 1, "export": 1, "print": 1,
+   "read": 1, "report": 1, "role": "Pulse Team Lead", "share": 1, "write": 1
+  },
+  {"read": 1, "role": "Pulse Senior Developer"},
+  {"read": 1, "role": "Pulse Junior Developer"},
+  {"read": 1, "role": "Pulse Intern"},
+  {"read": 1, "role": "Pulse Viewer"}
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "title_field": "title",
+ "track_changes": 1
+}

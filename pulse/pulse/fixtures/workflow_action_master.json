@@ -1,0 +1,34 @@
+[
+ {
+  "doctype": "Workflow Action Master",
+  "action_name": "Commit to Sprint"
+ },
+ {
+  "doctype": "Workflow Action Master",
+  "action_name": "Start Progress"
+ },
+ {
+  "doctype": "Workflow Action Master",
+  "action_name": "Submit for Review"
+ },
+ {
+  "doctype": "Workflow Action Master",
+  "action_name": "Approve"
+ },
+ {
+  "doctype": "Workflow Action Master",
+  "action_name": "Request Changes"
+ },
+ {
+  "doctype": "Workflow Action Master",
+  "action_name": "Stop / Re-plan"
+ },
+ {
+  "doctype": "Workflow Action Master",
+  "action_name": "De-scope"
+ },
+ {
+  "doctype": "Workflow Action Master",
+  "action_name": "Cancel"
+ }
+]

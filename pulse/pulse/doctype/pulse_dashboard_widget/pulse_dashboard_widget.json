@@ -1,0 +1,109 @@
+{
+ "actions": [],
+ "creation": "2026-07-06 00:00:00.000000",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "istable": 1,
+ "field_order": [
+  "widget_type",
+  "title",
+  "metric",
+  "chart_type",
+  "column_break_1",
+  "x",
+  "y",
+  "w",
+  "h",
+  "section_break_1",
+  "color",
+  "filters_json",
+  "config_json"
+ ],
+ "fields": [
+  {
+   "fieldname": "widget_type",
+   "fieldtype": "Select",
+   "label": "Widget Type",
+   "options": "Number Card\nChart\nMy Tasks\nTask List\nSprint Burndown\nVelocity\nWorkload\nActivity Feed\nOKR Progress\nRisk Matrix\nText Note",
+   "reqd": 1,
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "title",
+   "fieldtype": "Data",
+   "label": "Title",
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "metric",
+   "fieldtype": "Data",
+   "label": "Metric / Data Source",
+   "description": "Key of the metric, report or query that feeds this widget",
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "chart_type",
+   "fieldtype": "Select",
+   "label": "Chart Type",
+   "options": "\nBar\nLine\nPie\nDonut\nPercentage\nHeatmap"
+  },
+  {
+   "fieldname": "column_break_1",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "0",
+   "fieldname": "x",
+   "fieldtype": "Int",
+   "label": "Grid X"
+  },
+  {
+   "default": "0",
+   "fieldname": "y",
+   "fieldtype": "Int",
+   "label": "Grid Y"
+  },
+  {
+   "default": "4",
+   "fieldname": "w",
+   "fieldtype": "Int",
+   "label": "Width (cols)"
+  },
+  {
+   "default": "3",
+   "fieldname": "h",
+   "fieldtype": "Int",
+   "label": "Height (rows)"
+  },
+  {
+   "fieldname": "section_break_1",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "color",
+   "fieldtype": "Color",
+   "label": "Accent Color"
+  },
+  {
+   "fieldname": "filters_json",
+   "fieldtype": "Small Text",
+   "label": "Filters (JSON)"
+  },
+  {
+   "fieldname": "config_json",
+   "fieldtype": "Small Text",
+   "label": "Extra Config (JSON)"
+  }
+ ],
+ "index_web_pages_for_search": 0,
+ "links": [],
+ "modified": "2026-07-06 00:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "Pulse",
+ "name": "Pulse Dashboard Widget",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "modified",
+ "sort_order": "DESC"
+}
