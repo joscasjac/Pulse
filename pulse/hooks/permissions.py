@@ -11,13 +11,13 @@ def task_query_conditions(user=None):
     projects = _allowed_projects(user)
     if projects is not None:
         plist = ", ".join(frappe.db.escape(p) for p in projects)
-        conditions.append(f"`tabPulse Task`.`project` in ({plist})")
+        conditions.append(f"`tabTask`.`project` in ({plist})")
     top_role = _top_pulse_role(user)
     if top_role in ("Pulse Junior Developer", "Pulse Intern"):
         u = frappe.db.escape(user)
         conditions.append(
-            f"(`tabPulse Task`.`_assign` like {frappe.db.escape('%' + user + '%')} "
-            f"or `tabPulse Task`.`owner` = {u})"
+            f"(`tabTask`.`_assign` like {frappe.db.escape('%' + user + '%')} "
+            f"or `tabTask`.`owner` = {u})"
         )
     return " and ".join(conditions)
 
@@ -52,9 +52,10 @@ def _allowed_projects(user):
     cache_key = f"_allowed_projects:{user}"
     if hasattr(frappe.local, cache_key):
         return getattr(frappe.local, cache_key)
+    # membership now lives on ERPNext Project.users (Project User child table)
     project_users = frappe.get_all(
-        "Pulse Project User",
-        filters={"user": user},
+        "Project User",
+        filters={"user": user, "parenttype": "Project"},
         pluck="parent",
     )
     result = project_users if project_users else None

@@ -99,7 +99,7 @@ def _resolve(ref: str) -> str:
 @mcp.tool()
 def list_projects() -> list:
     """List all Pulse projects (name, key, status)."""
-    return call("frappe.client.get_list", doctype="Pulse Project",
+    return call("frappe.client.get_list", doctype="Project",
                 fields=["name", "project_name", "pulse_project_key", "status"],
                 limit_page_length=0)
 
@@ -118,9 +118,9 @@ def list_tasks(project: str = None, status: str = None, assignee: str = None,
     or_filters = None
     if search:
         or_filters = [["subject", "like", f"%{search}%"], ["issue_key", "like", f"%{search}%"]]
-    return call("frappe.client.get_list", doctype="Pulse Task",
+    return call("frappe.client.get_list", doctype="Task",
                 fields=["name", "issue_key", "subject", "status", "priority",
-                        "task_type", "project", "pulse_sprint", "_assign"],
+                        "type as task_type", "project", "pulse_sprint", "_assign"],
                 filters=filters, or_filters=or_filters,
                 order_by="modified desc", limit_page_length=int(limit))
 

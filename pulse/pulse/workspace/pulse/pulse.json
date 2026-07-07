@@ -1,0 +1,39 @@
+{
+ "app": "pulse",
+ "charts": [],
+ "content": "[{\"id\": \"pulse_hdr\", \"type\": \"header\", \"data\": {\"text\": \"<span class=\\\"h4\\\">Pulse</span>\", \"col\": 12}}, {\"id\": \"pulse_sc\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Open Pulse App\", \"col\": 4}}]",
+ "creation": "2026-07-06 17:40:06.046012",
+ "custom_blocks": [],
+ "docstatus": 0,
+ "doctype": "Workspace",
+ "hide_custom": 0,
+ "icon": "project",
+ "idx": 0,
+ "indicator_color": "green",
+ "is_hidden": 0,
+ "label": "Pulse",
+ "link_type": "DocType",
+ "links": [],
+ "modified": "2026-07-07 10:29:54.509932",
+ "modified_by": "Administrator",
+ "module": "Pulse",
+ "name": "Pulse",
+ "number_cards": [],
+ "owner": "Administrator",
+ "parent_page": "",
+ "public": 1,
+ "quick_lists": [],
+ "roles": [],
+ "sequence_id": 0.0,
+ "shortcuts": [
+  {
+   "color": "Blue",
+   "doc_view": "",
+   "label": "Open Pulse App",
+   "type": "URL",
+   "url": "/pulse"
+  }
+ ],
+ "title": "Pulse",
+ "type": "Workspace"
+}

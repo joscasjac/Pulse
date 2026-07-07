@@ -9,7 +9,7 @@ from frappe.utils import today
 
 def _group(field):
     rows = frappe.db.sql(
-        f"""SELECT `{field}` AS k, COUNT(name) AS c FROM `tabPulse Task`
+        f"""SELECT `{field}` AS k, COUNT(name) AS c FROM `tabTask`
             WHERE `{field}` IS NOT NULL AND `{field}` != ''
             GROUP BY `{field}` ORDER BY c DESC""",
         as_dict=True,
@@ -27,7 +27,7 @@ def get_analytics(project=None):
 
     def count(where):
         return frappe.db.sql(
-            f"SELECT COUNT(name) FROM `tabPulse Task` WHERE {where}{cond}", args
+            f"SELECT COUNT(name) FROM `tabTask` WHERE {where}{cond}", args
         )[0][0]
 
     completed = count("status = 'Completed'")
@@ -39,15 +39,15 @@ def get_analytics(project=None):
 
     # story point completion
     est = frappe.db.sql(
-        f"SELECT COALESCE(SUM(pulse_story_points),0) FROM `tabPulse Task` WHERE 1=1{cond}", args
+        f"SELECT COALESCE(SUM(pulse_story_points),0) FROM `tabTask` WHERE 1=1{cond}", args
     )[0][0] or 0
     done_pts = frappe.db.sql(
-        f"SELECT COALESCE(SUM(pulse_story_points),0) FROM `tabPulse Task` WHERE status='Completed'{cond}", args
+        f"SELECT COALESCE(SUM(pulse_story_points),0) FROM `tabTask` WHERE status='Completed'{cond}", args
     )[0][0] or 0
 
     # workload per assignee
     workload = {}
-    for a in frappe.db.get_all("Pulse Task",
+    for a in frappe.db.get_all("Task",
                                filters={"status": ["not in", ["Completed", "Cancelled"]]},
                                fields=["_assign"]):
         for u in (frappe.parse_json(a._assign or "[]") or []):
@@ -62,8 +62,8 @@ def get_analytics(project=None):
     for s in frappe.db.get_all("Pulse Sprint",
                                fields=["name", "sprint_name", "status"],
                                order_by="start_date desc", limit=6):
-        total = frappe.db.count("Pulse Task", {"pulse_sprint": s.name})
-        done = frappe.db.count("Pulse Task", {"pulse_sprint": s.name, "status": "Completed"})
+        total = frappe.db.count("Task", {"pulse_sprint": s.name})
+        done = frappe.db.count("Task", {"pulse_sprint": s.name, "status": "Completed"})
         sprints.append({
             "name": s.sprint_name or s.name, "status": s.status,
             "total": total, "done": done,
@@ -73,7 +73,7 @@ def get_analytics(project=None):
     return {
         "kpis": {"completed": completed, "blocked": blocked, "flagged": flagged, "delayed": delayed},
         "status_distribution": _group("status"),
-        "type_distribution": _group("task_type"),
+        "type_distribution": _group("type"),
         "workload": workload_series,
         "storypoints": {"estimated": float(est), "completed": float(done_pts),
                         "pct": round((done_pts / est) * 100) if est else 0},

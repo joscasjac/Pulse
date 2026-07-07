@@ -52,8 +52,8 @@ const openId = ref(null)
 async function reload() {
   const me = await call('frappe.auth.get_logged_user')
   tasks.value = await call('frappe.client.get_list', {
-    doctype: 'Pulse Task',
-    fields: ['name', 'issue_key', 'subject', 'task_type', 'priority', 'status', 'project'],
+    doctype: 'Task',
+    fields: ['name', 'issue_key', 'subject', 'type as task_type', 'priority', 'status', 'project'],
     filters: [['_assign', 'like', `%${me}%`]],
     order_by: 'modified desc',
     limit_page_length: 0,

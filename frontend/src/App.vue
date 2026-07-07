@@ -122,7 +122,7 @@ function onToggle() { toggleTheme() }
 onMounted(async () => {
   try { user.value = await call('frappe.auth.get_logged_user') } catch (e) { user.value = '' }
   projects.value = await call('frappe.client.get_list', {
-    doctype: 'Pulse Project', fields: ['name', 'project_name', 'pulse_project_key'], limit_page_length: 0,
+    doctype: 'Project', fields: ['name', 'project_name', 'pulse_project_key'], limit_page_length: 0,
   }).catch(() => [])
 })
 </script>

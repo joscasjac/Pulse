@@ -73,11 +73,11 @@ def get_board(project=None, sprint=None):
         filters["pulse_sprint"] = sprint
 
     tasks = frappe.get_all(
-        "Pulse Task",
+        "Task",
         filters=filters,
         fields=[
             "name", "issue_key", "subject", "status", "workflow_state", "priority",
-            "task_type", "project", "pulse_sprint", "pulse_story_points",
+            "type as task_type", "project", "pulse_sprint", "pulse_story_points",
             "exp_end_date", "_assign",
         ],
         order_by="pulse_rank asc, modified desc",
@@ -108,11 +108,11 @@ def create_task(project, subject, state="Backlog", task_type=None, priority="Med
     assignees = [a for a in (assignees or []) if a]
 
     doc = frappe.get_doc({
-        "doctype": "Pulse Task",
+        "doctype": "Task",
         "project": project,
         "subject": subject,
         "description": description,
-        "task_type": task_type,
+        "type": task_type,
         "priority": priority or "Medium",
         "pulse_sprint": pulse_sprint,
         "exp_end_date": exp_end_date or None,
@@ -129,19 +129,19 @@ def create_task(project, subject, state="Backlog", task_type=None, priority="Med
     assigned, blocked = [], []
     for user in assignees:
         try:
-            assign_add({"assign_to": [user], "doctype": "Pulse Task", "name": doc.name})
+            assign_add({"assign_to": [user], "doctype": "Task", "name": doc.name})
             assigned.append(user)
-            log("Assignment Changed", "Pulse Task", doc.issue_key or doc.name,
+            log("Assignment Changed", "Task", doc.issue_key or doc.name,
                 project, f"Assigned {user} on create")
         except Exception as e:
             blocked.append({"user": user, "reason": str(e)})
 
-    log("Task Created", "Pulse Task", doc.issue_key or doc.name, project, subject[:140])
+    log("Task Created", "Task", doc.issue_key or doc.name, project, subject[:140])
     frappe.db.commit()
     return {
         "name": doc.name, "issue_key": doc.issue_key, "subject": doc.subject,
         "status": doc.status, "workflow_state": doc.workflow_state,
-        "priority": doc.priority, "task_type": doc.task_type,
+        "priority": doc.priority, "task_type": doc.get("type"),
         "project": doc.project, "pulse_story_points": doc.pulse_story_points,
         "assignees": assigned, "blocked": blocked,
     }
@@ -152,12 +152,13 @@ def update_task_state(task, state):
     """Move a card to a new board column (updates workflow_state + status)."""
     if state not in STATE_TO_STATUS:
         frappe.throw(_("Unknown board column: {0}").format(state))
-    doc = frappe.get_doc("Pulse Task", task)
+    doc = frappe.get_doc("Task", task)
     doc.workflow_state = state
     doc.status = STATE_TO_STATUS[state]
+    doc.flags.ignore_links = True  # a stale epic/dep link shouldn't block a board move
     doc.save()
     from pulse.api.audit import log
-    log("Status Changed", "Pulse Task", doc.issue_key or doc.name, doc.project,
+    log("Status Changed", "Task", doc.issue_key or doc.name, doc.project,
         f"Moved to {state}")
     frappe.db.commit()
     return {"name": doc.name, "workflow_state": doc.workflow_state, "status": doc.status}
@@ -166,7 +167,7 @@ def update_task_state(task, state):
 @frappe.whitelist()
 def get_task(task):
     """Full task detail for the drawer: fields, assignees, checklist, comments."""
-    doc = frappe.get_doc("Pulse Task", task)
+    doc = frappe.get_doc("Task", task)
     checklist = frappe.get_all(
         "Pulse Checklist", filters={"task": task},
         fields=["name", "item", "is_done", "completed_by"],
@@ -178,19 +179,19 @@ def get_task(task):
         order_by="creation asc",
     )
     subtasks = frappe.get_all(
-        "Pulse Task", filters={"parent_task": task},
+        "Task", filters={"parent_task": task},
         fields=["name", "issue_key", "subject", "status"], order_by="creation asc",
     )
     blocked_by = []
     for d in frappe.get_all("Pulse Dependency", filters={"source_task": task},
                             fields=["name", "target_task"]):
-        info = frappe.db.get_value("Pulse Task", d.target_task,
+        info = frappe.db.get_value("Task", d.target_task,
                                    ["issue_key", "subject", "status"], as_dict=True) or {}
         blocked_by.append({"dep": d.name, "task": d.target_task, **info})
 
     parent = None
     if doc.get("parent_task"):
-        parent = frappe.db.get_value("Pulse Task", doc.parent_task, ["issue_key", "subject"], as_dict=True)
+        parent = frappe.db.get_value("Task", doc.parent_task, ["issue_key", "subject"], as_dict=True)
         if parent:
             parent["name"] = doc.parent_task
 
@@ -198,7 +199,7 @@ def get_task(task):
         "name": doc.name, "issue_key": doc.issue_key,
         "subject": doc.subject, "description": doc.description,
         "status": doc.status, "workflow_state": doc.workflow_state,
-        "priority": doc.priority, "task_type": doc.task_type, "project": doc.project,
+        "priority": doc.priority, "task_type": doc.get("type"), "project": doc.project,
         "pulse_sprint": doc.pulse_sprint, "pulse_story_points": doc.pulse_story_points,
         "exp_start_date": doc.exp_start_date, "exp_end_date": doc.exp_end_date,
         "assignees": _assignees(doc._assign),
@@ -209,7 +210,7 @@ def get_task(task):
 
 @frappe.whitelist()
 def add_subtask(parent, subject):
-    project = frappe.db.get_value("Pulse Task", parent, "project")
+    project = frappe.db.get_value("Task", parent, "project")
     child = create_task(project, subject, state="To Do", parent_task=parent)
     return {"name": child["name"], "issue_key": child["issue_key"],
             "subject": child["subject"], "status": child["status"]}
@@ -225,7 +226,7 @@ def search_tasks(q=None, project=None, exclude=None, limit=10):
     or_filters = None
     if q:
         or_filters = [["subject", "like", f"%{q}%"], ["issue_key", "like", f"%{q}%"]]
-    rows = frappe.get_all("Pulse Task", filters=filters, or_filters=or_filters,
+    rows = frappe.get_all("Task", filters=filters, or_filters=or_filters,
                           fields=["name", "issue_key", "subject"],
                           limit_page_length=int(limit), order_by="modified desc")
     return rows
@@ -241,14 +242,14 @@ def add_dependency(task, depends_on):
     doc = frappe.get_doc({
         "doctype": "Pulse Dependency",
         "source_task": task, "target_task": depends_on,
-        "source_project": frappe.db.get_value("Pulse Task", task, "project"),
-        "target_project": frappe.db.get_value("Pulse Task", depends_on, "project"),
+        "source_project": frappe.db.get_value("Task", task, "project"),
+        "target_project": frappe.db.get_value("Task", depends_on, "project"),
     })
     doc.insert()
     from pulse.api.audit import log
-    key = frappe.db.get_value("Pulse Task", task, "issue_key") or task
-    dep_key = frappe.db.get_value("Pulse Task", depends_on, "issue_key") or depends_on
-    log("Dependency Added", "Pulse Task", key, doc.source_project, f"Blocked by {dep_key}")
+    key = frappe.db.get_value("Task", task, "issue_key") or task
+    dep_key = frappe.db.get_value("Task", depends_on, "issue_key") or depends_on
+    log("Dependency Added", "Task", key, doc.source_project, f"Blocked by {dep_key}")
     frappe.db.commit()
     return {"ok": True, "name": doc.name}
 
@@ -268,10 +269,10 @@ def update_task(task, **fields):
         "pulse_story_points", "exp_start_date", "exp_end_date", "project",
         "pulse_sprint",
     }
-    doc = frappe.get_doc("Pulse Task", task)
+    doc = frappe.get_doc("Task", task)
     for k, v in fields.items():
         if k in allowed:
-            doc.set(k, v)
+            doc.set("type" if k == "task_type" else k, v)
     doc.save()
     frappe.db.commit()
     return {"ok": True}
@@ -281,33 +282,33 @@ def update_task(task, **fields):
 def assign_task(task, user):
     """Assign a user to a task (hierarchy hook enforces who may assign whom)."""
     from frappe.desk.form.assign_to import add
-    add({"assign_to": [user], "doctype": "Pulse Task", "name": task})
+    add({"assign_to": [user], "doctype": "Task", "name": task})
     from pulse.api.audit import log
-    key = frappe.db.get_value("Pulse Task", task, "issue_key") or task
-    log("Assignment Changed", "Pulse Task", key,
-        frappe.db.get_value("Pulse Task", task, "project"), f"Assigned {user}")
+    key = frappe.db.get_value("Task", task, "issue_key") or task
+    log("Assignment Changed", "Task", key,
+        frappe.db.get_value("Task", task, "project"), f"Assigned {user}")
     frappe.db.commit()
-    return {"assignees": _assignees(frappe.db.get_value("Pulse Task", task, "_assign"))}
+    return {"assignees": _assignees(frappe.db.get_value("Task", task, "_assign"))}
 
 
 @frappe.whitelist()
 def unassign_task(task, user):
     from frappe.desk.form.assign_to import remove
-    remove("Pulse Task", task, user)
+    remove("Task", task, user)
     frappe.db.commit()
-    return {"assignees": _assignees(frappe.db.get_value("Pulse Task", task, "_assign"))}
+    return {"assignees": _assignees(frappe.db.get_value("Task", task, "_assign"))}
 
 
 @frappe.whitelist()
 def add_comment(task, text):
-    project = frappe.db.get_value("Pulse Task", task, "project")
+    project = frappe.db.get_value("Task", task, "project")
     doc = frappe.get_doc({
         "doctype": "Pulse Comment", "task": task, "project": project,
         "comment_text": text,
     }).insert()
     from pulse.api.audit import log
-    key = frappe.db.get_value("Pulse Task", task, "issue_key") or task
-    log("Comment Added", "Pulse Task", key, project, text[:140])
+    key = frappe.db.get_value("Task", task, "issue_key") or task
+    log("Comment Added", "Task", key, project, text[:140])
     frappe.db.commit()
     return {"name": doc.name, "comment_text": doc.comment_text,
             "owner": doc.owner, "creation": str(doc.creation)}
@@ -433,9 +434,9 @@ def delete_task(task):
             + frappe.get_all("Pulse Dependency", filters={"target_task": task}, pluck="name"))
     for d in deps:
         frappe.delete_doc("Pulse Dependency", d, force=True, ignore_permissions=True)
-    for st in frappe.get_all("Pulse Task", filters={"parent_task": task}, pluck="name"):
-        frappe.db.set_value("Pulse Task", st, "parent_task", None)
-    frappe.delete_doc("Pulse Task", task)
+    for st in frappe.get_all("Task", filters={"parent_task": task}, pluck="name"):
+        frappe.db.set_value("Task", st, "parent_task", None)
+    frappe.delete_doc("Task", task)
     frappe.db.commit()
     return {"ok": True}
 
@@ -443,9 +444,9 @@ def delete_task(task):
 @frappe.whitelist()
 def resolve_task(ref):
     """Return the internal task name for a given issue key (e.g. PLS5-3) or name."""
-    if frappe.db.exists("Pulse Task", ref):
+    if frappe.db.exists("Task", ref):
         return ref
-    name = frappe.db.get_value("Pulse Task", {"issue_key": ref}, "name")
+    name = frappe.db.get_value("Task", {"issue_key": ref}, "name")
     if not name:
         frappe.throw(_("No task found for '{0}'").format(ref))
     return name

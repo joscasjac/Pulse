@@ -2,7 +2,7 @@
   <div class="p-6">
     <div class="flex items-center justify-between mb-4">
       <h1 class="text-lg font-semibold tracking-tight">Projects</h1>
-      <button @click="openEntity('Pulse Project')" class="new-btn flex items-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-medium text-white">
+      <button @click="openEntity('Project')" class="new-btn flex items-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-medium text-white">
         <Plus class="w-3.5 h-3.5" /> New project
       </button>
     </div>
@@ -12,7 +12,7 @@
     </div>
 
     <div v-else class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-      <div v-for="p in projects" :key="p.name" @click="openEntity('Pulse Project', p.name)"
+      <div v-for="p in projects" :key="p.name" @click="openEntity('Project', p.name)"
         class="rounded-xl border border-app bg-surface p-4 hover:border-accent cursor-pointer transition-colors">
         <div class="flex items-center justify-between gap-2">
           <div class="flex items-center gap-2 min-w-0">
@@ -21,7 +21,7 @@
           </div>
           <StatusPill v-if="p.status" :value="p.status" />
         </div>
-        <p class="text-xs text-muted mt-2.5 line-clamp-2">{{ p.description || 'No description' }}</p>
+        <p class="text-xs text-muted mt-2.5 line-clamp-2">{{ p.notes || 'No description' }}</p>
         <div class="flex items-center gap-3 mt-3 text-[11px] text-faint">
           <span class="tnum">{{ p.taskCount }} tasks</span>
           <button @click.stop="goBoard(p.name)" class="ml-auto text-accent hover:underline">Open board →</button>
@@ -50,12 +50,12 @@ function goBoard(name) { router.push(`/board?project=${encodeURIComponent(name)}
 async function reload() {
   loading.value = true
   const list = await call('frappe.client.get_list', {
-    doctype: 'Pulse Project',
-    fields: ['name', 'project_name', 'status', 'description', 'pulse_project_key'],
+    doctype: 'Project',
+    fields: ['name', 'project_name', 'status', 'notes', 'pulse_project_key'],
     limit_page_length: 0,
   }).catch(() => [])
   for (const p of list) {
-    p.taskCount = await call('frappe.client.get_count', { doctype: 'Pulse Task', filters: { project: p.name } }).catch(() => 0)
+    p.taskCount = await call('frappe.client.get_count', { doctype: 'Task', filters: { project: p.name } }).catch(() => 0)
   }
   projects.value = list
   loading.value = false

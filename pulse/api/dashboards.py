@@ -177,7 +177,7 @@ def get_dashboard_stats(user=None):
     user = user or frappe.session.user
     today_str = today()
 
-    has_assign = frappe.db.has_column("Pulse Task", "_assign")
+    has_assign = frappe.db.has_column("Task", "_assign")
     roles = frappe.get_roles(user)
     limited = "Pulse Admin" not in roles and "Pulse Manager" not in roles
 
@@ -187,7 +187,7 @@ def get_dashboard_stats(user=None):
         clause = " AND JSON_CONTAINS(_assign, %s)" if limited else ""
         params = (json.dumps(user),) if limited else ()
         return frappe.db.sql(
-            f"SELECT COUNT(*) FROM `tabPulse Task` WHERE {where}{clause}", params
+            f"SELECT COUNT(*) FROM `tabTask` WHERE {where}{clause}", params
         )[0][0]
 
     my_tasks = assign_sql("status NOT IN ('Completed','Cancelled')")
@@ -195,13 +195,13 @@ def get_dashboard_stats(user=None):
     overdue = assign_sql(f"exp_end_date < '{today_str}' AND status NOT IN ('Completed','Cancelled')")
     due_today = assign_sql(f"exp_end_date = '{today_str}' AND status NOT IN ('Completed','Cancelled')")
 
-    completed_today = frappe.db.count("Pulse Task", {
+    completed_today = frappe.db.count("Task", {
         "status": "Completed", "modified": [">=", today_str + " 00:00:00"],
     })
-    active_projects = frappe.db.count("Pulse Project", {"status": "Open"})
-    total_open = frappe.db.count("Pulse Task", {"status": ["not in", ["Completed", "Cancelled"]]})
+    active_projects = frappe.db.count("Project", {"status": "Open"})
+    total_open = frappe.db.count("Task", {"status": ["not in", ["Completed", "Cancelled"]]})
     blocked = frappe.db.sql(
-        "SELECT COUNT(*) FROM `tabPulse Task` WHERE workflow_state='In Review' AND DATEDIFF(NOW(), modified) > 5"
+        "SELECT COUNT(*) FROM `tabTask` WHERE workflow_state='In Review' AND DATEDIFF(NOW(), modified) > 5"
     )[0][0]
 
     week_start = (datetime.now() - timedelta(days=datetime.now().weekday())).strftime("%Y-%m-%d")
@@ -228,7 +228,7 @@ def get_dashboard_series():
     def group_count(field):
         rows = frappe.db.sql(
             f"""SELECT `{field}` AS k, COUNT(name) AS c
-                FROM `tabPulse Task` WHERE `{field}` IS NOT NULL AND `{field}` != ''
+                FROM `tabTask` WHERE `{field}` IS NOT NULL AND `{field}` != ''
                 GROUP BY `{field}` ORDER BY c DESC""",
             as_dict=True,
         )
@@ -236,7 +236,7 @@ def get_dashboard_series():
 
     # workload = open task count per assignee (from _assign)
     workload = {}
-    for a in frappe.db.get_all("Pulse Task",
+    for a in frappe.db.get_all("Task",
                                filters={"status": ["not in", ["Completed", "Cancelled"]]},
                                fields=["_assign"]):
         for u in (frappe.parse_json(a._assign or "[]") or []):
@@ -251,13 +251,13 @@ def get_dashboard_series():
     for s in frappe.db.get_all("Pulse Sprint", fields=["name", "sprint_name"],
                                order_by="start_date asc"):
         pts = frappe.db.sql(
-            """SELECT COALESCE(SUM(pulse_story_points),0) FROM `tabPulse Task`
+            """SELECT COALESCE(SUM(pulse_story_points),0) FROM `tabTask`
                WHERE pulse_sprint=%s AND status='Completed'""", (s.name,))[0][0]
         velocity.append({"label": s.sprint_name or s.name, "value": float(pts or 0)})
 
     return {
         "tasks_by_state": group_count("workflow_state"),
-        "tasks_by_type": group_count("task_type"),
+        "tasks_by_type": group_count("type"),
         "workload": workload_series,
         "velocity": velocity,
     }

@@ -58,7 +58,7 @@
    "fieldname": "project",
    "fieldtype": "Link",
    "label": "Project",
-   "options": "Pulse Project",
+   "options": "Project",
    "search_index": 1
   },
   {

@@ -9,8 +9,15 @@ def before_insert(doc, method=None):
 
 
 def on_update(doc, method=None):
-    _log_status_change(doc)
-    _rollup_sprint_points(doc)
+    # logging / rollups are side-effects — never let them block a Task save
+    try:
+        _log_status_change(doc)
+    except Exception:
+        frappe.log_error(title="Pulse: status log failed", message=frappe.get_traceback())
+    try:
+        _rollup_sprint_points(doc)
+    except Exception:
+        frappe.log_error(title="Pulse: sprint rollup failed", message=frappe.get_traceback())
 
 
 # ---------------------------------------------------------------------------
@@ -23,30 +30,30 @@ def assign_issue_key(doc):
     key = ensure_project_key(doc.project)
     # atomic per-project sequence
     frappe.db.sql(
-        "UPDATE `tabPulse Project` SET task_counter = COALESCE(task_counter, 0) + 1 WHERE name = %s",
+        "UPDATE `tabProject` SET task_counter = COALESCE(task_counter, 0) + 1 WHERE name = %s",
         (doc.project,),
     )
-    seq = frappe.db.get_value("Pulse Project", doc.project, "task_counter")
+    seq = frappe.db.get_value("Project", doc.project, "task_counter")
     doc.seq = seq
     doc.issue_key = f"{key}-{seq}"
 
 
 def ensure_project_key(project):
-    key = frappe.db.get_value("Pulse Project", project, "pulse_project_key")
+    key = frappe.db.get_value("Project", project, "pulse_project_key")
     if key:
         return key
-    name = frappe.db.get_value("Pulse Project", project, "project_name") or project
+    name = frappe.db.get_value("Project", project, "project_name") or project
     key = _make_key(name)
     # guarantee uniqueness across projects
     base, n = key, 1
     taken = set(
-        frappe.get_all("Pulse Project", filters={"name": ["!=", project]},
+        frappe.get_all("Project", filters={"name": ["!=", project]},
                        pluck="pulse_project_key")
     )
     while key in taken:
         n += 1
         key = f"{base}{n}"
-    frappe.db.set_value("Pulse Project", project, "pulse_project_key", key)
+    frappe.db.set_value("Project", project, "pulse_project_key", key)
     return key
 
 
@@ -83,13 +90,14 @@ def _log_status_change(doc):
         return
     log = frappe.new_doc("Pulse Task Status Log")
     log.task = doc.name
-    log.project = doc.project
+    log.project = doc.project if frappe.db.exists("Project", doc.project) else None
     log.sprint = doc.get("pulse_sprint")
     log.from_state = from_state
     log.to_state = to_state
     log.changed_by = frappe.session.user
     log.changed_on = now_datetime()
     log.points_at_change = doc.get("pulse_story_points") or 0
+    log.flags.ignore_links = True
     log.insert(ignore_permissions=True)
 
 

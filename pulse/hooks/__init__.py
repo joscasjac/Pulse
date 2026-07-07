@@ -1,15 +1,16 @@
 app_name = "pulse"
 app_title = "Pulse"
 app_publisher = "Frappe"
-app_description = "Modern, standalone agile project management for Frappe"
+app_description = "Modern agile delivery layer on top of ERPNext Projects"
+required_apps = ["erpnext"]
 app_email = "info@frappe.io"
 app_icon = "octicon octicon-project"
 app_color = "blue"
 app_logo_url = "/assets/pulse/images/pulse-logo.png"
 app_version = "0.2.0"
 
-# The Pulse UI is the standalone Vue SPA at /pulse — no Desk-page injection.
-app_include_js = []
+# Tiny Desk helper: makes the "Pulse" workspace icon open the SPA at /pulse directly.
+app_include_js = ["/assets/pulse/js/pulse_desk.js"]
 app_include_css = []
 
 web_include_js = []
@@ -43,7 +44,7 @@ after_migrate = "pulse.install.after_migrate"
 # ---------------------------------------------------------------------------
 fixtures = [
     {"dt": "Role", "filters": [["role_name", "like", "Pulse %"]]},
-    {"dt": "Pulse Issue Type"},
+    {"dt": "Task Type"},
     {
         "dt": "Report",
         "filters": [
@@ -117,7 +118,7 @@ website_route_rules = [
 # Document Events
 # ---------------------------------------------------------------------------
 doc_events = {
-    "Pulse Task": {
+    "Task": {
         "before_insert": "pulse.hooks.doc_events.task.before_insert",
         "on_update": "pulse.hooks.doc_events.task.on_update",
         "validate": "pulse.hooks.permissions.validate_task_assignees",
@@ -131,7 +132,7 @@ doc_events = {
 # Row-level visibility for core Task/Project/Pulse doctypes
 # ---------------------------------------------------------------------------
 permission_query_conditions = {
-    "Pulse Task": "pulse.hooks.permissions.task_query_conditions",
+    "Task": "pulse.hooks.permissions.task_query_conditions",
     "Pulse Sprint": "pulse.hooks.permissions.sprint_query_conditions",
     "Pulse Task Status Log": "pulse.hooks.permissions.status_log_query_conditions",
 }

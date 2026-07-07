@@ -49,7 +49,7 @@ async function reload() {
     order_by: 'start_date desc', limit_page_length: 0,
   }).catch(() => [])
   for (const s of list) {
-    s.taskCount = await call('frappe.client.get_count', { doctype: 'Pulse Task', filters: { pulse_sprint: s.name } }).catch(() => 0)
+    s.taskCount = await call('frappe.client.get_count', { doctype: 'Task', filters: { pulse_sprint: s.name } }).catch(() => 0)
   }
   sprints.value = list
   loading.value = false

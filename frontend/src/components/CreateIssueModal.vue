@@ -127,10 +127,10 @@ function focusDesc() {}
 
 async function ensureData() {
   if (!projects.value.length) {
-    projects.value = await call('frappe.client.get_list', { doctype: 'Pulse Project', fields: ['name', 'project_name'], limit_page_length: 0 }).catch(() => [])
+    projects.value = await call('frappe.client.get_list', { doctype: 'Project', fields: ['name', 'project_name'], limit_page_length: 0 }).catch(() => [])
   }
   if (!issueTypes.value.length) {
-    issueTypes.value = await call('frappe.client.get_list', { doctype: 'Pulse Issue Type', fields: ['name'], limit_page_length: 0 }).then((r) => r.map((x) => x.name)).catch(() => ['Task'])
+    issueTypes.value = await call('frappe.client.get_list', { doctype: 'Task Type', fields: ['name'], limit_page_length: 0 }).then((r) => r.map((x) => x.name)).catch(() => ['Task'])
   }
   if (!assignable.value.length) {
     assignable.value = await call('pulse.api.spa.get_assignable_users').catch(() => [])

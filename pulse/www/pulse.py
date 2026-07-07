@@ -9,6 +9,11 @@ def get_context(context):
     The frappe-ui build injects `window[key] = boot[key]` for each key below,
     giving the SPA its CSRF token and session context for authenticated calls.
     """
+    # Not logged in -> Frappe login, then bounce back to Pulse.
+    if frappe.session.user == "Guest":
+        frappe.local.flags.redirect_location = "/login?redirect-to=/pulse"
+        raise frappe.Redirect
+
     context.no_cache = 1
     context.boot = {
         "csrf_token": frappe.sessions.get_csrf_token(),

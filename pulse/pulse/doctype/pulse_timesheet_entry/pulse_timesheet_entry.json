@@ -27,7 +27,7 @@
    "fieldtype": "Link",
    "in_list_view": 1,
    "label": "Task",
-   "options": "Pulse Task"
+   "options": "Task"
   },
   {
    "fetch_from": "task.project",
@@ -35,7 +35,7 @@
    "fieldtype": "Link",
    "in_list_view": 1,
    "label": "Project",
-   "options": "Pulse Project",
+   "options": "Project",
    "read_only": 1
   },
   {

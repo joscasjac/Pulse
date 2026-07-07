@@ -46,7 +46,7 @@
    "fieldname": "working_days_source",
    "fieldtype": "Link",
    "label": "Working Days (Holiday List)",
-   "options": "Pulse Holiday List"
+   "options": "Holiday List"
   },
   {
    "fieldname": "assignment_section",

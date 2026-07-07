@@ -61,7 +61,7 @@ def get_audit_log(limit=150, project=None, user=None):
         fields=["task", "project", "from_state", "to_state", "changed_by", "changed_on"],
         order_by="changed_on desc", limit=limit,
     ):
-        key = frappe.db.get_value("Pulse Task", s.task, "issue_key") or s.task
+        key = frappe.db.get_value("Task", s.task, "issue_key") or s.task
         entries.append({
             "kind": "status", "user": s.changed_by, "action": "Status Change",
             "reference": key, "project": s.project,

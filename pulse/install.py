@@ -2,6 +2,8 @@ import frappe
 
 
 def after_install():
+    from pulse.erpnext_bridge import ensure_custom_fields
+    ensure_custom_fields()
     create_pulse_roles()
     create_issue_types()
     create_workflow_states()
@@ -16,6 +18,8 @@ def after_app_install(app_name):
 
 
 def after_migrate():
+    from pulse.erpnext_bridge import ensure_custom_fields
+    ensure_custom_fields()
     create_pulse_roles()
     create_issue_types()
     create_workflow_states()
@@ -43,22 +47,12 @@ def create_pulse_roles():
 
 
 def create_issue_types():
-    # Standalone Pulse Issue Type records (no ERPNext / Task Type dependency).
-    types = [
-        {"issue_type_name": "Epic", "color": "#8b5cf6", "is_epic": 1},
-        {"issue_type_name": "Story", "color": "#22c55e"},
-        {"issue_type_name": "Bug", "color": "#ef4444"},
-        {"issue_type_name": "Task", "color": "#3b82f6"},
-        {"issue_type_name": "Sub-task", "color": "#64748b", "is_subtask": 1},
-        {"issue_type_name": "Improvement", "color": "#14b8a6"},
-        {"issue_type_name": "Incident", "color": "#f97316"},
-        {"issue_type_name": "Feature", "color": "#0ea5e9"},
-    ]
-    for it in types:
-        if not frappe.db.exists("Pulse Issue Type", it["issue_type_name"]):
-            frappe.get_doc({"doctype": "Pulse Issue Type", **it}).insert(
-                ignore_permissions=True
-            )
+    # Reuse ERPNext Task Type as the issue-type master.
+    for name in ["Epic", "Story", "Bug", "Task", "Sub-task",
+                 "Improvement", "Incident", "Feature"]:
+        if not frappe.db.exists("Task Type", name):
+            frappe.get_doc({"doctype": "Task Type", "__newname": name,
+                            "name": name}).insert(ignore_permissions=True)
 
 
 def create_workflow_states():
@@ -134,6 +128,14 @@ def create_pulse_launcher_workspace():
     ws.public = 1
     ws.is_hidden = 0
     ws.icon = "project"
+    ws.parent_page = ""
+    # `app` groups the workspace under Pulse in the Desk app-grid (v15+);
+    # `module` ties it to the Pulse module. Both help the tile show up.
+    meta = frappe.get_meta("Workspace")
+    if meta.has_field("app"):
+        ws.app = "pulse"
+    if meta.has_field("module"):
+        ws.module = "Pulse"
     ws.content = content
     ws.set("shortcuts", [])
     ws.append("shortcuts", shortcut)
@@ -144,26 +146,26 @@ def create_pulse_launcher_workspace():
 
 def backfill_issue_keys():
     """Assign issue keys (e.g. OPS-9) to any existing task that lacks one."""
-    if not frappe.db.has_column("Pulse Task", "issue_key"):
+    if not frappe.db.has_column("Task", "issue_key"):
         return
     from pulse.hooks.doc_events.task import ensure_project_key
 
-    projects = frappe.get_all("Pulse Task", filters={"issue_key": ["is", "not set"]},
+    projects = frappe.get_all("Task", filters={"issue_key": ["is", "not set"]},
                               distinct=True, pluck="project")
     for project in filter(None, projects):
         key = ensure_project_key(project)
-        counter = frappe.db.get_value("Pulse Project", project, "task_counter") or 0
+        counter = frappe.db.get_value("Project", project, "task_counter") or 0
         tasks = frappe.get_all(
-            "Pulse Task",
+            "Task",
             filters={"project": project, "issue_key": ["is", "not set"]},
             order_by="creation asc", pluck="name",
         )
         for name in tasks:
             counter += 1
-            frappe.db.set_value("Pulse Task", name,
+            frappe.db.set_value("Task", name,
                                 {"seq": counter, "issue_key": f"{key}-{counter}"},
                                 update_modified=False)
-        frappe.db.set_value("Pulse Project", project, "task_counter", counter,
+        frappe.db.set_value("Project", project, "task_counter", counter,
                             update_modified=False)
     frappe.db.commit()
 
@@ -289,7 +291,7 @@ def create_pulse_dashboard_charts():
         {
             "chart_name": "Tasks by State",
             "chart_type": "Group By",
-            "document_type": "Pulse Task",
+            "document_type": "Task",
             "group_by_type": "Count",
             "group_by_based_on": "status",
             "number_of_groups": 0,
@@ -330,9 +332,9 @@ def create_pulse_number_cards():
         {
             "name": "Overdue Tasks",
             "label": "Overdue Tasks",
-            "document_type": "Pulse Task",
+            "document_type": "Task",
             "function": "Count",
-            "filters_json": '[["Pulse Task","status","not in",["Completed","Cancelled"]],["Pulse Task","exp_end_date","<","Today"]]',
+            "filters_json": '[["Task","status","not in",["Completed","Cancelled"]],["Task","exp_end_date","<","Today"]]',
             "show_percentage_stats": 1,
             "is_public": 0,
             "roles": [
@@ -344,9 +346,9 @@ def create_pulse_number_cards():
         {
             "name": "Open Tasks",
             "label": "Open Tasks",
-            "document_type": "Pulse Task",
+            "document_type": "Task",
             "function": "Count",
-            "filters_json": '[["Pulse Task","status","not in",["Done","Cancelled"]]]',
+            "filters_json": '[["Task","status","not in",["Done","Cancelled"]]]',
             "show_percentage_stats": 1,
             "is_public": 0,
             "roles": [
@@ -358,9 +360,9 @@ def create_pulse_number_cards():
         {
             "name": "My Open Tasks",
             "label": "My Open Tasks",
-            "document_type": "Pulse Task",
+            "document_type": "Task",
             "function": "Count",
-            "filters_json": '[["Pulse Task","_assign","like","%(user)s"]]',
+            "filters_json": '[["Task","_assign","like","%(user)s"]]',
             "show_percentage_stats": 0,
             "is_public": 0,
             "roles": [
@@ -374,9 +376,9 @@ def create_pulse_number_cards():
         {
             "name": "In Review Count",
             "label": "In Review Count",
-            "document_type": "Pulse Task",
+            "document_type": "Task",
             "function": "Count",
-            "filters_json": '[["Pulse Task","status","=","In Review"]]',
+            "filters_json": '[["Task","status","=","In Review"]]',
             "show_percentage_stats": 0,
             "is_public": 0,
             "roles": [
@@ -403,9 +405,9 @@ def create_pulse_number_cards():
         {
             "name": "Spillover Task Count",
             "label": "Spillover Task Count",
-            "document_type": "Pulse Task",
+            "document_type": "Task",
             "function": "Count",
-            "filters_json": '[["Pulse Task","pulse_sprint","is","set"],["Pulse Task","status","not in",["Done","Cancelled"]]]',
+            "filters_json": '[["Task","pulse_sprint","is","set"],["Task","status","not in",["Done","Cancelled"]]]',
             "show_percentage_stats": 0,
             "is_public": 0,
             "roles": [
@@ -641,8 +643,8 @@ def update_pulse_workspace():
 
     SHORTCUTS = [
         ("Page", "pulse-board", "Pulse Board", "", "project"),
-        ("DocType", "Pulse Project", "All Projects", "List", "folder-open"),
-        ("DocType", "Pulse Task", "All Tasks", "List", "check-square"),
+        ("DocType", "Project", "All Projects", "List", "folder-open"),
+        ("DocType", "Task", "All Tasks", "List", "check-square"),
         ("DocType", "Pulse Sprint", "Sprints", "List", "repeat"),
         ("DocType", "User", "Teams", "List", "group"),
         ("DocType", "Pulse Settings", "Settings", "", "settings"),

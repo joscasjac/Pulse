@@ -29,7 +29,7 @@
    "fieldtype": "Link",
    "in_list_view": 1,
    "label": "Source Task",
-   "options": "Pulse Task",
+   "options": "Task",
    "reqd": 1,
    "search_index": 1
   },
@@ -38,7 +38,7 @@
    "fieldtype": "Link",
    "in_list_view": 1,
    "label": "Target Task",
-   "options": "Pulse Task",
+   "options": "Task",
    "reqd": 1,
    "search_index": 1
   },
@@ -65,7 +65,7 @@
    "fetch_from": "source_task.project",
    "in_list_view": 1,
    "label": "Source Project",
-   "options": "Pulse Project",
+   "options": "Project",
    "read_only": 1
   },
   {
@@ -74,7 +74,7 @@
    "fetch_from": "target_task.project",
    "in_list_view": 1,
    "label": "Target Project",
-   "options": "Pulse Project",
+   "options": "Project",
    "read_only": 1
   },
   {

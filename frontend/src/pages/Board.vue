@@ -173,9 +173,9 @@ async function load() {
   const [b, ps, its] = await Promise.all([
     call('pulse.api.spa.get_board', { project: project.value }),
     projects.value.length ? Promise.resolve(projects.value)
-      : call('frappe.client.get_list', { doctype: 'Pulse Project', fields: ['name', 'project_name'], limit_page_length: 0 }),
+      : call('frappe.client.get_list', { doctype: 'Project', fields: ['name', 'project_name'], limit_page_length: 0 }),
     issueTypes.value.length ? Promise.resolve(issueTypes.value)
-      : call('frappe.client.get_list', { doctype: 'Pulse Issue Type', fields: ['name'], limit_page_length: 0 }).then((r) => r.map((x) => x.name)),
+      : call('frappe.client.get_list', { doctype: 'Task Type', fields: ['name'], limit_page_length: 0 }).then((r) => r.map((x) => x.name)),
   ])
   board.value = b; projects.value = ps; issueTypes.value = its
   loading.value = false

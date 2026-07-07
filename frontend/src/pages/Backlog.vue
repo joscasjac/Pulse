@@ -27,8 +27,8 @@ const tasks = ref([])
 
 onMounted(async () => {
   tasks.value = await call('frappe.client.get_list', {
-    doctype: 'Pulse Task',
-    fields: ['name', 'subject', 'task_type', 'status', 'pulse_story_points'],
+    doctype: 'Task',
+    fields: ['name', 'subject', 'type as task_type', 'status', 'pulse_story_points'],
     order_by: 'pulse_rank asc, modified desc',
     limit_page_length: 0,
   }).catch(() => [])

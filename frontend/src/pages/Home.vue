@@ -69,7 +69,7 @@ async function reload() {
     call('frappe.auth.get_logged_user'),
     call('pulse.api.dashboards.get_dashboard_stats').catch(() => ({})),
     call('frappe.client.get_list', {
-      doctype: 'Pulse Task', fields: ['name', 'issue_key', 'subject', 'status', 'modified'],
+      doctype: 'Task', fields: ['name', 'issue_key', 'subject', 'status', 'modified'],
       order_by: 'modified desc', limit_page_length: 8,
     }).catch(() => []),
   ])

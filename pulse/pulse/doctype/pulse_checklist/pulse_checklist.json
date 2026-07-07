@@ -19,7 +19,7 @@
    "fieldname": "task",
    "fieldtype": "Link",
    "label": "Task",
-   "options": "Pulse Task",
+   "options": "Task",
    "reqd": 1,
    "in_list_view": 1,
    "search_index": 1

@@ -162,7 +162,7 @@ watch(() => props.taskId, async (id) => {
     call('pulse.api.spa.get_task', { task: id }),
     assignable.value.length ? Promise.resolve(assignable.value) : call('pulse.api.spa.get_assignable_users'),
     issueTypes.value.length ? Promise.resolve(issueTypes.value)
-      : call('frappe.client.get_list', { doctype: 'Pulse Issue Type', fields: ['name'], limit_page_length: 0 }).then(r => r.map(x => x.name)),
+      : call('frappe.client.get_list', { doctype: 'Task Type', fields: ['name'], limit_page_length: 0 }).then(r => r.map(x => x.name)),
   ])
   task.value = t
   assignable.value = users

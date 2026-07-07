@@ -20,14 +20,14 @@
    "fieldtype": "Link",
    "in_list_view": 1,
    "label": "Task",
-   "options": "Pulse Task",
+   "options": "Task",
    "search_index": 1
   },
   {
    "fieldname": "project",
    "fieldtype": "Link",
    "label": "Project",
-   "options": "Pulse Project"
+   "options": "Project"
   },
   {
    "fieldname": "comment_text",
