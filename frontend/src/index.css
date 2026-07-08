@@ -1,39 +1,97 @@
 @import 'frappe-ui/style.css';
+@import url('https://fonts.googleapis.com/css2?family=Archivo:wght@600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
+/* ============================================================================
+   PULSE // TACTICAL TELEMETRY INTERFACE
+   Archetype: CRT Terminal (dark, primary) · Swiss Industrial Print (light)
+   Accent: Aviation/Hazard Red (#E61919) — the only accent.
+   ============================================================================ */
+
+/* --- Light: Swiss Industrial Print (matte documentation paper) --- */
 :root {
-  --bg: #f7f8fa;
-  --surface: #ffffff;
-  --surface-2: #f3f4f6;
-  --border: #e5e7eb;
-  --text: #111827;
-  --muted: #6b7280;
-  --hover: #f3f4f6;
-  --accent: #3b82f6;
+  --bg: #eae8e3;
+  --surface: #f4f4f0;
+  --surface-2: #e3e1db;
+  --border: #111111;
+  --border-soft: #c9c7c1;
+  --text: #0a0a0a;
+  --muted: #4f4d47;
+  --faint: #86847e;
+  --hover: #e3e1db;
+  --accent: #e61919;
+  --term-green: #1f9e12;
+  --shadow: 0 0 0 1px var(--border);
 }
+
+/* --- Dark: Tactical Telemetry (deactivated CRT + white phosphor) --- */
 .dark {
-  --bg: #0c1016;
-  --surface: #12171f;
-  --surface-2: #1a212c;
-  --border: #232b37;
-  --border-soft: #1b222d;
-  --text: #e7ebf2;
-  --muted: #8994a3;
-  --faint: #5c6675;
-  --hover: #1a212c;
-  --accent: #6d7cff;
-  --shadow: 0 14px 40px -20px rgba(0, 0, 0, 0.7);
-}
-:root {
-  --border-soft: #eef0f3;
-  --faint: #9aa2af;
-  --shadow: 0 12px 30px -18px rgba(15, 23, 42, 0.25);
+  --bg: #0a0a0a;
+  --surface: #121212;
+  --surface-2: #191919;
+  --border: #2b2b2b;
+  --border-soft: #1b1b1b;
+  --text: #eaeaea;
+  --muted: #8a8a8a;
+  --faint: #5c5c5c;
+  --hover: #1c1c1c;
+  --accent: #e61919;
+  --term-green: #4af626;
+  --shadow: 0 0 0 1px var(--border);
 }
 
 html, body, #app { height: 100%; margin: 0; }
-body { background: var(--bg); color: var(--text); }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-feature-settings: "tnum" 1, "cv01" 1;
+}
+
+/* --- Mechanical rigidity: every corner is exactly 90 degrees --- */
+#app *, #app *::before, #app *::after { border-radius: 0 !important; }
+
+/* --- CRT scanlines (dark only) --- */
+.dark body::before {
+  content: "";
+  position: fixed; inset: 0; z-index: 9998; pointer-events: none;
+  background: repeating-linear-gradient(
+    0deg, rgba(0,0,0,0) 0px, rgba(0,0,0,0) 2px,
+    rgba(0,0,0,0.20) 3px, rgba(0,0,0,0) 4px);
+  opacity: 0.55;
+}
+/* --- Mechanical noise / physical grain (both modes) --- */
+body::after {
+  content: "";
+  position: fixed; inset: 0; z-index: 9999; pointer-events: none;
+  opacity: 0.04;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.82' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* --- Macro-typography: heavy neo-grotesque, uppercase, tight --- */
+@layer base {
+  h1, h2, h3 {
+    font-family: "Archivo", Inter, system-ui, sans-serif;
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    line-height: 0.95;
+    text-transform: uppercase;
+    text-wrap: balance;
+  }
+  h1 { letter-spacing: -0.045em; }
+  .tnum { font-variant-numeric: tabular-nums; }
+}
+
+/* --- Micro-typography: monospace technical telemetry --- */
+.mono, code, samp, kbd, output {
+  font-family: "JetBrains Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+}
+.tele {
+  font-family: "JetBrains Mono", ui-monospace, Menlo, Consolas, monospace;
+  text-transform: uppercase;
+  letter-spacing: 0.09em;
+}
 
 @layer utilities {
   .bg-app { background: var(--bg); }
@@ -44,18 +102,19 @@ body { background: var(--bg); color: var(--text); }
   .text-app { color: var(--text); }
   .text-muted { color: var(--muted); }
   .text-faint { color: var(--faint); }
+  .text-accent { color: var(--accent); }
+  .term-green { color: var(--term-green); }
   .hover-app:hover { background: var(--hover); }
   .ring-app { --tw-ring-color: var(--border); }
   .shadow-app { box-shadow: var(--shadow); }
-  .mono { font-family: ui-monospace, "SF Mono", "JetBrains Mono", Menlo, Consolas, monospace; }
-}
-/* professional defaults: tabular numerals + balanced headings */
-@layer base {
-  h1, h2, h3 { text-wrap: balance; letter-spacing: -0.015em; }
-  .tnum { font-variant-numeric: tabular-nums; }
+  .mono { font-family: "JetBrains Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace; }
 }
 
-/* thin scrollbars */
-::-webkit-scrollbar { width: 8px; height: 8px; }
-::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+/* --- Hazard-red selection --- */
+::selection { background: var(--accent); color: #ffffff; }
+
+/* --- Square industrial scrollbars (no rounding, red on grab) --- */
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-thumb { background: var(--border); }
+::-webkit-scrollbar-thumb:hover { background: var(--accent); }
 ::-webkit-scrollbar-track { background: transparent; }

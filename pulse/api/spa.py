@@ -52,6 +52,20 @@ STATUS_TO_STATE = {
 }
 
 
+# Core ERPNext doctypes editable through the SPA's generic form, each with a
+# curated field set so the dialog stays clean (not all ~60 ERPNext fields).
+CORE_EDITABLE = {
+    "Project": ["project_name", "status", "priority",
+                "expected_start_date", "expected_end_date", "notes"],
+    "Task": ["subject", "status", "priority",
+             "exp_start_date", "exp_end_date", "description"],
+}
+
+
+def _is_editable(doctype):
+    return bool(doctype) and (doctype.startswith("Pulse ") or doctype in CORE_EDITABLE)
+
+
 def _assignees(assign):
     try:
         return frappe.parse_json(assign or "[]")
@@ -211,6 +225,9 @@ def get_task(task):
 @frappe.whitelist()
 def add_subtask(parent, subject):
     project = frappe.db.get_value("Task", parent, "project")
+    # ERPNext only allows child tasks under a "group" task — promote the parent.
+    if not frappe.db.get_value("Task", parent, "is_group"):
+        frappe.db.set_value("Task", parent, "is_group", 1)
     child = create_task(project, subject, state="To Do", parent_task=parent)
     return {"name": child["name"], "issue_key": child["issue_key"],
             "subject": child["subject"], "status": child["status"]}
@@ -344,21 +361,37 @@ EDIT_SKIP_FIELDS = {"issue_key", "seq", "task_counter", "workflow_state"}
 
 @frappe.whitelist()
 def get_form_meta(doctype):
-    """Editable field schema for a Pulse doctype, so the SPA can render a form."""
-    if not doctype.startswith("Pulse "):
-        frappe.throw(_("Only Pulse doctypes are editable here."))
+    """Editable field schema for a Pulse (or core Project/Task) doctype.
+
+    Project and Task are ERPNext doctypes with dozens of fields, so we expose a
+    curated subset for the SPA's create/edit dialog rather than the whole form.
+    """
+    if not _is_editable(doctype):
+        frappe.throw(_("This form can't be edited here."))
     meta = frappe.get_meta(doctype)
-    fields = []
-    for f in meta.fields:
-        if f.fieldtype in EDIT_SKIP_TYPES or f.hidden or f.read_only:
-            continue
-        if f.fieldname in EDIT_SKIP_FIELDS:
-            continue
-        fields.append({
+
+    def _field_dict(f):
+        return {
             "fieldname": f.fieldname, "label": f.label or f.fieldname,
             "fieldtype": f.fieldtype, "options": f.options, "reqd": int(f.reqd or 0),
             "default": f.default, "description": f.description,
-        })
+        }
+
+    curated = CORE_EDITABLE.get(doctype)
+    fields = []
+    if curated:
+        by_name = {f.fieldname: f for f in meta.fields}
+        for fn in curated:
+            f = by_name.get(fn)
+            if f:
+                fields.append(_field_dict(f))
+    else:
+        for f in meta.fields:
+            if f.fieldtype in EDIT_SKIP_TYPES or f.hidden or f.read_only:
+                continue
+            if f.fieldname in EDIT_SKIP_FIELDS:
+                continue
+            fields.append(_field_dict(f))
     return {"doctype": doctype, "title_field": meta.title_field, "fields": fields}
 
 
@@ -388,8 +421,8 @@ def save_entity(doc):
     if isinstance(doc, str):
         doc = json.loads(doc)
     dt = doc.get("doctype", "")
-    if not dt.startswith("Pulse "):
-        frappe.throw(_("Only Pulse doctypes are editable here."))
+    if not _is_editable(dt):
+        frappe.throw(_("This record can't be edited here."))
 
     reserved = {"doctype", "name", "modified", "creation", "owner", "modified_by", "idx"}
     name = doc.get("name")
@@ -408,8 +441,8 @@ def save_entity(doc):
 
 @frappe.whitelist()
 def delete_entity(doctype, name):
-    if not doctype.startswith("Pulse "):
-        frappe.throw(_("Only Pulse doctypes are editable here."))
+    if not _is_editable(doctype):
+        frappe.throw(_("This record can't be deleted here."))
     frappe.delete_doc(doctype, name)
     frappe.db.commit()
     return {"ok": True}
@@ -417,8 +450,8 @@ def delete_entity(doctype, name):
 
 @frappe.whitelist()
 def get_entity(doctype, name):
-    if not doctype.startswith("Pulse "):
-        frappe.throw(_("Only Pulse doctypes are readable here."))
+    if not _is_editable(doctype):
+        frappe.throw(_("This record can't be read here."))
     return frappe.get_doc(doctype, name).as_dict()
 
 
@@ -436,6 +469,9 @@ def delete_task(task):
         frappe.delete_doc("Pulse Dependency", d, force=True, ignore_permissions=True)
     for st in frappe.get_all("Task", filters={"parent_task": task}, pluck="name"):
         frappe.db.set_value("Task", st, "parent_task", None)
+    # time entries are child rows (Pulse Timesheet Entry) linked to this task —
+    # remove them directly so the link doesn't block deletion.
+    frappe.db.delete("Pulse Timesheet Entry", {"task": task})
     frappe.delete_doc("Task", task)
     frappe.db.commit()
     return {"ok": True}

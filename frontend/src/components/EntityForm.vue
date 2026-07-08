@@ -89,20 +89,27 @@ async function fetchLinks(flds) {
 watch(() => entityState.open, async (open) => {
   if (!open) return
   loadingMeta.value = true
-  const meta = await loadMeta(entityState.doctype)
-  fields.value = meta.fields
-  await fetchLinks(meta.fields)
+  try {
+    const meta = await loadMeta(entityState.doctype)
+    fields.value = meta.fields
+    await fetchLinks(meta.fields)
 
-  // reset model
-  Object.keys(model).forEach((k) => delete model[k])
-  for (const f of meta.fields) model[f.fieldname] = f.fieldtype === 'Check' ? (parseInt(f.default) || 0) : (f.default ?? '')
-  Object.assign(model, entityState.defaults)
+    // reset model
+    Object.keys(model).forEach((k) => delete model[k])
+    for (const f of meta.fields) model[f.fieldname] = f.fieldtype === 'Check' ? (parseInt(f.default) || 0) : (f.default ?? '')
+    Object.assign(model, entityState.defaults)
 
-  if (entityState.name) {
-    const rec = await call('pulse.api.spa.get_entity', { doctype: entityState.doctype, name: entityState.name }).catch(() => null)
-    if (rec) for (const f of meta.fields) if (rec[f.fieldname] !== undefined && rec[f.fieldname] !== null) model[f.fieldname] = rec[f.fieldname]
+    if (entityState.name) {
+      const rec = await call('pulse.api.spa.get_entity', { doctype: entityState.doctype, name: entityState.name }).catch(() => null)
+      if (rec) for (const f of meta.fields) if (rec[f.fieldname] !== undefined && rec[f.fieldname] !== null) model[f.fieldname] = rec[f.fieldname]
+    }
+  } catch (e) {
+    // never leave the dialog stuck on "Loading form…" — surface and close
+    toast.error(e?.messages?.[0] || e?.message || 'Could not load form')
+    closeEntity()
+  } finally {
+    loadingMeta.value = false
   }
-  loadingMeta.value = false
 })
 
 function close() { closeEntity() }

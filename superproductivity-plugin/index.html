@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <style>
+    body { font-family: system-ui, sans-serif; margin: 0; padding: 16px; color: #e6e9f0; background: #12171f; }
+    h3 { margin: 0 0 12px; font-size: 15px; }
+    label { display: block; font-size: 11px; color: #8994a3; margin: 10px 0 3px; }
+    input { width: 100%; box-sizing: border-box; background: #1a212c; border: 1px solid #2a3340;
+      color: #e6e9f0; border-radius: 6px; padding: 7px 9px; font-size: 13px; }
+    .row { display: flex; gap: 8px; margin-top: 14px; flex-wrap: wrap; }
+    button { flex: 1; min-width: 120px; border: none; border-radius: 6px; padding: 8px 10px;
+      font-size: 13px; font-weight: 600; cursor: pointer; }
+    .primary { background: #6d7cff; color: #fff; }
+    .ghost { background: #1a212c; color: #e6e9f0; border: 1px solid #2a3340; }
+    .msg { margin-top: 12px; font-size: 12px; color: #8994a3; min-height: 16px; }
+    .hint { font-size: 11px; color: #5c6675; margin-top: 4px; }
+  </style>
+</head>
+<body>
+  <h3>Pulse Sync</h3>
+  <label>Pulse URL</label>
+  <input id="url" placeholder="http://your-site:8000" />
+  <label>Site host (optional, for WSL/multi-tenant)</label>
+  <input id="host" placeholder="project.local" />
+  <label>API key</label>
+  <input id="key" />
+  <label>API secret</label>
+  <input id="secret" type="password" />
+  <div class="hint">Generate in Pulse → My Settings → API Access → Generate Keys.</div>
+
+  <div class="row">
+    <button class="ghost" onclick="save()">Save</button>
+    <button class="primary" onclick="doImport()">Import my tasks</button>
+    <button class="primary" onclick="doPush()">Push time</button>
+  </div>
+  <div class="msg" id="msg"></div>
+
+  <script>
+    const PULSE_REF = /pulse:(\S+)/;
+    const $ = (id) => document.getElementById(id);
+    const setMsg = (m) => { $('msg').textContent = m; };
+
+    async function getConfig() {
+      try { const raw = await PluginAPI.loadSyncedData(); return raw ? JSON.parse(raw) : {}; }
+      catch (e) { return {}; }
+    }
+    async function save() {
+      const cfg = await getConfig();
+      Object.assign(cfg, {
+        url: $('url').value.trim(), siteHost: $('host').value.trim(),
+        apiKey: $('key').value.trim(), apiSecret: $('secret').value.trim(),
+      });
+      await PluginAPI.persistDataSynced(JSON.stringify(cfg));
+      setMsg('Saved.');
+    }
+    async function pulse(cfg, method, params) {
+      const headers = { 'Authorization': 'token ' + cfg.apiKey + ':' + cfg.apiSecret, 'Content-Type': 'application/json' };
+      if (cfg.siteHost) headers['Host'] = cfg.siteHost;
+      const res = await fetch(cfg.url.replace(/\/+$/, '') + '/api/method/' + method, {
+        method: 'POST', headers, body: JSON.stringify(params || {}),
+      });
+      if (!res.ok) throw new Error('HTTP ' + res.status);
+      return (await res.json()).message;
+    }
+    async function doImport() {
+      const cfg = await getConfig();
+      if (!cfg.url) return setMsg('Save your Pulse settings first.');
+      setMsg('Importing…');
+      try {
+        const tasks = await pulse(cfg, 'pulse.api.time.my_tasks', {});
+        const existing = await PluginAPI.getTasks();
+        let added = 0;
+        for (const t of tasks || []) {
+          const ref = 'pulse:' + t.name;
+          if (existing.some((x) => (x.notes || '').includes(ref))) continue;
+          await PluginAPI.addTask({ title: t.issue_key + ' — ' + t.subject, notes: ref });
+          added++;
+        }
+        setMsg('Imported ' + added + ' new task(s).');
+      } catch (e) { setMsg('Import failed: ' + e.message); }
+    }
+    async function doPush() {
+      const cfg = await getConfig();
+      if (!cfg.url) return setMsg('Save your Pulse settings first.');
+      setMsg('Pushing time…');
+      const synced = cfg._synced || {};
+      const tasks = await PluginAPI.getTasks();
+      let pushed = 0;
+      for (const t of tasks) {
+        const m = (t.notes || '').match(PULSE_REF); if (!m) continue;
+        const spentH = Math.round(((t.timeSpent || 0) / 3600000) * 100) / 100;
+        const delta = Math.round((spentH - (synced[m[1]] || 0)) * 100) / 100;
+        if (delta > 0.01) {
+          try { await pulse(cfg, 'pulse.api.time.log_time', { task: m[1], hours: delta }); synced[m[1]] = spentH; pushed += delta; } catch (e) {}
+        }
+      }
+      cfg._synced = synced;
+      await PluginAPI.persistDataSynced(JSON.stringify(cfg));
+      setMsg('Pushed ' + pushed.toFixed(2) + ' h to Pulse.');
+    }
+    (async () => {
+      const cfg = await getConfig();
+      $('url').value = cfg.url || ''; $('host').value = cfg.siteHost || '';
+      $('key').value = cfg.apiKey || ''; $('secret').value = cfg.apiSecret || '';
+    })();
+  </script>
+</body>
+</html>

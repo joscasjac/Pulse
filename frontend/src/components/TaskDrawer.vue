@@ -55,6 +55,24 @@
             </div>
           </div>
 
+          <!-- Time tracked -->
+          <div class="mt-5">
+            <div class="text-xs text-muted mb-1.5 flex items-center justify-between">
+              <span>Time tracked</span>
+              <span class="mono text-app">{{ timeTotal.toFixed(2) }} h</span>
+            </div>
+            <div v-for="e in timeEntries" :key="e.name" class="flex items-center gap-2 py-0.5 text-xs">
+              <span class="text-faint w-20">{{ e.date }}</span>
+              <span class="mono">{{ Number(e.hours).toFixed(2) }} h</span>
+              <span class="text-muted truncate flex-1">{{ e.description || '' }}</span>
+            </div>
+            <div class="flex gap-2 mt-1.5">
+              <input v-model="newHours" type="number" step="0.25" min="0" placeholder="Hours" class="field w-24" />
+              <input v-model="newHoursNote" placeholder="Note (optional)" class="field flex-1" @keyup.enter="logTime" />
+              <button class="btn" @click="logTime">Log</button>
+            </div>
+          </div>
+
           <!-- Parent -->
           <div v-if="task.parent" class="mt-4 text-xs">
             <span class="text-muted">Parent: </span>
@@ -151,9 +169,27 @@ const newComment = ref('')
 const newSub = ref('')
 const depQ = ref('')
 const depResults = ref([])
+const timeEntries = ref([])
+const newHours = ref('')
+const newHoursNote = ref('')
 
 const doneSubs = computed(() => (task.value?.subtasks || []).filter((s) => s.status === 'Completed').length)
 const subPct = computed(() => task.value?.subtasks?.length ? Math.round((doneSubs.value / task.value.subtasks.length) * 100) : 0)
+const timeTotal = computed(() => timeEntries.value.reduce((s, e) => s + Number(e.hours || 0), 0))
+
+async function loadTime(id) {
+  timeEntries.value = await call('pulse.api.time.get_task_time_detail', { task: id }).catch(() => [])
+}
+async function logTime() {
+  const h = parseFloat(newHours.value)
+  if (!h || h <= 0) return
+  try {
+    await call('pulse.api.time.log_time', { task: props.taskId, hours: h, note: newHoursNote.value || null })
+    newHours.value = ''; newHoursNote.value = ''
+    await loadTime(props.taskId)
+    toast.success(`Logged ${h}h`)
+  } catch (e) { toast.error('Could not log time') }
+}
 
 watch(() => props.taskId, async (id) => {
   task.value = null
@@ -167,6 +203,7 @@ watch(() => props.taskId, async (id) => {
   task.value = t
   assignable.value = users
   issueTypes.value = types
+  loadTime(id)
 })
 
 async function save(field, value) {

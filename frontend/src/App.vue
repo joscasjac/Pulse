@@ -2,20 +2,23 @@
   <div class="flex h-full bg-app text-app text-sm">
     <!-- Sidebar -->
     <aside class="flex flex-col w-[232px] shrink-0 border-r border-app bg-surface">
-      <div class="flex items-center gap-2.5 px-4 h-14 border-b border-soft">
-        <div class="w-[26px] h-[26px] rounded-[7px] bg-accent text-white grid place-items-center font-bold text-[15px]" style="background:var(--accent)">P</div>
-        <span class="font-semibold tracking-tight">Pulse</span>
+      <div class="flex items-center gap-2.5 px-4 h-14 border-b border-app">
+        <div class="w-[28px] h-[28px] grid place-items-center font-black text-[15px] text-white" style="background:var(--accent)">P</div>
+        <div class="flex flex-col leading-none">
+          <span class="text-[15px] tracking-tight" style="font-family:Archivo,Inter,sans-serif;font-weight:800">PULSE<span class="text-accent">®</span></span>
+          <span class="tele text-[8px] text-faint mt-[3px]">PROJECT CONTROL // PM.SYS</span>
+        </div>
       </div>
 
       <div class="px-2.5 pt-3">
         <button @click="openCreate()" class="new-btn w-full flex items-center justify-center gap-2 rounded-md py-2 text-[13px] font-medium text-white">
-          <Plus class="w-4 h-4" /> New task
+          <Plus class="w-4 h-4" /> <span class="tele text-[11px] font-semibold">New Task</span>
         </button>
       </div>
 
       <nav class="flex-1 px-2 py-3 space-y-5 overflow-y-auto">
         <div v-for="group in nav" :key="group.section">
-          <div class="px-2.5 pb-1.5 text-[10px] font-semibold uppercase tracking-[0.09em] text-faint">{{ group.section }}</div>
+          <div class="px-2.5 pb-1.5 tele text-[10px] font-semibold text-faint flex items-center gap-1.5"><span class="text-accent">//</span>{{ group.section }}</div>
           <router-link v-for="item in group.items" :key="item.to" :to="item.to"
             class="nav-item flex items-center gap-2.5 px-2.5 py-[7px] rounded-md text-[13px] hover-app"
             active-class="active">
@@ -25,7 +28,7 @@
         </div>
 
         <div>
-          <div class="px-2.5 pb-1.5 text-[10px] font-semibold uppercase tracking-[0.09em] text-faint">Projects</div>
+          <div class="px-2.5 pb-1.5 tele text-[10px] font-semibold text-faint flex items-center gap-1.5"><span class="text-accent">//</span>Projects</div>
           <router-link v-for="p in projects" :key="p.name" :to="`/board?project=${encodeURIComponent(p.name)}`"
             class="nav-item flex items-center gap-2.5 px-2.5 py-[7px] rounded-md text-[13px] hover-app">
             <span class="w-[18px] h-[18px] grid place-items-center rounded-[5px] mono text-[8.5px] font-bold shrink-0"
@@ -35,10 +38,14 @@
         </div>
       </nav>
 
+      <div class="px-3 py-1.5 border-t border-app flex items-center justify-between tele text-[9px]">
+        <span class="flex items-center gap-1.5 term-green"><span class="w-1.5 h-1.5 inline-block" style="background:var(--term-green)"></span>Online</span>
+        <span class="text-faint">Rev 2.6 / D-01</span>
+      </div>
       <div class="px-3 py-2.5 border-t border-soft flex items-center justify-between">
         <span class="flex items-center gap-2 min-w-0">
           <Avatar :name="user" :size="22" />
-          <span class="text-[12px] text-muted truncate">{{ shortUser }}</span>
+          <span class="text-[12px] text-muted truncate mono">{{ shortUser }}</span>
         </span>
         <button @click="onToggle" class="p-1.5 rounded-md hover-app text-muted" :title="theme === 'dark' ? 'Light mode' : 'Dark mode'">
           <Moon v-if="theme === 'dark'" class="w-[15px] h-[15px]" />
