@@ -57,7 +57,28 @@
             </label>
           </div>
 
-          <label class="fld" v-if="sprints.length">
+          <!-- repeat / recurring -->
+          <div class="row">
+            <label class="fld">
+              <span class="lbl">Repeat</span>
+              <select v-model="form.repeat" class="in">
+                <option :value="false">Does not repeat (one-off)</option>
+                <option :value="true">Repeats on a schedule</option>
+              </select>
+            </label>
+            <label class="fld" v-if="form.repeat">
+              <span class="lbl">Every</span>
+              <div class="flex gap-2">
+                <input v-model.number="form.interval_count" type="number" min="1" class="in" style="width:72px" />
+                <select v-model="form.interval_unit" class="in"><option>Day</option><option>Week</option><option>Month</option></select>
+              </div>
+            </label>
+          </div>
+          <div v-if="form.repeat" class="text-[11px] text-faint -mt-1">
+            A new task lands in <b>To Do</b> {{ cadenceLabel }} — it won't get buried in the backlog. Status above is ignored for recurring tasks.
+          </div>
+
+          <label class="fld" v-if="sprints.length && !form.repeat">
             <span class="lbl">Sprint</span>
             <select v-model="form.pulse_sprint" class="in">
               <option :value="null">— none —</option>
@@ -85,7 +106,7 @@
           <div class="flex gap-2">
             <button class="btn ghost" @click="close">Cancel</button>
             <button class="btn primary" :disabled="!canSubmit || submitting" @click="submit">
-              {{ submitting ? 'Creating…' : 'Create task' }}
+              {{ submitting ? 'Creating…' : (form.repeat ? 'Create recurring' : 'Create task') }}
             </button>
           </div>
         </div>
@@ -115,9 +136,15 @@ const form = reactive({
   project: null, task_type: 'Task', subject: '', description: '',
   priority: 'Medium', state: 'Backlog', pulse_story_points: 0,
   exp_end_date: '', pulse_sprint: null, assignees: [],
+  repeat: false, interval_count: 1, interval_unit: 'Week',
 })
 
 const canSubmit = computed(() => form.project && form.subject.trim())
+const cadenceLabel = computed(() => {
+  const n = form.interval_count || 1
+  const u = (form.interval_unit || 'Week').toLowerCase()
+  return n === 1 ? `every ${u}` : `every ${n} ${u}s`
+})
 
 function toggle(u) {
   const i = form.assignees.indexOf(u)
@@ -153,6 +180,7 @@ watch(() => createState.open, async (open) => {
     task_type: 'Task', subject: '', description: '', priority: 'Medium',
     state: createState.defaults.state || 'Backlog', pulse_story_points: 0,
     exp_end_date: '', pulse_sprint: null, assignees: [],
+    repeat: createState.defaults.repeat || false, interval_count: 1, interval_unit: 'Week',
   })
   await loadSprints()
   nextTick(() => first.value?.focus())
@@ -164,6 +192,20 @@ async function submit() {
   if (!canSubmit.value) return
   submitting.value = true
   try {
+    if (form.repeat) {
+      await call('pulse.api.recurring.create_recurring', {
+        subject: form.subject.trim(), project: form.project,
+        interval_count: form.interval_count || 1, interval_unit: form.interval_unit,
+        priority: form.priority, task_type: form.task_type,
+        story_points: form.pulse_story_points || 0,
+        assign_to: form.assignees[0] || null, description: form.description,
+        generate_now: 1,
+      })
+      toast.success(`Recurring task created (${cadenceLabel.value})`)
+      markCreated()
+      closeCreate()
+      return
+    }
     const res = await call('pulse.api.spa.create_task', {
       project: form.project, subject: form.subject.trim(), state: form.state,
       task_type: form.task_type, priority: form.priority, description: form.description,
@@ -203,12 +245,12 @@ textarea.in { resize: vertical; font-family: inherit; }
 .chips { display: flex; flex-wrap: wrap; gap: 6px; }
 .chip { display: inline-flex; align-items: center; gap: 6px; padding: 4px 9px 4px 4px; border-radius: 999px; border: 1px solid var(--border); background: var(--surface-2); color: var(--muted); font-size: 12px; cursor: pointer; }
 .chip:hover { color: var(--text); }
-.chip.on { border-color: var(--accent); color: var(--text); background: rgba(109, 124, 255, 0.12); }
+.chip.on { border-color: var(--accent); color: var(--text); background: color-mix(in srgb, var(--accent) 14%, transparent); }
 .chip.on :deep(svg:last-child) { color: var(--accent); }
 .foot { display: flex; align-items: center; justify-content: space-between; padding: 13px 16px; border-top: 1px solid var(--border-soft); position: sticky; bottom: 0; background: var(--surface); }
 .btn { font-size: 13px; padding: 7px 14px; border-radius: 7px; }
 .btn.ghost { border: 1px solid var(--border); background: transparent; color: var(--text); }
-.btn.primary { background: var(--accent); color: #fff; }
+.btn.primary { background: var(--accent); color: var(--on-accent); }
 .btn.primary:disabled { opacity: 0.45; }
 .fade-enter-active, .fade-leave-active { transition: opacity 0.16s; }
 .fade-enter-from, .fade-leave-to { opacity: 0; }

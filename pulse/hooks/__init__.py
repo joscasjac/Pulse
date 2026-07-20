@@ -125,6 +125,7 @@ doc_events = {
     },
     "ToDo": {
         "validate": "pulse.hooks.permissions.on_todo_assign",
+        "after_insert": "pulse.api.notify.on_todo_after_insert",
     },
 }
 
@@ -145,6 +146,7 @@ scheduler_events = {
         "pulse.scheduled.overdue.flag_overdue_tasks",
         "pulse.scheduled.sprints.auto_close_sprints",
         "pulse.scheduled.metrics.snapshot_burndown",
+        "pulse.scheduled.recurring.generate_due",
     ],
     "hourly": [
         "pulse.scheduled.project_cache.refresh_project_stats",

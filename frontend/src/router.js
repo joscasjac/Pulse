@@ -8,6 +8,7 @@ const routes = [
   { path: '/board', name: 'Board', component: () => import('@/pages/Board.vue') },
   { path: '/backlog', name: 'Backlog', component: () => import('@/pages/Backlog.vue') },
   { path: '/sprints', name: 'Sprints', component: () => import('@/pages/Sprints.vue') },
+  { path: '/recurring', name: 'Recurring', component: () => import('@/pages/Recurring.vue') },
   { path: '/projects', name: 'Projects', component: () => import('@/pages/Projects.vue') },
   { path: '/audit', name: 'Audit', component: () => import('@/pages/AuditLog.vue') },
   { path: '/m/:mod', name: 'Module', component: () => import('@/pages/Module.vue') },

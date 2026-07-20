@@ -7,7 +7,7 @@
 /* ============================================================================
    PULSE // TACTICAL TELEMETRY INTERFACE
    Archetype: CRT Terminal (dark, primary) · Swiss Industrial Print (light)
-   Accent: Aviation/Hazard Red (#E61919) — the only accent.
+   Accent: Signal Blue (#00AAFF) — the only accent. Dark ink on accent fills.
    ============================================================================ */
 
 /* --- Light: Swiss Industrial Print (matte documentation paper) --- */
@@ -21,7 +21,8 @@
   --muted: #4f4d47;
   --faint: #86847e;
   --hover: #e3e1db;
-  --accent: #e61919;
+  --accent: #00aaff;
+  --on-accent: #04141f;
   --term-green: #1f9e12;
   --shadow: 0 0 0 1px var(--border);
 }
@@ -37,7 +38,8 @@
   --muted: #8a8a8a;
   --faint: #5c5c5c;
   --hover: #1c1c1c;
-  --accent: #e61919;
+  --accent: #00aaff;
+  --on-accent: #04141f;
   --term-green: #4af626;
   --shadow: 0 0 0 1px var(--border);
 }
@@ -110,8 +112,17 @@ body::after {
   .mono { font-family: "JetBrains Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace; }
 }
 
-/* --- Hazard-red selection --- */
-::selection { background: var(--accent); color: #ffffff; }
+/* --- Signal-blue selection (dark ink for contrast) --- */
+::selection { background: var(--accent); color: var(--on-accent); }
+
+/* --- Accent fills always carry dark ink (WCAG contrast on bright blue) --- */
+.new-btn, .seg-on { color: var(--on-accent) !important; }
+
+/* --- Visible focus rings for keyboard nav (a11y) --- */
+:where(a, button, [role="button"], input, select, textarea, [tabindex]):focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
 
 /* --- Square industrial scrollbars (no rounding, red on grab) --- */
 ::-webkit-scrollbar { width: 10px; height: 10px; }

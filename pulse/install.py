@@ -2,8 +2,9 @@ import frappe
 
 
 def after_install():
-    from pulse.erpnext_bridge import ensure_custom_fields
+    from pulse.erpnext_bridge import ensure_custom_fields, ensure_default_company
     ensure_custom_fields()
+    ensure_default_company()
     create_pulse_roles()
     create_issue_types()
     create_workflow_states()
@@ -18,8 +19,9 @@ def after_app_install(app_name):
 
 
 def after_migrate():
-    from pulse.erpnext_bridge import ensure_custom_fields
+    from pulse.erpnext_bridge import ensure_custom_fields, ensure_default_company
     ensure_custom_fields()
+    ensure_default_company()
     create_pulse_roles()
     create_issue_types()
     create_workflow_states()

@@ -114,9 +114,10 @@
 </template>
 
 <script setup>
-import { ref, reactive, computed, nextTick, watch, onMounted } from 'vue'
+import { ref, reactive, computed, nextTick, watch, onMounted, onUnmounted } from 'vue'
 import { useRoute } from 'vue-router'
 import { call } from 'frappe-ui'
+import { io } from 'socket.io-client'
 import TaskDrawer from '@/components/TaskDrawer.vue'
 import Avatar from '@/ui/Avatar.vue'
 import TypeTag from '@/ui/TypeTag.vue'
@@ -217,7 +218,20 @@ async function submitAdd(col) {
 function open(name) { openId.value = name }
 // reload when an issue is created from the global New Issue dialog
 watch(() => createState.created, load)
-onMounted(load)
+
+// --- real-time: refresh the board when anyone changes it (needs socketio) ---
+let socket = null
+let rtTimer = null
+function connectRealtime() {
+  try {
+    socket = io(`${location.protocol}//${location.hostname}:9003`, {
+      withCredentials: true, transports: ['websocket', 'polling'],
+    })
+    socket.on('pulse:board', () => { clearTimeout(rtTimer); rtTimer = setTimeout(load, 400) })
+  } catch (e) { /* realtime is optional — board still works without it */ }
+}
+onMounted(() => { load(); connectRealtime() })
+onUnmounted(() => { try { socket && socket.disconnect() } catch (e) {} clearTimeout(rtTimer) })
 </script>
 
 <style scoped>

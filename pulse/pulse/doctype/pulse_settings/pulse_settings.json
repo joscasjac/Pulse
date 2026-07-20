@@ -16,7 +16,13 @@
   "notifications_section",
   "email_notifications",
   "column_break_2",
-  "desktop_notifications"
+  "desktop_notifications",
+  "ntfy_section",
+  "ntfy_enabled",
+  "ntfy_server_url",
+  "ntfy_topic",
+  "ntfy_column_break",
+  "ntfy_token"
  ],
  "fields": [
   {
@@ -87,6 +93,40 @@
    "fieldname": "desktop_notifications",
    "fieldtype": "Check",
    "label": "Enable Desktop Notifications"
+  },
+  {
+   "fieldname": "ntfy_section",
+   "fieldtype": "Section Break",
+   "label": "Push Notifications (ntfy)"
+  },
+  {
+   "default": "0",
+   "description": "Send push notifications via an ntfy server (assignment + completion).",
+   "fieldname": "ntfy_enabled",
+   "fieldtype": "Check",
+   "label": "Enable ntfy Push"
+  },
+  {
+   "description": "e.g. https://ntfy.sh or your self-hosted https://ntfy.yourdomain.com",
+   "fieldname": "ntfy_server_url",
+   "fieldtype": "Data",
+   "label": "ntfy Server URL"
+  },
+  {
+   "description": "Base topic. Each user is notified on <base>-<username> (e.g. pulse-alice).",
+   "fieldname": "ntfy_topic",
+   "fieldtype": "Data",
+   "label": "Base Topic"
+  },
+  {
+   "fieldname": "ntfy_column_break",
+   "fieldtype": "Column Break"
+  },
+  {
+   "description": "Bearer token for a self-hosted, access-controlled ntfy server (optional).",
+   "fieldname": "ntfy_token",
+   "fieldtype": "Password",
+   "label": "ntfy Auth Token"
   }
  ],
  "index_web_pages_for_search": 0,

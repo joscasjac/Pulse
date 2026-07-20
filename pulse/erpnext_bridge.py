@@ -13,6 +13,10 @@ from frappe.custom.doctype.custom_field.custom_field import create_custom_fields
 # Custom fields — the Pulse extensions on ERPNext Task / Project
 # ---------------------------------------------------------------------------
 
+# The Pulse extensions on ERPNext Task / Project. These carry the agile data that
+# lived on the old standalone Pulse Task/Project doctypes. Fields ERPNext already
+# provides natively (description, parent_task, is_milestone, holiday_list, users,
+# type) are intentionally omitted.
 CUSTOM_FIELDS = {
     "Task": [
         {"fieldname": "issue_key", "label": "Issue Key", "fieldtype": "Data",
@@ -20,16 +24,57 @@ CUSTOM_FIELDS = {
          "insert_after": "subject"},
         {"fieldname": "seq", "label": "Sequence", "fieldtype": "Int",
          "read_only": 1, "hidden": 1, "insert_after": "issue_key"},
+        # Pulse board column. Kept as a plain Select (no Workflow engine) so cards
+        # move freely; without this the board query on `workflow_state` fails.
+        {"fieldname": "workflow_state", "label": "Board State", "fieldtype": "Select",
+         "options": "Backlog\nTo Do\nIn Progress\nIn Review\nDone\nCancelled",
+         "in_standard_filter": 1, "insert_after": "status"},
+        {"fieldname": "pulse_sprint", "label": "Sprint", "fieldtype": "Link",
+         "options": "Pulse Sprint", "insert_after": "workflow_state"},
+        {"fieldname": "pulse_story_points", "label": "Story Points", "fieldtype": "Float",
+         "insert_after": "pulse_sprint"},
+        {"fieldname": "pulse_epic", "label": "Epic", "fieldtype": "Link",
+         "options": "Task", "insert_after": "pulse_story_points"},
+        {"fieldname": "pulse_rank", "label": "Board Rank", "fieldtype": "Int",
+         "insert_after": "pulse_epic"},
+        {"fieldname": "pulse_release", "label": "Release", "fieldtype": "Data",
+         "insert_after": "pulse_rank"},
+        {"fieldname": "pulse_recurring", "label": "Recurring Template", "fieldtype": "Link",
+         "options": "Pulse Recurring Task", "read_only": 1, "insert_after": "pulse_release"},
     ],
     "Project": [
+        {"fieldname": "pulse_project_key", "label": "Project Key", "fieldtype": "Data",
+         "insert_after": "project_name"},
+        {"fieldname": "pulse_enable_scrum", "label": "Enable Scrum", "fieldtype": "Check",
+         "insert_after": "pulse_project_key"},
+        {"fieldname": "pulse_board_type", "label": "Board Type", "fieldtype": "Select",
+         "options": "Scrum\nKanban", "default": "Scrum",
+         "insert_after": "pulse_enable_scrum"},
+        {"fieldname": "pulse_default_sprint_length", "label": "Default Sprint Length (days)",
+         "fieldtype": "Int", "default": "14", "insert_after": "pulse_board_type"},
         {"fieldname": "task_counter", "label": "Task Counter", "fieldtype": "Int",
-         "hidden": 1, "read_only": 1, "default": "0", "insert_after": "pulse_project_key"},
+         "hidden": 1, "read_only": 1, "default": "0",
+         "insert_after": "pulse_default_sprint_length"},
     ],
 }
 
 
 def ensure_custom_fields():
     create_custom_fields(CUSTOM_FIELDS, ignore_validate=True)
+
+
+def ensure_default_company():
+    """ERPNext Project requires a Company. Make sure any existing company is set
+    as the site default so new Pulse projects inherit it automatically.
+
+    We deliberately do NOT create a Company here: a valid ERPNext Company needs
+    warehouse types, fiscal year, etc. that only the ERPNext setup wizard scaffolds.
+    Returns the default company name, or None if ERPNext setup hasn't been done."""
+    company = _default_company()
+    if company and not frappe.db.get_single_value("Global Defaults", "default_company"):
+        frappe.db.set_value("Global Defaults", "Global Defaults", "default_company", company)
+        frappe.db.set_default("company", company)
+    return company
 
 
 # ---------------------------------------------------------------------------

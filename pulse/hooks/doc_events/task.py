@@ -18,6 +18,11 @@ def on_update(doc, method=None):
         _rollup_sprint_points(doc)
     except Exception:
         frappe.log_error(title="Pulse: sprint rollup failed", message=frappe.get_traceback())
+    try:
+        from pulse.api import notify
+        notify.notify_task_completed(doc)
+    except Exception:
+        frappe.log_error(title="Pulse: completion notify failed", message=frappe.get_traceback())
 
 
 # ---------------------------------------------------------------------------
@@ -28,12 +33,22 @@ def assign_issue_key(doc):
     if doc.get("issue_key") or not doc.get("project"):
         return
     key = ensure_project_key(doc.project)
-    # atomic per-project sequence
+    # Atomic per-project sequence. GREATEST(...) with the current max task seq makes
+    # this self-heal: if the counter ever drifts behind existing keys (e.g. tasks were
+    # deleted, which never rolls the counter back), we skip past them instead of
+    # colliding on a duplicate issue_key.
     frappe.db.sql(
-        "UPDATE `tabProject` SET task_counter = COALESCE(task_counter, 0) + 1 WHERE name = %s",
+        """UPDATE `tabProject` p
+           SET p.task_counter = GREATEST(
+               COALESCE(p.task_counter, 0),
+               COALESCE((SELECT MAX(t.seq) FROM `tabTask` t WHERE t.project = p.name), 0)
+           ) + 1
+           WHERE p.name = %s""",
         (doc.project,),
     )
-    seq = frappe.db.get_value("Project", doc.project, "task_counter")
+    seq = frappe.db.sql(
+        "SELECT task_counter FROM `tabProject` WHERE name = %s", (doc.project,)
+    )[0][0]
     doc.seq = seq
     doc.issue_key = f"{key}-{seq}"
 

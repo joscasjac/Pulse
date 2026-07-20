@@ -77,6 +77,16 @@ def _column_of(task):
     return task.get("workflow_state") or STATUS_TO_STATE.get(task.get("status"), "Backlog")
 
 
+def _publish_board(project=None):
+    """Notify open boards to refresh (real-time). Requires the socketio process."""
+    try:
+        from frappe.realtime import get_site_room
+        frappe.publish_realtime("pulse:board", {"project": project},
+                                room=get_site_room(), after_commit=True)
+    except Exception:
+        pass
+
+
 @frappe.whitelist()
 def get_board(project=None, sprint=None):
     """Return board columns with their task cards."""
@@ -152,6 +162,7 @@ def create_task(project, subject, state="Backlog", task_type=None, priority="Med
 
     log("Task Created", "Task", doc.issue_key or doc.name, project, subject[:140])
     frappe.db.commit()
+    _publish_board(project)
     return {
         "name": doc.name, "issue_key": doc.issue_key, "subject": doc.subject,
         "status": doc.status, "workflow_state": doc.workflow_state,
@@ -175,6 +186,7 @@ def update_task_state(task, state):
     log("Status Changed", "Task", doc.issue_key or doc.name, doc.project,
         f"Moved to {state}")
     frappe.db.commit()
+    _publish_board(doc.project)
     return {"name": doc.name, "workflow_state": doc.workflow_state, "status": doc.status}
 
 
@@ -434,6 +446,15 @@ def save_entity(doc):
         d.save()
     else:
         d = frappe.get_doc({k: v for k, v in doc.items() if k != "name"})
+        # ERPNext Project requires a Company; the curated Pulse form doesn't expose
+        # it, so fall back to the site default.
+        if dt == "Project" and d.meta.has_field("company") and not d.get("company"):
+            from pulse.erpnext_bridge import ensure_default_company
+            company = ensure_default_company()
+            if not company:
+                frappe.throw(_("No Company is configured. Complete ERPNext setup "
+                               "(create a Company) before adding projects."))
+            d.company = company
         d.insert()
     frappe.db.commit()
     return {"name": d.name, "doctype": d.doctype}
@@ -473,6 +494,25 @@ def delete_task(task):
     # remove them directly so the link doesn't block deletion.
     frappe.db.delete("Pulse Timesheet Entry", {"task": task})
     frappe.delete_doc("Task", task)
+    frappe.db.commit()
+    _publish_board()
+    return {"ok": True}
+
+
+@frappe.whitelist()
+def list_attachments(task):
+    """Files attached to a task (upload is done via the core /api/method/upload_file)."""
+    name = task if frappe.db.exists("Task", task) else resolve_task(task)
+    return frappe.get_all(
+        "File", filters={"attached_to_doctype": "Task", "attached_to_name": name},
+        fields=["name", "file_name", "file_url", "is_private", "file_size"],
+        order_by="creation desc",
+    )
+
+
+@frappe.whitelist()
+def delete_attachment(name):
+    frappe.delete_doc("File", name)
     frappe.db.commit()
     return {"ok": True}
 

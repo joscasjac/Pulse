@@ -73,6 +73,24 @@
             </div>
           </div>
 
+          <!-- Attachments -->
+          <div class="mt-5">
+            <div class="text-xs text-muted mb-1.5 flex items-center justify-between">
+              <span>Attachments</span>
+              <label class="btn cursor-pointer">
+                <input type="file" class="hidden" @change="uploadFile" :disabled="uploading" />
+                {{ uploading ? 'Uploading…' : 'Attach' }}
+              </label>
+            </div>
+            <div v-for="f in attachments" :key="f.name" class="flex items-center gap-2 py-0.5 text-sm">
+              <Paperclip class="w-3.5 h-3.5 text-faint shrink-0" />
+              <a :href="f.file_url" target="_blank" class="truncate flex-1 hover:underline" style="color:var(--accent)">{{ f.file_name }}</a>
+              <span class="text-[10px] text-faint">{{ fmtSize(f.file_size) }}</span>
+              <button class="text-faint hover:text-red-500" @click="removeAttachment(f.name)"><X class="w-3 h-3" /></button>
+            </div>
+            <div v-if="!attachments.length" class="text-xs text-faint py-1">No files attached.</div>
+          </div>
+
           <!-- Parent -->
           <div v-if="task.parent" class="mt-4 text-xs">
             <span class="text-muted">Parent: </span>
@@ -157,6 +175,7 @@ import { call } from 'frappe-ui'
 import { toast } from '@/ui/toast'
 import StatusPill from '@/ui/StatusPill.vue'
 import X from '~icons/lucide/x'
+import Paperclip from '~icons/lucide/paperclip'
 
 const props = defineProps({ taskId: { type: String, default: null } })
 const emit = defineEmits(['close', 'changed', 'open'])
@@ -172,6 +191,8 @@ const depResults = ref([])
 const timeEntries = ref([])
 const newHours = ref('')
 const newHoursNote = ref('')
+const attachments = ref([])
+const uploading = ref(false)
 
 const doneSubs = computed(() => (task.value?.subtasks || []).filter((s) => s.status === 'Completed').length)
 const subPct = computed(() => task.value?.subtasks?.length ? Math.round((doneSubs.value / task.value.subtasks.length) * 100) : 0)
@@ -191,6 +212,42 @@ async function logTime() {
   } catch (e) { toast.error('Could not log time') }
 }
 
+async function loadAttachments(id) {
+  attachments.value = await call('pulse.api.spa.list_attachments', { task: id }).catch(() => [])
+}
+async function uploadFile(e) {
+  const file = e.target.files?.[0]
+  e.target.value = ''
+  if (!file) return
+  uploading.value = true
+  try {
+    const fd = new FormData()
+    fd.append('file', file, file.name)
+    fd.append('doctype', 'Task')
+    fd.append('docname', props.taskId)
+    fd.append('is_private', '1')
+    const res = await fetch('/api/method/upload_file', {
+      method: 'POST',
+      headers: { 'X-Frappe-CSRF-Token': window.csrf_token || '' },
+      body: fd,
+    })
+    if (!res.ok) throw new Error('HTTP ' + res.status)
+    await loadAttachments(props.taskId)
+    toast.success('File attached')
+  } catch (err) { toast.error('Upload failed') }
+  finally { uploading.value = false }
+}
+async function removeAttachment(name) {
+  await call('pulse.api.spa.delete_attachment', { name }).catch(() => {})
+  await loadAttachments(props.taskId)
+}
+function fmtSize(b) {
+  if (!b) return ''
+  if (b < 1024) return b + ' B'
+  if (b < 1048576) return (b / 1024).toFixed(0) + ' KB'
+  return (b / 1048576).toFixed(1) + ' MB'
+}
+
 watch(() => props.taskId, async (id) => {
   task.value = null
   if (!id) return
@@ -204,6 +261,7 @@ watch(() => props.taskId, async (id) => {
   assignable.value = users
   issueTypes.value = types
   loadTime(id)
+  loadAttachments(id)
 })
 
 async function save(field, value) {

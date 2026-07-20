@@ -3,7 +3,7 @@
     <!-- Sidebar -->
     <aside class="flex flex-col w-[232px] shrink-0 border-r border-app bg-surface">
       <div class="flex items-center gap-2.5 px-4 h-14 border-b border-app">
-        <div class="w-[28px] h-[28px] grid place-items-center font-black text-[15px] text-white" style="background:var(--accent)">P</div>
+        <div class="w-[28px] h-[28px] grid place-items-center font-black text-[15px]" style="background:var(--accent);color:var(--on-accent)">P</div>
         <div class="flex flex-col leading-none">
           <span class="text-[15px] tracking-tight" style="font-family:Archivo,Inter,sans-serif;font-weight:800">PULSE<span class="text-accent">®</span></span>
           <span class="tele text-[8px] text-faint mt-[3px]">PROJECT CONTROL // PM.SYS</span>
@@ -81,6 +81,7 @@ import SquareCheckBig from '~icons/lucide/square-check-big'
 import SquareKanban from '~icons/lucide/square-kanban'
 import List from '~icons/lucide/list'
 import CalendarDays from '~icons/lucide/calendar-days'
+import Repeat from '~icons/lucide/repeat'
 import Folder from '~icons/lucide/folder'
 import Layers from '~icons/lucide/layers'
 import Target from '~icons/lucide/target'
@@ -106,6 +107,7 @@ const nav = [
     { to: '/board', label: 'Board', icon: SquareKanban },
     { to: '/backlog', label: 'Backlog', icon: List },
     { to: '/sprints', label: 'Sprints', icon: CalendarDays },
+    { to: '/recurring', label: 'Recurring', icon: Repeat },
     { to: '/projects', label: 'Projects', icon: Folder },
   ] },
   { section: 'Plan', items: [

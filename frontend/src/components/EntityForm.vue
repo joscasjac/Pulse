@@ -157,7 +157,7 @@ textarea.in { resize: vertical; font-family: inherit; }
 .foot { display: flex; align-items: center; justify-content: space-between; padding: 13px 16px; border-top: 1px solid var(--border-soft); position: sticky; bottom: 0; background: var(--surface); }
 .btn { font-size: 13px; padding: 7px 14px; border-radius: 7px; }
 .btn.ghost { border: 1px solid var(--border); background: transparent; color: var(--text); }
-.btn.primary { background: var(--accent); color: #fff; }
+.btn.primary { background: var(--accent); color: var(--on-accent); }
 .btn.primary:disabled { opacity: 0.45; }
 .btn.danger { border: 1px solid rgba(242,114,109,0.4); color: #f2726d; background: transparent; }
 .fade-enter-active, .fade-leave-active { transition: opacity 0.16s; }
