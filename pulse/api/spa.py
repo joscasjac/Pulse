@@ -78,11 +78,15 @@ def _column_of(task):
 
 
 def _publish_board(project=None):
-    """Notify open boards to refresh (real-time). Requires the socketio process."""
+    """Notify open boards to refresh (real-time). Requires the socketio process.
+
+    Emitted immediately (not after_commit): every caller already commits before
+    publishing, so deferring would wait on a commit that never arrives.
+    """
     try:
         from frappe.realtime import get_site_room
         frappe.publish_realtime("pulse:board", {"project": project},
-                                room=get_site_room(), after_commit=True)
+                                room=get_site_room(), after_commit=False)
     except Exception:
         pass
 

@@ -221,13 +221,41 @@ watch(() => createState.created, load)
 // --- real-time: refresh the board when anyone changes it (needs socketio) ---
 let socket = null
 let rtTimer = null
+
+// Frappe's socketio is per-site: the socket.io NAMESPACE must equal the site
+// name, and the backend publishes events under the real site name (e.g.
+// "pulse.local"). When the app is reached by IP the server would otherwise
+// derive the site from the Origin hostname and we'd sit in the wrong namespace,
+// so we state the site explicitly via X-Frappe-Site-Name (honoured first by
+// the socketio auth middleware). That header only rides on the polling
+// handshake, hence polling-first — socket.io upgrades to websocket after.
+function realtimeSite() {
+  return window.sitename || location.hostname
+}
+function realtimeUrl() {
+  const port = window.socketio_port || 9000
+  return `${location.protocol}//${location.hostname}:${port}/${realtimeSite()}`
+}
+
 function connectRealtime() {
+  const url = realtimeUrl()
   try {
-    socket = io(`${location.protocol}//${location.hostname}:9003`, {
-      withCredentials: true, transports: ['websocket', 'polling'],
+    socket = io(url, {
+      withCredentials: true,
+      transports: ['polling', 'websocket'],
+      transportOptions: { polling: { extraHeaders: { 'X-Frappe-Site-Name': realtimeSite() } } },
+    })
+    socket.on('connect', () => { window.__pulseRealtime = `connected ${url}` })
+    socket.on('connect_error', (e) => {
+      // realtime is optional — surface why instead of failing silently
+      window.__pulseRealtime = `error: ${e?.message || e}`
+      console.warn('[pulse] realtime unavailable:', e?.message || e, url)
     })
     socket.on('pulse:board', () => { clearTimeout(rtTimer); rtTimer = setTimeout(load, 400) })
-  } catch (e) { /* realtime is optional — board still works without it */ }
+  } catch (e) {
+    window.__pulseRealtime = `threw: ${e}`
+    console.warn('[pulse] realtime init failed', e)
+  }
 }
 onMounted(() => { load(); connectRealtime() })
 onUnmounted(() => { try { socket && socket.disconnect() } catch (e) {} clearTimeout(rtTimer) })
