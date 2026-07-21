@@ -12,6 +12,8 @@ const routes = [
   { path: '/sprints', name: 'Sprints', component: () => import('@/pages/Sprints.vue') },
   { path: '/recurring', name: 'Recurring', component: () => import('@/pages/Recurring.vue') },
   { path: '/projects', name: 'Projects', component: () => import('@/pages/Projects.vue') },
+  { path: '/epics', name: 'Epics', component: () => import('@/pages/Epics.vue') },
+  { path: '/releases', name: 'Releases', component: () => import('@/pages/Releases.vue') },
   { path: '/audit', name: 'Audit', component: () => import('@/pages/AuditLog.vue') },
   { path: '/m/:mod', name: 'Module', component: () => import('@/pages/Module.vue') },
 ]

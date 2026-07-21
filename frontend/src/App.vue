@@ -93,6 +93,8 @@ import CalendarDays from '~icons/lucide/calendar-days'
 import Repeat from '~icons/lucide/repeat'
 import Folder from '~icons/lucide/folder'
 import Layers from '~icons/lucide/layers'
+import Zap from '~icons/lucide/zap'
+import Tag from '~icons/lucide/tag'
 import Target from '~icons/lucide/target'
 import ShieldAlert from '~icons/lucide/shield-alert'
 import Users from '~icons/lucide/users'
@@ -123,6 +125,8 @@ const nav = [
     { to: '/projects', label: 'Projects', icon: Folder },
   ] },
   { section: 'Plan', items: [
+    { to: '/epics', label: 'Epics', icon: Zap },
+    { to: '/releases', label: 'Releases', icon: Tag },
     { to: '/m/portfolio', label: 'Portfolio', icon: Layers },
     { to: '/m/okrs', label: 'OKRs', icon: Target },
     { to: '/m/risks', label: 'Risks', icon: ShieldAlert },

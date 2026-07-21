@@ -31,6 +31,27 @@
             </label>
           </div>
 
+          <!-- Epic + Release -->
+          <div class="grid grid-cols-2 gap-3 mt-3 text-sm">
+            <label class="block">
+              <span class="text-xs text-muted">Epic</span>
+              <select v-model="task.pulse_epic" @change="save('pulse_epic', task.pulse_epic)" class="field">
+                <option :value="null">— none —</option>
+                <option v-for="e in epics" :key="e.name" :value="e.name">
+                  {{ e.issue_key ? e.issue_key + ' · ' : '' }}{{ e.subject }}
+                </option>
+              </select>
+            </label>
+            <label class="block">
+              <span class="text-xs text-muted">Release</span>
+              <input v-model="task.pulse_release" list="pulse-releases" placeholder="e.g. v1.2"
+                @change="save('pulse_release', task.pulse_release)" class="field" />
+              <datalist id="pulse-releases">
+                <option v-for="r in releases" :key="r.release_name" :value="r.release_name" />
+              </datalist>
+            </label>
+          </div>
+
           <div class="mt-4">
             <span class="text-xs text-muted">Description</span>
             <textarea v-model="task.description" @change="save('description', task.description)" rows="3" class="field" />
@@ -186,6 +207,8 @@ const depResults = ref([])
 const timeEntries = ref([])
 const attachments = ref([])
 const uploading = ref(false)
+const epics = ref([])
+const releases = ref([])
 
 const doneSubs = computed(() => (task.value?.subtasks || []).filter((s) => s.status === 'Completed').length)
 const subPct = computed(() => task.value?.subtasks?.length ? Math.round((doneSubs.value / task.value.subtasks.length) * 100) : 0)
@@ -244,6 +267,9 @@ watch(() => props.taskId, async (id) => {
   issueTypes.value = types
   loadTime(id)
   loadAttachments(id)
+  // epic choices are project-scoped; releases are free-text suggestions
+  epics.value = await call('pulse.api.planning.epic_options', { project: t.project }).catch(() => [])
+  releases.value = await call('pulse.api.planning.list_releases').catch(() => [])
 })
 
 async function save(field, value) {

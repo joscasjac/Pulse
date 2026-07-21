@@ -150,6 +150,17 @@ def create_task(project, subject, state="Backlog", task_type=None, priority="Med
     })
     doc.insert()
 
+    # Belt and braces: the issue key normally comes from the before_insert hook,
+    # but a stale hook cache silently leaves tasks unkeyed. Issue keys are the
+    # task's identity, so guarantee one here rather than trust hook registration.
+    if not doc.get("issue_key"):
+        from pulse.hooks.doc_events.task import assign_issue_key
+        assign_issue_key(doc)
+        if doc.get("issue_key"):
+            frappe.db.set_value("Task", doc.name,
+                                {"issue_key": doc.issue_key, "seq": doc.seq},
+                                update_modified=False)
+
     from frappe.desk.form.assign_to import add as assign_add
     from pulse.api.audit import log
 
@@ -230,6 +241,7 @@ def get_task(task):
         "status": doc.status, "workflow_state": doc.workflow_state,
         "priority": doc.priority, "task_type": doc.get("type"), "project": doc.project,
         "pulse_sprint": doc.pulse_sprint,
+        "pulse_epic": doc.get("pulse_epic"), "pulse_release": doc.get("pulse_release"),
         "exp_start_date": doc.exp_start_date, "exp_end_date": doc.exp_end_date,
         "assignees": _assignees(doc._assign),
         "checklist": checklist, "comments": comments,
@@ -299,7 +311,7 @@ def update_task(task, **fields):
     allowed = {
         "subject", "description", "priority", "task_type",
         "exp_start_date", "exp_end_date", "project",
-        "pulse_sprint",
+        "pulse_sprint", "pulse_epic", "pulse_release",
     }
     doc = frappe.get_doc("Task", task)
     for k, v in fields.items():
