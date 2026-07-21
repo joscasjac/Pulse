@@ -101,7 +101,7 @@ def get_board(project=None, sprint=None):
         filters=filters,
         fields=[
             "name", "issue_key", "subject", "status", "workflow_state", "priority",
-            "type as task_type", "project", "pulse_sprint", "pulse_story_points",
+            "type as task_type", "project", "pulse_sprint",
             "exp_end_date", "_assign",
         ],
         order_by="pulse_rank asc, modified desc",
@@ -121,7 +121,7 @@ def get_board(project=None, sprint=None):
 @frappe.whitelist()
 def create_task(project, subject, state="Backlog", task_type=None, priority="Medium",
                 description=None, assignees=None, pulse_sprint=None,
-                exp_end_date=None, pulse_story_points=None, parent_task=None):
+                exp_end_date=None, parent_task=None):
     """Create a task and (optionally) assign people to it in one step.
 
     Assignment goes through the standard mechanism, so the hierarchical-assignment
@@ -140,7 +140,6 @@ def create_task(project, subject, state="Backlog", task_type=None, priority="Med
         "priority": priority or "Medium",
         "pulse_sprint": pulse_sprint,
         "exp_end_date": exp_end_date or None,
-        "pulse_story_points": pulse_story_points or 0,
         "parent_task": parent_task,
         "workflow_state": state,
         "status": STATE_TO_STATUS.get(state, "Open"),
@@ -167,7 +166,7 @@ def create_task(project, subject, state="Backlog", task_type=None, priority="Med
         "name": doc.name, "issue_key": doc.issue_key, "subject": doc.subject,
         "status": doc.status, "workflow_state": doc.workflow_state,
         "priority": doc.priority, "task_type": doc.get("type"),
-        "project": doc.project, "pulse_story_points": doc.pulse_story_points,
+        "project": doc.project,
         "assignees": assigned, "blocked": blocked,
     }
 
@@ -226,7 +225,7 @@ def get_task(task):
         "subject": doc.subject, "description": doc.description,
         "status": doc.status, "workflow_state": doc.workflow_state,
         "priority": doc.priority, "task_type": doc.get("type"), "project": doc.project,
-        "pulse_sprint": doc.pulse_sprint, "pulse_story_points": doc.pulse_story_points,
+        "pulse_sprint": doc.pulse_sprint,
         "exp_start_date": doc.exp_start_date, "exp_end_date": doc.exp_end_date,
         "assignees": _assignees(doc._assign),
         "checklist": checklist, "comments": comments,
@@ -295,7 +294,7 @@ def update_task(task, **fields):
     """Patch simple task fields from the detail drawer."""
     allowed = {
         "subject", "description", "priority", "task_type",
-        "pulse_story_points", "exp_start_date", "exp_end_date", "project",
+        "exp_start_date", "exp_end_date", "project",
         "pulse_sprint",
     }
     doc = frappe.get_doc("Task", task)
@@ -497,6 +496,24 @@ def delete_task(task):
     frappe.db.commit()
     _publish_board()
     return {"ok": True}
+
+
+@frappe.whitelist()
+def my_todos():
+    """Personal to-do list: open tasks assigned to the current user, all projects.
+
+    Ordered so dated work comes first (soonest due), undated last.
+    """
+    me = frappe.session.user
+    return frappe.get_all(
+        "Task",
+        filters=[["_assign", "like", f"%{me}%"],
+                 ["status", "not in", ["Completed", "Cancelled"]]],
+        fields=["name", "issue_key", "subject", "status", "workflow_state", "priority",
+                "type as task_type", "project", "exp_end_date"],
+        order_by="exp_end_date asc, modified desc",
+        limit_page_length=0,
+    )
 
 
 @frappe.whitelist()

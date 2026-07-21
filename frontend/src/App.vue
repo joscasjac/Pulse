@@ -19,12 +19,19 @@
       <nav class="flex-1 px-2 py-3 space-y-5 overflow-y-auto">
         <div v-for="group in nav" :key="group.section">
           <div class="px-2.5 pb-1.5 tele text-[10px] font-semibold text-faint flex items-center gap-1.5"><span class="text-accent">//</span>{{ group.section }}</div>
-          <router-link v-for="item in group.items" :key="item.to" :to="item.to"
-            class="nav-item flex items-center gap-2.5 px-2.5 py-[7px] rounded-md text-[13px] hover-app"
-            active-class="active">
-            <component :is="item.icon" class="w-[15px] h-[15px] shrink-0" />
-            <span>{{ item.label }}</span>
-          </router-link>
+          <template v-for="item in group.items" :key="item.to || item.href">
+            <a v-if="item.href" :href="item.href" target="_blank"
+              class="nav-item flex items-center gap-2.5 px-2.5 py-[7px] rounded-md text-[13px] hover-app">
+              <component :is="item.icon" class="w-[15px] h-[15px] shrink-0" />
+              <span>{{ item.label }}</span>
+            </a>
+            <router-link v-else :to="item.to"
+              class="nav-item flex items-center gap-2.5 px-2.5 py-[7px] rounded-md text-[13px] hover-app"
+              active-class="active">
+              <component :is="item.icon" class="w-[15px] h-[15px] shrink-0" />
+              <span>{{ item.label }}</span>
+            </router-link>
+          </template>
         </div>
 
         <div>
@@ -78,6 +85,7 @@ import House from '~icons/lucide/house'
 import LayoutDashboard from '~icons/lucide/layout-dashboard'
 import ChartColumn from '~icons/lucide/chart-column'
 import SquareCheckBig from '~icons/lucide/square-check-big'
+import ListChecks from '~icons/lucide/list-checks'
 import SquareKanban from '~icons/lucide/square-kanban'
 import List from '~icons/lucide/list'
 import CalendarDays from '~icons/lucide/calendar-days'
@@ -91,6 +99,7 @@ import RefreshCw from '~icons/lucide/refresh-cw'
 import FileText from '~icons/lucide/file-text'
 import Clock from '~icons/lucide/clock'
 import ScrollText from '~icons/lucide/scroll-text'
+import Settings from '~icons/lucide/settings'
 import Sun from '~icons/lucide/sun'
 import Moon from '~icons/lucide/moon'
 
@@ -103,6 +112,7 @@ const nav = [
     { to: '/', label: 'Home', icon: House },
     { to: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
     { to: '/analytics', label: 'Analytics', icon: ChartColumn },
+    { to: '/todo', label: 'To Do', icon: ListChecks },
     { to: '/my-work', label: 'My Work', icon: SquareCheckBig },
     { to: '/board', label: 'Board', icon: SquareKanban },
     { to: '/backlog', label: 'Backlog', icon: List },
@@ -123,6 +133,7 @@ const nav = [
   ] },
   { section: 'System', items: [
     { to: '/audit', label: 'Audit Logs', icon: ScrollText },
+    { href: '/app/pulse-settings', label: 'Settings', icon: Settings },
   ] },
 ]
 

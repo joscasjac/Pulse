@@ -82,6 +82,6 @@ def my_tasks(status=None, limit=100):
     return frappe.get_all(
         "Task", filters=filters,
         fields=["name", "issue_key", "subject", "status", "workflow_state",
-                "project", "priority", "pulse_story_points"],
+                "project", "priority"],
         order_by="modified desc", limit_page_length=int(limit),
     )

@@ -15,7 +15,7 @@ def on_update(doc, method=None):
     except Exception:
         frappe.log_error(title="Pulse: status log failed", message=frappe.get_traceback())
     try:
-        _rollup_sprint_points(doc)
+        _rollup_sprint_tasks(doc)
     except Exception:
         frappe.log_error(title="Pulse: sprint rollup failed", message=frappe.get_traceback())
     try:
@@ -111,26 +111,25 @@ def _log_status_change(doc):
     log.to_state = to_state
     log.changed_by = frappe.session.user
     log.changed_on = now_datetime()
-    log.points_at_change = doc.get("pulse_story_points") or 0
     log.flags.ignore_links = True
     log.insert(ignore_permissions=True)
 
 
-def _rollup_sprint_points(doc):
+def _rollup_sprint_tasks(doc):
     sprint = doc.get("pulse_sprint")
     if not sprint or not frappe.db.exists("Pulse Sprint", sprint):
         return
     before = doc.get_doc_before_save()
     old_sprint = before.get("pulse_sprint") if before else None
-    old_points = before.get("pulse_story_points") if before else None
-    new_points = doc.get("pulse_story_points")
-    if sprint == old_sprint and old_points == new_points:
+    old_status = before.get("status") if before else None
+    # only recount when sprint membership or completion state actually changed
+    if sprint == old_sprint and old_status == doc.get("status"):
         return
     try:
-        frappe.get_doc("Pulse Sprint", sprint).recalculate_points()
+        frappe.get_doc("Pulse Sprint", sprint).recalculate_tasks()
     except Exception:
         frappe.log_error(
-            title="Pulse: sprint point rollup failed",
+            title="Pulse: sprint task rollup failed",
             message=frappe.get_traceback(),
         )
     if (
@@ -139,7 +138,7 @@ def _rollup_sprint_points(doc):
         and frappe.db.exists("Pulse Sprint", old_sprint)
     ):
         try:
-            frappe.get_doc("Pulse Sprint", old_sprint).recalculate_points()
+            frappe.get_doc("Pulse Sprint", old_sprint).recalculate_tasks()
         except Exception:
             frappe.log_error(
                 title="Pulse: sprint point rollup failed",

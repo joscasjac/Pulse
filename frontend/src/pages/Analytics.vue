@@ -29,9 +29,9 @@
           <Donut :data="a.type_distribution" center-label="tasks" />
         </div>
         <div class="card">
-          <div class="card-title">Story Points - Est x Completed</div>
+          <div class="card-title">Task Completion</div>
           <Gauge :value="a.storypoints.pct" label="completed" />
-          <div class="text-[10px] text-muted text-center">{{ a.storypoints.completed }} / {{ a.storypoints.estimated }} pts</div>
+          <div class="text-[10px] text-muted text-center">{{ a.storypoints.completed }} / {{ a.storypoints.estimated }} tasks</div>
         </div>
       </div>
 

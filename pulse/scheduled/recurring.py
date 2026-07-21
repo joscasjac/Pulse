@@ -53,7 +53,6 @@ def _spawn_task(doc):
         "type": doc.task_type,
         "priority": doc.priority or "Medium",
         "description": doc.description,
-        "pulse_story_points": doc.story_points or 0,
         "pulse_recurring": doc.name,
         "workflow_state": "To Do",
         "status": "Open",

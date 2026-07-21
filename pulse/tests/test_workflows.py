@@ -46,7 +46,7 @@ class TestPulseWorkflows(IntegrationTestCase):
     def test_update_and_move_state(self):
         from pulse.api import spa
         t = spa.create_task(project=self.project, subject="move", state="Backlog")
-        spa.update_task(t["name"], priority="High", pulse_story_points=5)
+        spa.update_task(t["name"], priority="High")
         spa.update_task_state(t["name"], "In Progress")
         v = frappe.db.get_value("Task", t["name"], ["priority", "workflow_state"], as_dict=True)
         self.assertEqual(v.priority, "High")

@@ -38,27 +38,23 @@ class PulseSprint(Document):
 			)
 
 	def on_update(self):
-		self.recalculate_points()
+		self.recalculate_tasks()
 
-	def recalculate_points(self):
-		"""Roll story points up from the Tasks linked to this sprint.
+	def recalculate_tasks(self):
+		"""Roll task counts up from the Tasks linked to this sprint.
 
-		Actual effort/costing lives on Timesheet + Project; this only tracks
-		the agile 'points' plan/progress on top of core Task data.
+		Progress is measured in task count (Pulse does not use story points).
+		Actual effort lives on the timesheets.
 		"""
 		rows = frappe.get_all(
-			"Pulse Task",
+			"Task",
 			filters={"pulse_sprint": self.name},
-			fields=["pulse_story_points", "status"],
+			fields=["status"],
 		)
-		planned = sum(flt(r.pulse_story_points) for r in rows)
-		completed = sum(
-			flt(r.pulse_story_points)
-			for r in rows
-			if r.status == "Completed"
-		)
+		planned = len(rows)
+		completed = sum(1 for r in rows if r.status == "Completed")
 		# Use db_set to avoid recursive save loops.
-		self.db_set("planned_points", planned, update_modified=False)
-		self.db_set("completed_points", completed, update_modified=False)
+		self.db_set("planned_tasks", planned, update_modified=False)
+		self.db_set("completed_tasks", completed, update_modified=False)
 		if self.status == "Completed":
 			self.db_set("velocity", completed, update_modified=False)

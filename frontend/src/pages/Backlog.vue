@@ -10,7 +10,6 @@
       >
         <span class="px-1.5 py-0.5 rounded bg-surface-2 text-xs">{{ t.task_type || 'Task' }}</span>
         <span class="flex-1 text-sm text-app">{{ t.subject }}</span>
-        <span class="text-xs text-muted">{{ t.pulse_story_points || 0 }} pts</span>
         <span class="text-xs text-muted">{{ t.status }}</span>
       </div>
       <div v-if="!tasks.length" class="py-10 text-center text-muted">Backlog is empty.</div>
@@ -28,7 +27,7 @@ const tasks = ref([])
 onMounted(async () => {
   tasks.value = await call('frappe.client.get_list', {
     doctype: 'Task',
-    fields: ['name', 'subject', 'type as task_type', 'status', 'pulse_story_points'],
+    fields: ['name', 'subject', 'type as task_type', 'status'],
     order_by: 'pulse_rank asc, modified desc',
     limit_page_length: 0,
   }).catch(() => [])

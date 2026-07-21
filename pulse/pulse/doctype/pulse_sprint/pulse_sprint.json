@@ -18,8 +18,8 @@
   "goal_section",
   "goal",
   "metrics_section",
-  "planned_points",
-  "completed_points",
+  "planned_tasks",
+  "completed_tasks",
   "column_break_2",
   "velocity"
  ],
@@ -95,17 +95,17 @@
    "label": "Metrics"
   },
   {
-   "description": "Sum of story points committed to this sprint.",
-   "fieldname": "planned_points",
-   "fieldtype": "Float",
-   "label": "Planned Points",
+   "description": "Number of tasks committed to this sprint.",
+   "fieldname": "planned_tasks",
+   "fieldtype": "Int",
+   "label": "Planned Tasks",
    "read_only": 1
   },
   {
-   "description": "Sum of story points of tasks completed in this sprint.",
-   "fieldname": "completed_points",
-   "fieldtype": "Float",
-   "label": "Completed Points",
+   "description": "Number of tasks completed in this sprint.",
+   "fieldname": "completed_tasks",
+   "fieldtype": "Int",
+   "label": "Completed Tasks",
    "read_only": 1
   },
   {
@@ -113,10 +113,10 @@
    "fieldtype": "Column Break"
   },
   {
-   "description": "Completed points captured when the sprint is closed.",
+   "description": "Tasks completed, captured when the sprint is closed.",
    "fieldname": "velocity",
-   "fieldtype": "Float",
-   "label": "Velocity",
+   "fieldtype": "Int",
+   "label": "Velocity (tasks)",
    "read_only": 1
   }
  ],

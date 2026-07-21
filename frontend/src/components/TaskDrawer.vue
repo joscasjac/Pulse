@@ -26,10 +26,6 @@
               </select>
             </label>
             <label class="block">
-              <span class="text-xs text-muted">Story Points</span>
-              <input type="number" v-model="task.pulse_story_points" @change="save('pulse_story_points', task.pulse_story_points)" class="field" />
-            </label>
-            <label class="block">
               <span class="text-xs text-muted">Due date</span>
               <input type="date" v-model="task.exp_end_date" @change="save('exp_end_date', task.exp_end_date)" class="field" />
             </label>
@@ -66,10 +62,9 @@
               <span class="mono">{{ Number(e.hours).toFixed(2) }} h</span>
               <span class="text-muted truncate flex-1">{{ e.description || '' }}</span>
             </div>
-            <div class="flex gap-2 mt-1.5">
-              <input v-model="newHours" type="number" step="0.25" min="0" placeholder="Hours" class="field w-24" />
-              <input v-model="newHoursNote" placeholder="Note (optional)" class="field flex-1" @keyup.enter="logTime" />
-              <button class="btn" @click="logTime">Log</button>
+            <div v-if="!timeEntries.length" class="text-[11px] text-faint py-1">No time tracked yet.</div>
+            <div class="text-[11px] text-faint mt-1.5 leading-snug">
+              Hours are measured in <b>Super Productivity</b> and synced automatically — they can't be typed in by hand.
             </div>
           </div>
 
@@ -189,8 +184,6 @@ const newSub = ref('')
 const depQ = ref('')
 const depResults = ref([])
 const timeEntries = ref([])
-const newHours = ref('')
-const newHoursNote = ref('')
 const attachments = ref([])
 const uploading = ref(false)
 
@@ -201,17 +194,6 @@ const timeTotal = computed(() => timeEntries.value.reduce((s, e) => s + Number(e
 async function loadTime(id) {
   timeEntries.value = await call('pulse.api.time.get_task_time_detail', { task: id }).catch(() => [])
 }
-async function logTime() {
-  const h = parseFloat(newHours.value)
-  if (!h || h <= 0) return
-  try {
-    await call('pulse.api.time.log_time', { task: props.taskId, hours: h, note: newHoursNote.value || null })
-    newHours.value = ''; newHoursNote.value = ''
-    await loadTime(props.taskId)
-    toast.success(`Logged ${h}h`)
-  } catch (e) { toast.error('Could not log time') }
-}
-
 async function loadAttachments(id) {
   attachments.value = await call('pulse.api.spa.list_attachments', { task: id }).catch(() => [])
 }

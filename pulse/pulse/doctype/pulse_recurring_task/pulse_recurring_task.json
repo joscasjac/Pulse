@@ -14,7 +14,6 @@
   "column_break_1",
   "priority",
   "assign_to",
-  "story_points",
   "schedule_section",
   "interval_count",
   "interval_unit",
@@ -27,24 +26,111 @@
   "description"
  ],
  "fields": [
-  {"fieldname": "details_section", "fieldtype": "Section Break", "label": "Task Template"},
-  {"fieldname": "subject", "fieldtype": "Data", "in_list_view": 1, "label": "Subject", "reqd": 1},
-  {"fieldname": "project", "fieldtype": "Link", "in_list_view": 1, "in_standard_filter": 1, "label": "Project", "options": "Project", "reqd": 1},
-  {"fieldname": "task_type", "fieldtype": "Link", "label": "Type", "options": "Task Type"},
-  {"fieldname": "column_break_1", "fieldtype": "Column Break"},
-  {"default": "Medium", "fieldname": "priority", "fieldtype": "Select", "label": "Priority", "options": "Low\nMedium\nHigh\nUrgent"},
-  {"fieldname": "assign_to", "fieldtype": "Link", "label": "Assign To", "options": "User"},
-  {"fieldname": "story_points", "fieldtype": "Float", "label": "Story Points"},
-  {"fieldname": "schedule_section", "fieldtype": "Section Break", "label": "Recurrence"},
-  {"default": "1", "description": "Repeat every N units.", "fieldname": "interval_count", "fieldtype": "Int", "label": "Every", "reqd": 1},
-  {"default": "Week", "fieldname": "interval_unit", "fieldtype": "Select", "label": "Unit", "options": "Day\nWeek\nMonth", "reqd": 1},
-  {"fieldname": "start_date", "fieldtype": "Date", "label": "Start Date", "reqd": 1},
-  {"fieldname": "column_break_2", "fieldtype": "Column Break"},
-  {"description": "Next date a task will be generated.", "fieldname": "next_run", "fieldtype": "Date", "in_list_view": 1, "label": "Next Run"},
-  {"fieldname": "last_generated", "fieldtype": "Date", "label": "Last Generated", "read_only": 1},
-  {"default": "1", "fieldname": "is_active", "fieldtype": "Check", "in_list_view": 1, "label": "Active"},
-  {"fieldname": "desc_section", "fieldtype": "Section Break", "label": "Description"},
-  {"fieldname": "description", "fieldtype": "Small Text", "label": "Description"}
+  {
+   "fieldname": "details_section",
+   "fieldtype": "Section Break",
+   "label": "Task Template"
+  },
+  {
+   "fieldname": "subject",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Subject",
+   "reqd": 1
+  },
+  {
+   "fieldname": "project",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Project",
+   "options": "Project",
+   "reqd": 1
+  },
+  {
+   "fieldname": "task_type",
+   "fieldtype": "Link",
+   "label": "Type",
+   "options": "Task Type"
+  },
+  {
+   "fieldname": "column_break_1",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "Medium",
+   "fieldname": "priority",
+   "fieldtype": "Select",
+   "label": "Priority",
+   "options": "Low\nMedium\nHigh\nUrgent"
+  },
+  {
+   "fieldname": "assign_to",
+   "fieldtype": "Link",
+   "label": "Assign To",
+   "options": "User"
+  },
+  {
+   "fieldname": "schedule_section",
+   "fieldtype": "Section Break",
+   "label": "Recurrence"
+  },
+  {
+   "default": "1",
+   "description": "Repeat every N units.",
+   "fieldname": "interval_count",
+   "fieldtype": "Int",
+   "label": "Every",
+   "reqd": 1
+  },
+  {
+   "default": "Week",
+   "fieldname": "interval_unit",
+   "fieldtype": "Select",
+   "label": "Unit",
+   "options": "Day\nWeek\nMonth",
+   "reqd": 1
+  },
+  {
+   "fieldname": "start_date",
+   "fieldtype": "Date",
+   "label": "Start Date",
+   "reqd": 1
+  },
+  {
+   "fieldname": "column_break_2",
+   "fieldtype": "Column Break"
+  },
+  {
+   "description": "Next date a task will be generated.",
+   "fieldname": "next_run",
+   "fieldtype": "Date",
+   "in_list_view": 1,
+   "label": "Next Run"
+  },
+  {
+   "fieldname": "last_generated",
+   "fieldtype": "Date",
+   "label": "Last Generated",
+   "read_only": 1
+  },
+  {
+   "default": "1",
+   "fieldname": "is_active",
+   "fieldtype": "Check",
+   "in_list_view": 1,
+   "label": "Active"
+  },
+  {
+   "fieldname": "desc_section",
+   "fieldtype": "Section Break",
+   "label": "Description"
+  },
+  {
+   "fieldname": "description",
+   "fieldtype": "Small Text",
+   "label": "Description"
+  }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
@@ -55,12 +141,62 @@
  "naming_rule": "Expression",
  "owner": "Administrator",
  "permissions": [
-  {"create": 1, "delete": 1, "email": 1, "export": 1, "print": 1, "read": 1, "report": 1, "role": "System Manager", "share": 1, "write": 1},
-  {"create": 1, "delete": 1, "email": 1, "export": 1, "print": 1, "read": 1, "report": 1, "role": "Pulse Admin", "share": 1, "write": 1},
-  {"create": 1, "delete": 1, "email": 1, "export": 1, "print": 1, "read": 1, "report": 1, "role": "Pulse Manager", "share": 1, "write": 1},
-  {"create": 1, "delete": 0, "email": 1, "export": 1, "print": 1, "read": 1, "report": 1, "role": "Pulse Team Lead", "share": 1, "write": 1},
-  {"read": 1, "role": "Pulse Senior Developer"},
-  {"read": 1, "role": "Pulse Junior Developer"}
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Pulse Admin",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Pulse Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "delete": 0,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Pulse Team Lead",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "read": 1,
+   "role": "Pulse Senior Developer"
+  },
+  {
+   "read": 1,
+   "role": "Pulse Junior Developer"
+  }
  ],
  "sort_field": "modified",
  "sort_order": "DESC",

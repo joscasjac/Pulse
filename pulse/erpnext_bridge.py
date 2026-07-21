@@ -31,10 +31,8 @@ CUSTOM_FIELDS = {
          "in_standard_filter": 1, "insert_after": "status"},
         {"fieldname": "pulse_sprint", "label": "Sprint", "fieldtype": "Link",
          "options": "Pulse Sprint", "insert_after": "workflow_state"},
-        {"fieldname": "pulse_story_points", "label": "Story Points", "fieldtype": "Float",
-         "insert_after": "pulse_sprint"},
         {"fieldname": "pulse_epic", "label": "Epic", "fieldtype": "Link",
-         "options": "Task", "insert_after": "pulse_story_points"},
+         "options": "Task", "insert_after": "pulse_sprint"},
         {"fieldname": "pulse_rank", "label": "Board Rank", "fieldtype": "Int",
          "insert_after": "pulse_epic"},
         {"fieldname": "pulse_release", "label": "Release", "fieldtype": "Data",
@@ -180,7 +178,7 @@ def _migrate_tasks(project_map):
         if p.get("task_type") and frappe.db.exists("Task Type", p.get("task_type")):
             doc.type = p.get("task_type")
         # Pulse extension fields (workflow_state set post-insert to bypass workflow engine)
-        for f in ("issue_key", "seq", "pulse_story_points", "pulse_sprint",
+        for f in ("issue_key", "seq", "pulse_sprint",
                   "pulse_rank", "pulse_release"):
             if doc.meta.has_field(f) and p.get(f) is not None:
                 doc.set(f, p.get(f))

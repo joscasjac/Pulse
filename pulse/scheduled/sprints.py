@@ -8,7 +8,7 @@ def auto_close_sprints():
 	"""Complete any Active sprint whose end_date has passed.
 
 	Saving through the document API runs validate/on_update, which captures
-	velocity (completed_points at close).
+	velocity (completed task count at close).
 	"""
 	due = frappe.get_all(
 		"Pulse Sprint",

@@ -76,7 +76,6 @@
             <div class="text-[13px] leading-snug text-app">{{ t.subject }}</div>
             <div class="flex items-center gap-2.5 mt-2.5">
               <PriorityDot :value="t.priority" />
-              <span v-if="t.pulse_story_points" class="mono text-[10px] text-faint">{{ t.pulse_story_points }} pts</span>
               <div class="ml-auto flex -space-x-1.5">
                 <Avatar v-for="a in t.assignees" :key="a" :name="a" :size="20" />
               </div>

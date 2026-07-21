@@ -246,14 +246,12 @@ def get_dashboard_series():
         for k, v in sorted(workload.items(), key=lambda x: -x[1])[:8]
     ]
 
-    # velocity = completed points per completed sprint
+    # velocity = number of tasks completed per sprint
     velocity = []
     for s in frappe.db.get_all("Pulse Sprint", fields=["name", "sprint_name"],
                                order_by="start_date asc"):
-        pts = frappe.db.sql(
-            """SELECT COALESCE(SUM(pulse_story_points),0) FROM `tabTask`
-               WHERE pulse_sprint=%s AND status='Completed'""", (s.name,))[0][0]
-        velocity.append({"label": s.sprint_name or s.name, "value": float(pts or 0)})
+        done = frappe.db.count("Task", {"pulse_sprint": s.name, "status": "Completed"})
+        velocity.append({"label": s.sprint_name or s.name, "value": float(done or 0)})
 
     return {
         "tasks_by_state": group_count("workflow_state"),

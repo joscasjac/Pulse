@@ -154,8 +154,7 @@ def list_users() -> list:
 def create_task(project: str, subject: str, description: str = None,
                 task_type: str = "Task", priority: str = "Medium",
                 state: str = "Backlog", assignees: list = None,
-                sprint: str = None, due_date: str = None,
-                story_points: float = None) -> dict:
+                sprint: str = None, due_date: str = None) -> dict:
     """Create a task and optionally assign people to it.
 
     `assignees` is a list of user emails. Assignment obeys the hierarchy rule
@@ -165,13 +164,13 @@ def create_task(project: str, subject: str, description: str = None,
     return call("pulse.api.spa.create_task", project=project, subject=subject,
                 description=description, task_type=task_type, priority=priority,
                 state=state, assignees=json.dumps(assignees or []),
-                pulse_sprint=sprint, exp_end_date=due_date, pulse_story_points=story_points)
+                pulse_sprint=sprint, exp_end_date=due_date)
 
 
 @mcp.tool()
 def update_task(ref: str, subject: str = None, description: str = None,
                 priority: str = None, task_type: str = None,
-                due_date: str = None, story_points: float = None,
+                due_date: str = None,
                 sprint: str = None) -> dict:
     """Edit fields on an existing task (by key). Only provided fields change."""
     fields = {}
@@ -180,7 +179,6 @@ def update_task(ref: str, subject: str = None, description: str = None,
     if priority is not None: fields["priority"] = priority
     if task_type is not None: fields["task_type"] = task_type
     if due_date is not None: fields["exp_end_date"] = due_date
-    if story_points is not None: fields["pulse_story_points"] = story_points
     if sprint is not None: fields["pulse_sprint"] = sprint
     return call("pulse.api.spa.update_task", task=_resolve(ref), **fields)
 

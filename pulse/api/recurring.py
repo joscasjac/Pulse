@@ -24,7 +24,7 @@ def list_recurring(project=None):
     rows = frappe.get_all(
         "Pulse Recurring Task", filters=filters,
         fields=["name", "subject", "project", "task_type", "priority", "assign_to",
-                "story_points", "interval_count", "interval_unit", "start_date",
+                "interval_count", "interval_unit", "start_date",
                 "next_run", "last_generated", "is_active", "description"],
         order_by="is_active desc, next_run asc",
     )
@@ -35,7 +35,7 @@ def list_recurring(project=None):
 
 @frappe.whitelist()
 def create_recurring(subject, project, interval_count=1, interval_unit="Week",
-                     priority="Medium", task_type=None, story_points=0,
+                     priority="Medium", task_type=None,
                      assign_to=None, description=None, start_date=None,
                      generate_now=1):
     """Create a recurring template. By default generates the first task at once."""
@@ -47,7 +47,6 @@ def create_recurring(subject, project, interval_count=1, interval_unit="Week",
         "interval_unit": interval_unit or "Week",
         "priority": priority or "Medium",
         "task_type": task_type,
-        "story_points": float(story_points or 0),
         "assign_to": assign_to,
         "description": description,
         "start_date": start_date or today(),
@@ -68,7 +67,7 @@ def create_recurring(subject, project, interval_count=1, interval_unit="Week",
 def update_recurring(name, **fields):
     doc = frappe.get_doc("Pulse Recurring Task", name)
     allowed = {"subject", "project", "task_type", "priority", "assign_to",
-               "story_points", "interval_count", "interval_unit", "start_date",
+               "interval_count", "interval_unit", "start_date",
                "next_run", "description"}
     for k, v in fields.items():
         if k in allowed:

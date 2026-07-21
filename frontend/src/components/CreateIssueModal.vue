@@ -48,10 +48,6 @@
               <select v-model="form.state" class="in"><option>Backlog</option><option>To Do</option><option>In Progress</option><option>In Review</option><option>Done</option></select>
             </label>
             <label class="fld">
-              <span class="lbl">Points</span>
-              <input v-model="form.pulse_story_points" type="number" min="0" class="in" />
-            </label>
-            <label class="fld">
               <span class="lbl">Due date</span>
               <input v-model="form.exp_end_date" type="date" class="in" />
             </label>
@@ -134,7 +130,7 @@ const first = ref(null)
 
 const form = reactive({
   project: null, task_type: 'Task', subject: '', description: '',
-  priority: 'Medium', state: 'Backlog', pulse_story_points: 0,
+  priority: 'Medium', state: 'Backlog',
   exp_end_date: '', pulse_sprint: null, assignees: [],
   repeat: false, interval_count: 1, interval_unit: 'Week',
 })
@@ -178,7 +174,7 @@ watch(() => createState.open, async (open) => {
   Object.assign(form, {
     project: createState.defaults.project || projects.value[0]?.name || null,
     task_type: 'Task', subject: '', description: '', priority: 'Medium',
-    state: createState.defaults.state || 'Backlog', pulse_story_points: 0,
+    state: createState.defaults.state || 'Backlog',
     exp_end_date: '', pulse_sprint: null, assignees: [],
     repeat: createState.defaults.repeat || false, interval_count: 1, interval_unit: 'Week',
   })
@@ -197,7 +193,6 @@ async function submit() {
         subject: form.subject.trim(), project: form.project,
         interval_count: form.interval_count || 1, interval_unit: form.interval_unit,
         priority: form.priority, task_type: form.task_type,
-        story_points: form.pulse_story_points || 0,
         assign_to: form.assignees[0] || null, description: form.description,
         generate_now: 1,
       })
@@ -210,7 +205,6 @@ async function submit() {
       project: form.project, subject: form.subject.trim(), state: form.state,
       task_type: form.task_type, priority: form.priority, description: form.description,
       assignees: JSON.stringify(form.assignees), pulse_sprint: form.pulse_sprint,
-      exp_end_date: form.exp_end_date || null, pulse_story_points: form.pulse_story_points || 0,
     })
     if (res.blocked && res.blocked.length) {
       toast.error(`${res.issue_key} created, but ${res.blocked.length} assignment(s) blocked by hierarchy`)

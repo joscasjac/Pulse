@@ -27,7 +27,7 @@
           <td class="py-2 text-muted font-mono text-xs">{{ fmt(e.timestamp) }}</td>
           <td class="py-2">
             <span class="inline-flex items-center gap-1.5">
-              <span class="w-5 h-5 rounded-full bg-blue-500 text-white text-[9px] grid place-items-center">{{ initials(e.user) }}</span>
+              <span class="w-5 h-5 text-[9px] grid place-items-center font-bold" style="background:var(--accent);color:var(--on-accent)">{{ initials(e.user) }}</span>
               {{ (e.user || '').split('@')[0] }}
             </span>
           </td>
@@ -53,11 +53,13 @@ const project = ref(null)
 function initials(e) { return (e || '?').replace(/@.*/, '').slice(0, 2).toUpperCase() }
 function fmt(ts) { return ts ? ts.replace('T', ' ').slice(0, 19) : '' }
 function actionClass(act) {
-  if (/status/i.test(act)) return 'bg-amber-500/15 text-amber-400'
-  if (/assign/i.test(act)) return 'bg-blue-500/15 text-blue-400'
-  if (/comment/i.test(act)) return 'bg-green-500/15 text-green-400'
-  if (/creat/i.test(act)) return 'bg-purple-500/15 text-purple-400'
-  return 'bg-gray-500/15 text-gray-400'
+  // readable in BOTH themes: dark ink on light, bright ink on dark
+  const base = 'border font-medium'
+  if (/status/i.test(act)) return `${base} bg-amber-500/15 border-amber-500/40 text-amber-800 dark:text-amber-300`
+  if (/assign/i.test(act)) return `${base} bg-sky-500/15 border-sky-500/40 text-sky-800 dark:text-sky-300`
+  if (/comment/i.test(act)) return `${base} bg-emerald-500/15 border-emerald-500/40 text-emerald-800 dark:text-emerald-300`
+  if (/creat/i.test(act)) return `${base} bg-violet-500/15 border-violet-500/40 text-violet-800 dark:text-violet-300`
+  return `${base} bg-gray-500/15 border-gray-500/40 text-gray-800 dark:text-gray-300`
 }
 
 async function load() {

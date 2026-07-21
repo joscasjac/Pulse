@@ -1,11 +1,22 @@
+"""Sprint burnup (scope vs completed) in TASK COUNT.
+
+Pulse does not use story points, so each task counts as 1.
+"""
+
 import frappe
 from frappe import _
-from frappe.utils import getdate, add_days
+from frappe.utils import add_days, getdate
 
 
 def execute(filters=None):
     filters = filters or {}
     sprint_name = filters.get("sprint")
+    if not sprint_name:
+        project = filters.get("project")
+        if project:
+            sprint_name = frappe.db.get_value(
+                "Pulse Sprint", {"project": project, "status": "Active"}, "name"
+            )
     if not sprint_name:
         return [], []
 
@@ -19,40 +30,32 @@ def execute(filters=None):
     log_rows = frappe.get_all(
         "Pulse Task Status Log",
         filters={"sprint": sprint_name},
-        fields=["task", "to_state", "changed_on", "points_at_change"],
+        fields=["task", "to_state", "changed_on"],
         order_by="changed_on asc",
     )
 
     tasks_in_sprint = {r.task for r in log_rows}
-    current_sprints = dict(
-        frappe.db.sql(
-            "SELECT name, pulse_sprint FROM `tabPulse Task` WHERE name IN (%s)"
-            % ",".join(frappe.db.escape(t) for t in tasks_in_sprint)
+    current_sprints = {}
+    if tasks_in_sprint:
+        current_sprints = dict(
+            frappe.db.sql(
+                "SELECT name, pulse_sprint FROM `tabTask` WHERE name IN (%s)"
+                % ",".join(frappe.db.escape(t) for t in tasks_in_sprint)
+            )
         )
-    )
 
-    task_removed_on = {}
     task_first_entry = {}
+    task_last_change = {}
     for r in log_rows:
         rd = getdate(r.changed_on)
-        if r.task not in task_first_entry:
-            task_first_entry[r.task] = rd
-        task_removed_on[r.task] = rd
+        task_first_entry.setdefault(r.task, rd)
+        task_last_change[r.task] = rd
 
     columns = [
         {"label": _("Date"), "fieldname": "date", "fieldtype": "Date", "width": 120},
-        {
-            "label": _("Scope"),
-            "fieldname": "scope",
-            "fieldtype": "Float",
-            "width": 140,
-        },
-        {
-            "label": _("Completed"),
-            "fieldname": "completed",
-            "fieldtype": "Float",
-            "width": 140,
-        },
+        {"label": _("Scope (tasks)"), "fieldname": "scope", "fieldtype": "Int", "width": 140},
+        {"label": _("Completed (tasks)"), "fieldname": "completed", "fieldtype": "Int",
+         "width": 150},
     ]
 
     data = []
@@ -63,41 +66,25 @@ def execute(filters=None):
         if day > to_date:
             day = to_date
 
+        # latest known state of each task as of `day`
         task_latest = {}
         for r in log_rows:
-            rd = getdate(r.changed_on)
-            if rd <= day:
-                task_latest[r.task] = {
-                    "points": flt(r.points_at_change),
-                    "state": r.to_state,
-                }
+            if getdate(r.changed_on) <= day:
+                task_latest[r.task] = r.to_state
 
         scope = 0
         completed = 0
-        for task, info in task_latest.items():
-            current_sprint = current_sprints.get(task)
-            removed = (
-                current_sprint != sprint_name
-                and task_removed_on.get(task, to_date) <= day
-            )
+        for task, state in task_latest.items():
+            removed = (current_sprints.get(task) != sprint_name
+                       and task_last_change.get(task, to_date) <= day)
             entered = task_first_entry.get(task, from_date) <= day
             if entered and not removed:
-                scope += info["points"]
-                if info["state"] == "Done":
-                    completed += info["points"]
+                scope += 1
+                if state == "Done":
+                    completed += 1
 
-        data.append(
-            {
-                "date": day,
-                "scope": round(scope, 1),
-                "completed": round(completed, 1),
-            }
-        )
+        data.append({"date": day, "scope": scope, "completed": completed})
         if day >= to_date:
             break
 
     return columns, data
-
-
-def flt(v):
-    return float(v or 0)

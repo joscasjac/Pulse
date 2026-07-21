@@ -37,13 +37,9 @@ def get_analytics(project=None):
     blocked = count("workflow_state = 'In Review'")
     flagged = count("priority IN ('High','Critical','Urgent') AND status NOT IN ('Completed','Cancelled')")
 
-    # story point completion
-    est = frappe.db.sql(
-        f"SELECT COALESCE(SUM(pulse_story_points),0) FROM `tabTask` WHERE 1=1{cond}", args
-    )[0][0] or 0
-    done_pts = frappe.db.sql(
-        f"SELECT COALESCE(SUM(pulse_story_points),0) FROM `tabTask` WHERE status='Completed'{cond}", args
-    )[0][0] or 0
+    # completion measured in task count (Pulse does not use story points)
+    est = count("1=1")
+    done_pts = completed
 
     # workload per assignee
     workload = {}
