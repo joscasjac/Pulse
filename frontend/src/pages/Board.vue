@@ -4,7 +4,7 @@
     <div class="px-6 pt-5 pb-3 border-b border-soft">
       <div class="flex items-center justify-between gap-3">
         <div class="flex items-baseline gap-2.5">
-          <h1 class="text-lg font-semibold tracking-tight">Board</h1>
+          <h1 class="text-2xl font-bold">Board</h1>
           <span class="text-xs text-faint tnum">{{ visibleCount }} of {{ board.total }}</span>
         </div>
         <div class="flex items-center gap-2">
@@ -16,7 +16,7 @@
             <option :value="null">All projects</option>
             <option v-for="p in projects" :key="p.name" :value="p.name">{{ p.project_name || p.name }}</option>
           </select>
-          <button @click="openCreate({ project })" class="new-btn flex items-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-medium text-white">
+          <button @click="openCreate({ project })" class="btn-primary">
             <Plus class="w-3.5 h-3.5" /> New task
           </button>
         </div>
@@ -40,7 +40,7 @@
       <div v-for="n in 5" :key="n" class="w-[264px] shrink-0">
         <Skeleton width="120px" height="14px" />
         <div class="mt-3 space-y-2">
-          <div v-for="m in 3" :key="m" class="rounded-lg border border-app bg-surface p-3">
+          <div v-for="m in 3" :key="m" class="card-surface p-3">
             <Skeleton width="46px" height="10px" /><div class="mt-2"><Skeleton width="90%" height="12px" /></div>
             <div class="mt-3"><Skeleton width="60%" height="10px" /></div>
           </div>
@@ -68,7 +68,7 @@
           </div>
 
           <div v-for="t in col.tasks" :key="t.name" draggable="true" @dragstart="dragTask = t" @click="open(t.name)"
-            class="card group rounded-lg border border-app bg-surface p-3 cursor-pointer">
+            class="card group card-surface p-3 cursor-pointer">
             <div class="flex items-center gap-2 mb-1.5">
               <span class="mono text-[10.5px] text-faint">{{ t.issue_key }}</span>
               <TypeTag :value="t.task_type" class="ml-auto" />
@@ -262,7 +262,7 @@ onUnmounted(() => { try { socket && socket.disconnect() } catch (e) {} clearTime
 </script>
 
 <style scoped>
-.ctl { background: var(--surface); border: 1px solid var(--border); color: var(--text); font-size: 12px; border-radius: 7px; padding: 6px 9px; outline: none; }
+.ctl { background: var(--surface); border: 1px solid var(--border); color: var(--text); font-size: 12px; border-radius: 9px; padding: 7px 10px; outline: none; }
 .ctl:focus { border-color: var(--accent); }
 .seg, .seg-on { padding: 6px 10px; display: grid; place-items: center; }
 .seg { color: var(--muted); background: var(--surface); }

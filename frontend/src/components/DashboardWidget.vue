@@ -2,14 +2,14 @@
   <div class="mt-1 h-[calc(100%-1.25rem)]">
     <!-- KPI number card -->
     <div v-if="widget.widget_type === 'Number Card'" class="flex flex-col justify-center h-full">
-      <div class="text-3xl font-bold" :style="{ color: widget.color || '#111827' }">{{ metricValue }}</div>
+      <div class="text-3xl font-bold" :style="{ color: widget.color || 'var(--text)' }">{{ metricValue }}</div>
       <div class="text-xs text-muted mt-1">{{ widget.metric }}</div>
     </div>
 
     <!-- List-style widgets -->
     <ul v-else-if="listLike" class="text-sm space-y-1 overflow-auto h-full pr-1">
       <li v-for="(item, n) in listItems" :key="n" class="flex items-center gap-2 text-muted">
-        <span class="w-1.5 h-1.5 rounded-full bg-blue-500 shrink-0" />
+        <span class="w-1.5 h-1.5 rounded-full shrink-0" style="background:var(--accent)" />
         <span class="truncate">{{ item }}</span>
       </li>
       <li v-if="!listItems.length" class="text-muted text-xs">No items</li>
@@ -20,7 +20,7 @@
       <g v-for="(b, i) in bars" :key="i">
         <rect
           :x="i * (barW + gap) + gap" :y="vh - 16 - b.h" :width="barW" :height="b.h"
-          rx="2" :fill="widget.color || '#3b82f6'" opacity="0.85"
+          rx="2" :fill="widget.color || 'var(--accent)'" opacity="0.85"
         />
         <text :x="i * (barW + gap) + gap + barW / 2" :y="vh - 4" font-size="7"
               text-anchor="middle" fill="#9ca3af">{{ b.short }}</text>

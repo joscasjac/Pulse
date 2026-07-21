@@ -1,6 +1,6 @@
 <template>
   <div class="p-6">
-    <h1 class="text-lg font-semibold tracking-tight mb-4">My Work</h1>
+    <h1 class="text-2xl font-bold mb-4">My Work</h1>
 
     <div v-if="loading" class="space-y-2">
       <div v-for="n in 6" :key="n" class="flex items-center gap-4 py-2 border-b border-soft">
@@ -9,29 +9,31 @@
       </div>
     </div>
 
-    <table v-else class="w-full text-sm border-collapse">
-      <thead>
-        <tr class="text-left text-faint border-b border-app text-[11px] uppercase tracking-wide">
-          <th class="py-2 font-medium w-16">Key</th>
-          <th class="py-2 font-medium">Issue</th>
-          <th class="py-2 font-medium w-24">Type</th>
-          <th class="py-2 font-medium w-28">Priority</th>
-          <th class="py-2 font-medium w-32">Status</th>
-          <th class="py-2 font-medium">Project</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr v-for="t in tasks" :key="t.name" class="border-b border-soft hover-app cursor-pointer" @click="openId = t.name">
-          <td class="py-2.5 mono text-[11px] text-faint">{{ t.issue_key }}</td>
-          <td class="py-2.5 font-medium text-app">{{ t.subject }}</td>
-          <td class="py-2.5"><TypeTag :value="t.task_type" /></td>
-          <td class="py-2.5"><PriorityDot :value="t.priority" show-label /></td>
-          <td class="py-2.5"><StatusPill :value="t.status" /></td>
-          <td class="py-2.5 text-muted">{{ t.project || '-' }}</td>
-        </tr>
-        <tr v-if="!tasks.length"><td colspan="6" class="py-16 text-center text-faint">No tasks assigned to you yet.</td></tr>
-      </tbody>
-    </table>
+    <div v-else class="card-surface overflow-x-auto">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th class="w-16">Key</th>
+            <th>Issue</th>
+            <th class="w-24">Type</th>
+            <th class="w-28">Priority</th>
+            <th class="w-32">Status</th>
+            <th>Project</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="t in tasks" :key="t.name" class="cursor-pointer" @click="openId = t.name">
+            <td class="mono text-[11px] text-faint">{{ t.issue_key }}</td>
+            <td class="font-medium text-app">{{ t.subject }}</td>
+            <td><TypeTag :value="t.task_type" /></td>
+            <td><PriorityDot :value="t.priority" show-label /></td>
+            <td><StatusPill :value="t.status" /></td>
+            <td class="text-muted">{{ t.project || '-' }}</td>
+          </tr>
+          <tr v-if="!tasks.length"><td colspan="6" class="py-16 text-center text-faint">No tasks assigned to you yet.</td></tr>
+        </tbody>
+      </table>
+    </div>
     <TaskDrawer :task-id="openId" @close="openId = null" @changed="reload" @open="openId = $event" />
   </div>
 </template>

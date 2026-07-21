@@ -1,19 +1,19 @@
 <template>
   <div class="p-6">
     <div class="flex items-center justify-between mb-4">
-      <h1 class="text-lg font-semibold tracking-tight">Projects</h1>
-      <button @click="openEntity('Project')" class="new-btn flex items-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-medium text-white">
+      <h1 class="text-2xl font-bold">Projects</h1>
+      <button @click="openEntity('Project')" class="btn-primary">
         <Plus class="w-3.5 h-3.5" /> New project
       </button>
     </div>
 
     <div v-if="loading" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-      <div v-for="n in 6" :key="n" class="rounded-xl border border-app bg-surface p-4"><Skeleton width="50%" height="14px" /><div class="mt-3"><Skeleton width="90%" height="11px" /></div></div>
+      <div v-for="n in 6" :key="n" class="card-surface p-4"><Skeleton width="50%" height="14px" /><div class="mt-3"><Skeleton width="90%" height="11px" /></div></div>
     </div>
 
     <div v-else class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
       <div v-for="p in projects" :key="p.name" @click="openEntity('Project', p.name)"
-        class="rounded-xl border border-app bg-surface p-4 hover:border-accent cursor-pointer transition-colors">
+        class="card-surface p-4 hover:border-accent cursor-pointer transition-colors">
         <div class="flex items-center justify-between gap-2">
           <div class="flex items-center gap-2 min-w-0">
             <span class="mono text-[9px] font-bold px-1.5 py-1 rounded" :style="{ background: 'var(--surface-2)', color: 'var(--accent)' }">{{ (p.pulse_project_key || '·').slice(0,3) }}</span>

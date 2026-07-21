@@ -1,6 +1,6 @@
 <template>
   <div class="p-6">
-    <h1 class="text-xl font-semibold mb-4">Backlog</h1>
+    <h1 class="text-2xl font-bold mb-4">Backlog</h1>
     <div v-if="loading" class="text-muted py-20 text-center">Loading...</div>
     <div v-else class="space-y-1">
       <div

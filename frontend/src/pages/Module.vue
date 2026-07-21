@@ -1,28 +1,29 @@
 <template>
   <div class="p-6">
     <div class="flex items-center justify-between mb-4">
-      <h1 class="text-lg font-semibold tracking-tight">{{ cfg?.title || 'Module' }}</h1>
-      <button v-if="cfg" @click="openEntity(cfg.doctype)" class="new-btn flex items-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-medium text-white">
+      <h1 class="text-2xl font-bold">{{ cfg?.title || 'Module' }}</h1>
+      <button v-if="cfg" @click="openEntity(cfg.doctype)" class="btn-primary">
         <Plus class="w-3.5 h-3.5" /> New {{ singular }}
       </button>
     </div>
     <div v-if="loading" class="space-y-2">
       <div v-for="n in 6" :key="n" class="flex gap-4 py-2 border-b border-soft"><Skeleton width="30%" height="13px" /><Skeleton width="16%" height="13px" /><div class="ml-auto"><Skeleton width="80px" height="13px" /></div></div>
     </div>
-    <table v-else class="w-full text-sm border-collapse">
+    <div v-else class="card-surface overflow-x-auto">
+    <table class="data-table">
       <thead>
-        <tr class="text-left text-faint border-b border-app text-[11px] uppercase tracking-wide">
-          <th v-for="c in cfg.columns" :key="c.key" class="py-2 font-medium">{{ c.label }}</th>
+        <tr>
+          <th v-for="c in cfg.columns" :key="c.key">{{ c.label }}</th>
         </tr>
       </thead>
       <tbody>
-        <tr v-for="row in rows" :key="row.name" class="border-b border-soft hover-app cursor-pointer" @click="openEntity(cfg.doctype, row.name)">
-          <td v-for="c in cfg.columns" :key="c.key" class="py-2.5"
+        <tr v-for="row in rows" :key="row.name" class="cursor-pointer" @click="openEntity(cfg.doctype, row.name)">
+          <td v-for="c in cfg.columns" :key="c.key"
               :class="c.primary ? 'font-medium text-app' : 'text-muted'">
             <template v-if="c.type === 'percent'">
               <div class="flex items-center gap-2">
                 <div class="w-20 h-1.5 rounded-full bg-surface-2">
-                  <div class="h-full rounded-full bg-blue-500" :style="{ width: (row[c.key] || 0) + '%' }" />
+                  <div class="h-full rounded-full" :style="{ width: (row[c.key] || 0) + '%', background: 'var(--accent)' }" />
                 </div>
                 <span class="text-xs">{{ Math.round(row[c.key] || 0) }}%</span>
               </div>
@@ -32,7 +33,7 @@
               <span v-else class="text-muted">-</span>
             </template>
             <template v-else-if="c.type === 'check'">
-              <span :class="row[c.key] ? 'text-green-600' : 'text-muted'">{{ row[c.key] ? 'Yes' : 'No' }}</span>
+              <span :class="row[c.key] ? 'term-green' : 'text-muted'">{{ row[c.key] ? 'Yes' : 'No' }}</span>
             </template>
             <template v-else>{{ row[c.key] ?? '-' }}</template>
           </td>
@@ -40,6 +41,7 @@
         <tr v-if="!rows.length"><td :colspan="cfg.columns.length" class="py-16 text-center text-faint">No records yet. Create your first {{ singular.toLowerCase() }}.</td></tr>
       </tbody>
     </table>
+    </div>
   </div>
 </template>
 

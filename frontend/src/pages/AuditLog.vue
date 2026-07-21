@@ -2,7 +2,7 @@
   <div class="p-6">
     <div class="flex items-center justify-between mb-4">
       <div>
-        <h1 class="text-xl font-semibold">Audit Logs</h1>
+        <h1 class="text-2xl font-bold">Audit Logs</h1>
         <p class="text-sm text-muted">Timestamped monitor log of activity across Pulse.</p>
       </div>
       <select v-model="project" @change="load" class="text-xs bg-surface border border-app rounded-md px-2 py-1.5">
@@ -12,32 +12,34 @@
     </div>
 
     <div v-if="loading" class="text-muted py-20 text-center">Loading...</div>
-    <table v-else class="w-full text-sm border-collapse">
-      <thead>
-        <tr class="text-left text-muted border-b border-app">
-          <th class="py-2 font-medium w-44">Timestamp</th>
-          <th class="py-2 font-medium">User</th>
-          <th class="py-2 font-medium">Action</th>
-          <th class="py-2 font-medium">Reference</th>
-          <th class="py-2 font-medium">Detail</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr v-for="(e, i) in entries" :key="i" class="border-b border-app/50 hover-app">
-          <td class="py-2 text-muted font-mono text-xs">{{ fmt(e.timestamp) }}</td>
-          <td class="py-2">
-            <span class="inline-flex items-center gap-1.5">
-              <span class="w-5 h-5 text-[9px] grid place-items-center font-bold" style="background:var(--accent);color:var(--on-accent)">{{ initials(e.user) }}</span>
-              {{ (e.user || '').split('@')[0] }}
-            </span>
-          </td>
-          <td class="py-2"><span class="text-[10px] px-1.5 py-0.5 rounded" :class="actionClass(e.action)">{{ e.action }}</span></td>
-          <td class="py-2 font-mono text-xs text-muted">{{ e.reference || '-' }}</td>
-          <td class="py-2 text-muted truncate max-w-xs">{{ e.detail || '-' }}</td>
-        </tr>
-        <tr v-if="!entries.length"><td colspan="5" class="py-10 text-center text-muted">No audit entries.</td></tr>
-      </tbody>
-    </table>
+    <div v-else class="card-surface overflow-x-auto">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th class="w-44">Timestamp</th>
+            <th>User</th>
+            <th>Action</th>
+            <th>Reference</th>
+            <th>Detail</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="(e, i) in entries" :key="i">
+            <td class="text-muted mono text-xs">{{ fmt(e.timestamp) }}</td>
+            <td>
+              <span class="inline-flex items-center gap-2">
+                <span class="w-6 h-6 rounded-full text-[9px] grid place-items-center font-bold" style="background:var(--accent);color:var(--on-accent)">{{ initials(e.user) }}</span>
+                {{ (e.user || '').split('@')[0] }}
+              </span>
+            </td>
+            <td><span class="text-[10px] px-2 py-0.5 rounded-full" :class="actionClass(e.action)">{{ e.action }}</span></td>
+            <td class="mono text-xs text-muted">{{ e.reference || '-' }}</td>
+            <td class="text-muted truncate max-w-xs">{{ e.detail || '-' }}</td>
+          </tr>
+          <tr v-if="!entries.length"><td colspan="5" class="py-10 text-center text-muted">No audit entries.</td></tr>
+        </tbody>
+      </table>
+    </div>
   </div>
 </template>
 

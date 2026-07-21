@@ -5,7 +5,7 @@
       <aside class="relative w-[460px] max-w-full h-full bg-surface text-app border-l border-app shadow-2xl overflow-y-auto">
         <div v-if="task" class="p-5">
           <div class="flex items-center justify-between">
-            <span class="text-xs font-mono px-2 py-0.5 rounded bg-surface-2 text-blue-500">{{ task.issue_key || task.name }}</span>
+            <span class="text-xs font-mono px-2 py-0.5 rounded bg-surface-2 text-accent">{{ task.issue_key || task.name }}</span>
             <button class="text-muted hover:text-app" @click="$emit('close')">Close</button>
           </div>
 
@@ -61,9 +61,9 @@
           <div class="mt-5">
             <div class="text-xs text-muted mb-1">Assignees</div>
             <div class="flex flex-wrap items-center gap-1.5">
-              <span v-for="a in task.assignees" :key="a" class="flex items-center gap-1 bg-blue-50 text-blue-700 text-xs rounded-full pl-2 pr-1 py-0.5">
+              <span v-for="a in task.assignees" :key="a" class="flex items-center gap-1 pill text-xs pl-2 pr-1 py-0.5">
                 {{ a.replace(/@.*/, '') }}
-                <button @click="unassign(a)" class="hover:text-red-600">x</button>
+                <button @click="unassign(a)" class="hover:opacity-70">x</button>
               </span>
               <select @change="assign($event)" class="text-xs border border-app bg-surface-2 text-app rounded-md px-1.5 py-1">
                 <option value="">+ assign</option>
@@ -102,7 +102,7 @@
               <Paperclip class="w-3.5 h-3.5 text-faint shrink-0" />
               <a :href="f.file_url" target="_blank" class="truncate flex-1 hover:underline" style="color:var(--accent)">{{ f.file_name }}</a>
               <span class="text-[10px] text-faint">{{ fmtSize(f.file_size) }}</span>
-              <button class="text-faint hover:text-red-500" @click="removeAttachment(f.name)"><X class="w-3 h-3" /></button>
+              <button class="text-faint hover:text-app" @click="removeAttachment(f.name)"><X class="w-3 h-3" /></button>
             </div>
             <div v-if="!attachments.length" class="text-xs text-faint py-1">No files attached.</div>
           </div>
@@ -110,7 +110,7 @@
           <!-- Parent -->
           <div v-if="task.parent" class="mt-4 text-xs">
             <span class="text-muted">Parent: </span>
-            <span class="mono text-blue-500">{{ task.parent.issue_key }}</span>
+            <span class="mono text-accent">{{ task.parent.issue_key }}</span>
             <span class="text-muted"> · {{ task.parent.subject }}</span>
           </div>
 
@@ -121,7 +121,7 @@
               <span v-if="task.subtasks.length" class="text-faint">{{ doneSubs }}/{{ task.subtasks.length }} done</span>
             </div>
             <div v-if="task.subtasks.length" class="h-1 rounded-full bg-surface-2 mb-2 overflow-hidden">
-              <div class="h-full rounded-full bg-green-500" :style="{ width: subPct + '%' }" />
+              <div class="h-full rounded-full" :style="{ width: subPct + '%', background: 'var(--term-green)' }" />
             </div>
             <div v-for="s in task.subtasks" :key="s.name" class="flex items-center gap-2 py-1 cursor-pointer group" @click="$emit('open', s.name)">
               <span class="mono text-[10px] text-faint">{{ s.issue_key }}</span>
@@ -141,7 +141,7 @@
               <span class="mono text-[10px] text-faint">{{ b.issue_key }}</span>
               <span class="text-sm flex-1 truncate">{{ b.subject }}</span>
               <StatusPill :value="b.status" />
-              <button class="text-faint hover:text-red-500" @click="removeDep(b.dep)"><X class="w-3 h-3" /></button>
+              <button class="text-faint hover:text-app" @click="removeDep(b.dep)"><X class="w-3 h-3" /></button>
             </div>
             <div class="relative mt-1.5">
               <input v-model="depQ" @input="searchDeps" placeholder="Add a blocker (search tasks)…" class="field w-full" />
@@ -342,9 +342,9 @@ async function removeDep(dep) {
 
 <style scoped>
 .field { width: 100%; margin-top: 0.125rem; font-size: 0.875rem; border: 1px solid var(--border); border-radius: 0.375rem; padding: 0.25rem 0.5rem; outline: none; background: var(--surface-2); color: var(--text); }
-.field:focus { border-color: #60a5fa; }
-.btn { font-size: 0.875rem; padding: 0.25rem 0.625rem; border-radius: 0.375rem; background: #2563eb; color: #fff; }
-.btn:hover { background: #1d4ed8; }
+.field:focus { border-color: var(--accent); }
+.btn { font-size: 0.8125rem; padding: 0.35rem 0.85rem; border-radius: 999px; background: var(--accent); color: var(--on-accent); font-weight: 600; }
+.btn:hover { filter: brightness(1.06); }
 .slide-enter-active, .slide-leave-active { transition: opacity 0.15s; }
 .slide-enter-from, .slide-leave-to { opacity: 0; }
 </style>

@@ -1,19 +1,19 @@
 <template>
   <div class="p-6">
     <div class="flex items-center justify-between mb-4">
-      <h1 class="text-lg font-semibold tracking-tight">Sprints</h1>
-      <button @click="openEntity('Pulse Sprint')" class="new-btn flex items-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-medium text-white">
+      <h1 class="text-2xl font-bold">Sprints</h1>
+      <button @click="openEntity('Pulse Sprint')" class="btn-primary">
         <Plus class="w-3.5 h-3.5" /> New sprint
       </button>
     </div>
 
     <div v-if="loading" class="space-y-2">
-      <div v-for="n in 4" :key="n" class="rounded-lg border border-app bg-surface p-4"><Skeleton width="40%" height="14px" /><div class="mt-2"><Skeleton width="70%" height="11px" /></div></div>
+      <div v-for="n in 4" :key="n" class="card-surface p-4"><Skeleton width="40%" height="14px" /><div class="mt-2"><Skeleton width="70%" height="11px" /></div></div>
     </div>
 
     <div v-else class="space-y-2.5">
       <div v-for="s in sprints" :key="s.name" @click="openEntity('Pulse Sprint', s.name)"
-        class="rounded-lg border border-app bg-surface p-4 hover:border-accent cursor-pointer transition-colors">
+        class="card-surface p-4 hover:border-accent cursor-pointer transition-colors">
         <div class="flex items-center justify-between gap-2">
           <div class="font-medium text-app">{{ s.sprint_name || s.name }}</div>
           <StatusPill :value="s.status" />

@@ -1,7 +1,7 @@
 <template>
   <div class="p-6">
     <div class="flex items-center justify-between mb-1 gap-3 flex-wrap">
-      <h1 class="text-lg font-semibold tracking-tight">Reports</h1>
+      <h1 class="text-2xl font-bold">Reports</h1>
       <div class="flex items-center gap-2">
         <select v-model="reportKey" @change="load" class="ctl">
           <option v-for="r in reports" :key="r.key" :value="r.key">{{ r.label }}</option>
@@ -26,7 +26,7 @@
 
     <div v-else>
       <!-- line chart for burndown / burnup -->
-      <div v-if="chart && points.length > 1" class="card mb-5">
+      <div v-if="chart && points.length > 1" class="card-surface p-4 mb-4">
         <svg :viewBox="`0 0 ${W} ${H}`" class="w-full" style="height:220px">
           <line :x1="pad" :y1="H - pad" :x2="W - pad" :y2="H - pad" stroke="var(--border)" />
           <line :x1="pad" :y1="pad" :x2="pad" :y2="H - pad" stroke="var(--border)" />
@@ -42,20 +42,22 @@
         </div>
       </div>
 
-      <table class="w-full text-sm border-collapse">
-        <thead>
-          <tr class="text-left text-faint border-b border-app text-[11px] uppercase tracking-wide">
-            <th v-for="c in columns" :key="c.fieldname" class="py-2 font-medium">{{ c.label }}</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="(r, i) in rows" :key="i" class="border-b border-soft">
-            <td v-for="c in columns" :key="c.fieldname" class="py-2 tnum"
-              :class="c.fieldname === columns[0].fieldname ? 'text-app' : 'text-muted'"
-              v-html="fmt(r[c.fieldname])" />
-          </tr>
-        </tbody>
-      </table>
+      <div class="card-surface overflow-x-auto">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th v-for="c in columns" :key="c.fieldname">{{ c.label }}</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="(r, i) in rows" :key="i">
+              <td v-for="c in columns" :key="c.fieldname" class="tnum"
+                :class="c.fieldname === columns[0].fieldname ? 'text-app' : 'text-muted'"
+                v-html="fmt(r[c.fieldname])" />
+            </tr>
+          </tbody>
+        </table>
+      </div>
     </div>
   </div>
 </template>
@@ -139,6 +141,5 @@ onMounted(async () => {
 </script>
 
 <style scoped>
-.ctl { background: var(--surface); border: 1px solid var(--border); color: var(--text); font-size: 12px; border-radius: 7px; padding: 6px 9px; outline: none; }
-.card { border: 1px solid var(--border); background: var(--surface); padding: 14px; }
+.ctl { background: var(--surface); border: 1px solid var(--border); color: var(--text); font-size: 12px; border-radius: 9px; padding: 7px 10px; outline: none; }
 </style>

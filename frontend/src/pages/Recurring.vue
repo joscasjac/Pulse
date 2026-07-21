@@ -1,19 +1,19 @@
 <template>
   <div class="p-6">
     <div class="flex items-center justify-between mb-1">
-      <h1 class="text-lg font-semibold tracking-tight">Recurring Tasks</h1>
-      <button @click="openCreate({ repeat: true })" class="new-btn flex items-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-medium">
+      <h1 class="text-2xl font-bold">Recurring Tasks</h1>
+      <button @click="openCreate({ repeat: true })" class="btn-primary">
         <Plus class="w-3.5 h-3.5" /> New recurring task
       </button>
     </div>
     <p class="text-xs text-faint mb-4">Routine work that regenerates on a schedule — a fresh task lands in <b>To Do</b> each cycle, so it never rots in the backlog.</p>
 
     <div v-if="loading" class="space-y-2">
-      <div v-for="n in 3" :key="n" class="rounded-lg border border-app bg-surface p-4"><Skeleton width="40%" height="14px" /></div>
+      <div v-for="n in 3" :key="n" class="card-surface p-4"><Skeleton width="40%" height="14px" /></div>
     </div>
 
     <div v-else class="space-y-2.5">
-      <div v-for="r in rows" :key="r.name" class="rounded-lg border border-app bg-surface p-4" :class="{ 'opacity-60': !r.is_active }">
+      <div v-for="r in rows" :key="r.name" class="card-surface p-4" :class="{ 'opacity-60': !r.is_active }">
         <div class="flex items-center justify-between gap-3">
           <div class="min-w-0">
             <div class="font-medium text-app truncate">{{ r.subject }}</div>
@@ -81,7 +81,7 @@ onMounted(reload)
 <style scoped>
 .new-btn { background: var(--accent); transition: filter 0.12s; }
 .new-btn:hover { filter: brightness(1.08); }
-.icon-btn { padding: 6px; border: 1px solid var(--border); color: var(--muted); background: transparent; }
+.icon-btn { padding: 6px; border-radius: 9px; border: 1px solid var(--border); color: var(--muted); background: transparent; }
 .icon-btn:hover { color: var(--text); border-color: var(--accent); }
-.icon-btn.danger:hover { color: #f2726d; border-color: #f2726d; }
+.icon-btn.danger:hover { color: var(--danger); border-color: var(--danger); }
 </style>

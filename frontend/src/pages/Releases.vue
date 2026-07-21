@@ -1,7 +1,7 @@
 <template>
   <div class="p-6">
     <div class="flex items-center justify-between mb-1 gap-3">
-      <h1 class="text-lg font-semibold tracking-tight">Releases</h1>
+      <h1 class="text-2xl font-bold">Releases</h1>
       <select v-model="project" @change="reload" class="ctl">
         <option :value="null">All projects</option>
         <option v-for="p in projects" :key="p.name" :value="p.name">{{ p.project_name || p.name }}</option>
@@ -10,11 +10,11 @@
     <p class="text-xs text-faint mb-4">Tag a task with a release (e.g. <b>v1.2</b>) in its detail panel — they group here automatically.</p>
 
     <div v-if="loading" class="space-y-2">
-      <div v-for="n in 3" :key="n" class="rounded-lg border border-app bg-surface p-4"><Skeleton width="35%" height="14px" /></div>
+      <div v-for="n in 3" :key="n" class="card-surface p-4"><Skeleton width="35%" height="14px" /></div>
     </div>
 
     <div v-else class="space-y-2.5">
-      <div v-for="r in releases" :key="r.release_name" class="rounded-lg border border-app bg-surface">
+      <div v-for="r in releases" :key="r.release_name" class="card-surface">
         <div class="p-4 cursor-pointer" @click="toggle(r)">
           <div class="flex items-center gap-3">
             <ChevronRight class="w-4 h-4 text-faint transition-transform shrink-0" :class="{ 'rotate-90': open === r.release_name }" />
@@ -84,5 +84,5 @@ onMounted(async () => {
 </script>
 
 <style scoped>
-.ctl { background: var(--surface); border: 1px solid var(--border); color: var(--text); font-size: 12px; border-radius: 7px; padding: 6px 9px; outline: none; }
+.ctl { background: var(--surface); border: 1px solid var(--border); color: var(--text); font-size: 12px; border-radius: 9px; padding: 7px 10px; outline: none; }
 </style>

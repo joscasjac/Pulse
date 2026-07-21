@@ -1,13 +1,13 @@
 <template>
   <div class="p-6">
-    <h1 class="text-xl font-semibold mb-1">Agile &amp; Delivery Analytics</h1>
+    <h1 class="text-2xl font-bold mb-1">Agile &amp; Delivery Analytics</h1>
     <p class="text-sm text-muted mb-5">Summary of your team's agile report with the most useful metrics.</p>
 
     <div v-if="loading" class="text-muted py-20 text-center">Loading analytics...</div>
     <div v-else class="space-y-4">
       <!-- KPI row -->
       <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
-        <div v-for="k in kpiCards" :key="k.label" class="rounded-xl border border-app bg-surface p-4">
+        <div v-for="k in kpiCards" :key="k.label" class="card-surface p-4">
           <div class="text-xs text-muted">{{ k.label }}</div>
           <div class="text-3xl font-bold mt-1" :style="{ color: k.color }">{{ k.value }}</div>
           <div class="text-[10px] text-muted mt-1">Total Tasks</div>
@@ -47,7 +47,7 @@
               </span>
             </div>
             <div class="h-3 rounded-full bg-surface-2 overflow-hidden">
-              <div class="h-full rounded-full bg-green-500" :style="{ width: s.pct + '%' }" />
+              <div class="h-full rounded-full" :style="{ width: s.pct + '%', background: 'var(--accent)' }" />
             </div>
           </div>
           <div v-if="!a.sprint_progress.length" class="text-xs text-muted">No sprints.</div>
@@ -75,7 +75,8 @@ const kpiCards = computed(() => [
 ])
 
 function stClass(s) {
-  return { Active: 'bg-green-500/15 text-green-400', Completed: 'bg-gray-500/15 text-gray-400', Planned: 'bg-blue-500/15 text-blue-400' }[s] || 'bg-gray-500/15 text-gray-400'
+  // token-driven so sprint states follow the theme in both light and dark
+  return { Active: 'pill term-green', Completed: 'pill', Planned: 'pill text-accent' }[s] || 'pill'
 }
 
 onMounted(async () => {

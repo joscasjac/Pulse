@@ -1,13 +1,13 @@
 <template>
   <div class="p-6 max-w-5xl mx-auto">
     <div class="text-center mt-6 mb-8">
-      <h1 class="text-2xl font-semibold">{{ greeting }}, {{ firstName }}</h1>
+      <h1 class="text-2xl font-bold">{{ greeting }}, {{ firstName }}</h1>
       <p class="text-sm text-muted mt-1">{{ dateStr }}</p>
     </div>
 
     <!-- KPI row -->
     <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-8">
-      <div v-for="k in kpis" :key="k.label" class="rounded-xl border border-app bg-surface p-4">
+      <div v-for="k in kpis" :key="k.label" class="card-surface p-4">
         <div class="text-xs text-muted">{{ k.label }}</div>
         <div class="text-2xl font-bold mt-1">{{ k.value }}</div>
       </div>
@@ -15,9 +15,9 @@
 
     <div class="flex items-center justify-between mb-2">
       <h2 class="text-sm font-semibold">Recents</h2>
-      <router-link to="/board" class="text-xs text-blue-500">Open board</router-link>
+      <router-link to="/board" class="text-xs text-accent">Open board</router-link>
     </div>
-    <div class="rounded-xl border border-app bg-surface divide-y divide-app">
+    <div class="card-surface divide-y divide-app">
       <div v-for="t in recents" :key="t.name" @click="openId = t.name"
         class="flex items-center gap-3 px-4 py-3 hover-app cursor-pointer">
         <span class="text-[11px] font-mono text-muted w-16 shrink-0">{{ t.issue_key }}</span>

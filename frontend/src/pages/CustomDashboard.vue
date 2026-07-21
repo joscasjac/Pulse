@@ -2,7 +2,7 @@
   <div class="p-6">
     <header class="flex items-center justify-between mb-5">
       <div>
-        <h1 class="text-xl font-semibold">My Dashboard</h1>
+        <h1 class="text-2xl font-bold">My Dashboard</h1>
         <p class="text-sm text-muted">Customize your widgets - drag sizes, add, remove, and save.</p>
       </div>
       <div class="flex items-center gap-2">
@@ -40,7 +40,7 @@
         @dragstart="dragIdx = i"
         @dragover.prevent
         @drop="onReorder(i)"
-        class="relative rounded-lg border border-app bg-surface p-3.5 overflow-hidden group cursor-move transition-colors"
+        class="relative card-surface p-3.5 overflow-hidden group cursor-move transition-colors"
         :class="{ 'border-accent': dragIdx === i }"
         :style="cellStyle(w)"
       >
@@ -53,7 +53,7 @@
             <button title="Wider" @click="resize(w, 'w', 1)">&gt;</button>
             <button title="Shorter" @click="resize(w, 'h', -1)">-</button>
             <button title="Taller" @click="resize(w, 'h', 1)">+</button>
-            <button title="Remove" class="text-red-500" @click="remove(i)">x</button>
+            <button title="Remove" class="text-muted hover:text-app" @click="remove(i)">x</button>
           </div>
         </div>
         <DashboardWidget :widget="w" :stats="stats" :series="series" />
@@ -93,7 +93,7 @@ function addWidget(c) {
     title: c.label,
     metric: c.metrics && c.metrics[0],
     w: 4, h: 3, x: 0, y: 0,
-    color: '#3b82f6',
+    color: 'var(--accent)',
   })
   showPalette.value = false
   markDirty()
@@ -151,7 +151,7 @@ onMounted(load)
 
 <style scoped>
 .btn-primary, .btn-secondary { padding: 0.375rem 0.75rem; font-size: 0.875rem; border-radius: 0.375rem; }
-.btn-primary { background: #2563eb; color: #fff; }
+.btn-primary { background: var(--accent); color: var(--on-accent); }
 .btn-primary:hover { background: #1d4ed8; }
 .btn-secondary { border: 1px solid var(--border); background: var(--surface); color: var(--text); }
 .btn-primary:disabled, .btn-secondary:disabled { opacity: 0.5; }

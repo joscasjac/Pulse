@@ -95,6 +95,69 @@ body {
   box-shadow: var(--shadow);
 }
 
+/* --- Shared control primitives so pages stop hand-rolling their own --- */
+.btn-primary,
+.btn-ghost {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.375rem;
+  border-radius: 999px;
+  padding: 0.5rem 1rem;
+  font-size: 13px;
+  font-weight: 600;
+  transition: filter 0.12s, background 0.12s;
+  white-space: nowrap;
+}
+.btn-primary { background: var(--accent); color: var(--on-accent); }
+.btn-primary:hover { filter: brightness(1.06); }
+.btn-primary:disabled { opacity: 0.5; }
+.btn-ghost { background: var(--surface); color: var(--text); border: 1px solid var(--border); }
+.btn-ghost:hover { background: var(--hover); }
+
+/* Form control */
+.field {
+  width: 100%;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  color: var(--text);
+  font-size: 13px;
+  border-radius: 9px;
+  padding: 0.45rem 0.6rem;
+  outline: none;
+}
+.field:focus { border-color: var(--accent); }
+textarea.field { resize: vertical; font-family: inherit; }
+
+/* Small rounded badge */
+.pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  border-radius: 999px;
+  padding: 0.1rem 0.5rem;
+  font-size: 11px;
+  font-weight: 500;
+  background: var(--surface-2);
+  color: var(--muted);
+}
+
+/* Table rows inside cards */
+.data-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+.data-table thead th {
+  text-align: left;
+  font-weight: 500;
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--faint);
+  padding: 0.6rem 0.75rem;
+  border-bottom: 1px solid var(--border);
+}
+.data-table tbody td { padding: 0.65rem 0.75rem; border-bottom: 1px solid var(--border-soft); }
+.data-table tbody tr:last-child td { border-bottom: 0; }
+.data-table tbody tr:hover { background: var(--hover); }
+
 ::selection { background: var(--accent); color: var(--on-accent); }
 
 /* Accent fills always carry dark ink (WCAG contrast on bright blue) */

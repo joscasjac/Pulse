@@ -1,7 +1,7 @@
 <template>
   <div class="p-6">
     <div class="flex items-center justify-between mb-1">
-      <h1 class="text-lg font-semibold tracking-tight">To Do</h1>
+      <h1 class="text-2xl font-bold">To Do</h1>
       <span class="tele text-[10px] text-faint">{{ tasks.length }} open</span>
     </div>
     <p class="text-xs text-faint mb-5">Everything assigned to you that isn't done — across all projects. Tick to complete.</p>
