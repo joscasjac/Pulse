@@ -3,6 +3,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 const routes = [
   { path: '/', name: 'Home', component: () => import('@/pages/Home.vue') },
   { path: '/dashboard', name: 'Dashboard', component: () => import('@/pages/Dashboard.vue') },
+  { path: '/dashboard/custom', name: 'CustomDashboard', component: () => import('@/pages/CustomDashboard.vue') },
   { path: '/analytics', name: 'Analytics', component: () => import('@/pages/Analytics.vue') },
   { path: '/reports', name: 'Reports', component: () => import('@/pages/Reports.vue') },
   { path: '/todo', name: 'ToDo', component: () => import('@/pages/ToDo.vue') },

@@ -1,98 +1,73 @@
 @import 'frappe-ui/style.css';
-@import url('https://fonts.googleapis.com/css2?family=Archivo:wght@600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap');
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 /* ============================================================================
-   PULSE // TACTICAL TELEMETRY INTERFACE
-   Archetype: CRT Terminal (dark, primary) · Swiss Industrial Print (light)
-   Accent: Signal Blue (#00AAFF) — the only accent. Dark ink on accent fills.
+   PULSE — soft, card-based product UI.
+   Signal Blue (#00AAFF) is the single accent; dark ink sits on accent fills.
    ============================================================================ */
 
-/* --- Light: Swiss Industrial Print (matte documentation paper) --- */
 :root {
-  --bg: #eae8e3;
-  --surface: #f4f4f0;
-  --surface-2: #e3e1db;
-  --border: #111111;
-  --border-soft: #c9c7c1;
-  --text: #0a0a0a;
-  --muted: #4f4d47;
-  --faint: #86847e;
-  --hover: #e3e1db;
+  --bg: #f4f6fa;
+  --surface: #ffffff;
+  --surface-2: #f1f4f9;
+  --border: #e4e9f0;
+  --border-soft: #eef1f6;
+  --text: #101828;
+  --muted: #667085;
+  --faint: #98a2b3;
+  --hover: #f1f4f9;
   --accent: #00aaff;
   --on-accent: #04141f;
-  --term-green: #1f9e12;
-  --shadow: 0 0 0 1px var(--border);
+  --term-green: #12a150;
+  --danger: #e5484d;
+  --radius: 14px;
+  --shadow: 0 1px 2px rgba(16, 24, 40, 0.05), 0 8px 24px -12px rgba(16, 24, 40, 0.12);
 }
 
-/* --- Dark: Tactical Telemetry (deactivated CRT + white phosphor) --- */
 .dark {
-  --bg: #0a0a0a;
-  --surface: #121212;
-  --surface-2: #191919;
-  --border: #2b2b2b;
-  --border-soft: #1b1b1b;
-  --text: #eaeaea;
-  --muted: #8a8a8a;
-  --faint: #5c5c5c;
-  --hover: #1c1c1c;
+  --bg: #0f1218;
+  --surface: #161a22;
+  --surface-2: #1d222c;
+  --border: #262c38;
+  --border-soft: #1e2430;
+  --text: #e8ecf3;
+  --muted: #94a0b4;
+  --faint: #6b7688;
+  --hover: #1d222c;
   --accent: #00aaff;
   --on-accent: #04141f;
-  --term-green: #4af626;
-  --shadow: 0 0 0 1px var(--border);
+  --term-green: #3ddc84;
+  --danger: #ff6b6b;
+  --radius: 14px;
+  --shadow: 0 1px 2px rgba(0, 0, 0, 0.3), 0 12px 28px -14px rgba(0, 0, 0, 0.6);
 }
 
 html, body, #app { height: 100%; margin: 0; }
 body {
   background: var(--bg);
   color: var(--text);
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
   font-feature-settings: "tnum" 1, "cv01" 1;
+  -webkit-font-smoothing: antialiased;
 }
 
-/* --- Mechanical rigidity: every corner is exactly 90 degrees --- */
-#app *, #app *::before, #app *::after { border-radius: 0 !important; }
-
-/* --- CRT scanlines (dark only) --- */
-.dark body::before {
-  content: "";
-  position: fixed; inset: 0; z-index: 9998; pointer-events: none;
-  background: repeating-linear-gradient(
-    0deg, rgba(0,0,0,0) 0px, rgba(0,0,0,0) 2px,
-    rgba(0,0,0,0.20) 3px, rgba(0,0,0,0) 4px);
-  opacity: 0.55;
-}
-/* --- Mechanical noise / physical grain (both modes) --- */
-body::after {
-  content: "";
-  position: fixed; inset: 0; z-index: 9999; pointer-events: none;
-  opacity: 0.04;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.82' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-}
-
-/* --- Macro-typography: heavy neo-grotesque, uppercase, tight --- */
 @layer base {
-  h1, h2, h3 {
-    font-family: "Archivo", Inter, system-ui, sans-serif;
-    font-weight: 800;
-    letter-spacing: -0.03em;
-    line-height: 0.95;
-    text-transform: uppercase;
-    text-wrap: balance;
-  }
-  h1 { letter-spacing: -0.045em; }
+  h1, h2, h3 { letter-spacing: -0.02em; text-wrap: balance; font-weight: 700; }
   .tnum { font-variant-numeric: tabular-nums; }
 }
 
-/* --- Micro-typography: monospace technical telemetry --- */
+/* Monospace for identifiers (issue keys, figures) */
 .mono, code, samp, kbd, output {
   font-family: "JetBrains Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
 }
+/* Small uppercase section labels (sidebar groups, card eyebrows) */
 .tele {
-  font-family: "JetBrains Mono", ui-monospace, Menlo, Consolas, monospace;
   text-transform: uppercase;
-  letter-spacing: 0.09em;
+  letter-spacing: 0.08em;
+  font-weight: 600;
 }
 
 @layer utilities {
@@ -112,20 +87,26 @@ body::after {
   .mono { font-family: "JetBrains Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace; }
 }
 
-/* --- Signal-blue selection (dark ink for contrast) --- */
+/* Card surface — the shadcn-style primitive, hand-rolled for this stack */
+.card-surface {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+
 ::selection { background: var(--accent); color: var(--on-accent); }
 
-/* --- Accent fills always carry dark ink (WCAG contrast on bright blue) --- */
+/* Accent fills always carry dark ink (WCAG contrast on bright blue) */
 .new-btn, .seg-on { color: var(--on-accent) !important; }
+.new-btn { border-radius: 999px; }
 
-/* --- Visible focus rings for keyboard nav (a11y) --- */
 :where(a, button, [role="button"], input, select, textarea, [tabindex]):focus-visible {
   outline: 2px solid var(--accent);
   outline-offset: 2px;
 }
 
-/* --- Square industrial scrollbars (no rounding, red on grab) --- */
 ::-webkit-scrollbar { width: 10px; height: 10px; }
-::-webkit-scrollbar-thumb { background: var(--border); }
-::-webkit-scrollbar-thumb:hover { background: var(--accent); }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 999px; }
+::-webkit-scrollbar-thumb:hover { background: var(--faint); }
 ::-webkit-scrollbar-track { background: transparent; }
