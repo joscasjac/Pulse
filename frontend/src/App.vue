@@ -84,6 +84,7 @@ import Plus from '~icons/lucide/plus'
 import House from '~icons/lucide/house'
 import LayoutDashboard from '~icons/lucide/layout-dashboard'
 import ChartColumn from '~icons/lucide/chart-column'
+import FileBarChart from '~icons/lucide/file-bar-chart'
 import SquareCheckBig from '~icons/lucide/square-check-big'
 import ListChecks from '~icons/lucide/list-checks'
 import SquareKanban from '~icons/lucide/square-kanban'
@@ -112,6 +113,7 @@ const nav = [
     { to: '/', label: 'Home', icon: House },
     { to: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
     { to: '/analytics', label: 'Analytics', icon: ChartColumn },
+    { to: '/reports', label: 'Reports', icon: FileBarChart },
     { to: '/todo', label: 'To Do', icon: ListChecks },
     { to: '/my-work', label: 'My Work', icon: SquareCheckBig },
     { to: '/board', label: 'Board', icon: SquareKanban },

@@ -47,6 +47,34 @@ def my_topic():
         return {"enabled": False}
 
 
+def email_enabled():
+    try:
+        return bool(_settings().get("email_notifications"))
+    except Exception:
+        return False
+
+
+def _dispatch(user, title, message, tags=None, click=None):
+    """Deliver a notification over every enabled channel. Never raises."""
+    _send(user, title, message, tags=tags, click=click)
+    _email(user, title, message, click=click)
+
+
+def _email(user, subject, message, click=None):
+    """Email the user, if email notifications are switched on in Pulse Settings."""
+    if not user or user in ("Guest", "Administrator") or not email_enabled():
+        return
+    try:
+        recipient = frappe.db.get_value("User", user, "email") or user
+        body = message.replace("\n", "<br>")
+        if click:
+            body += f'<br><br><a href="{click}">Open in Pulse</a>'
+        frappe.sendmail(recipients=[recipient], subject=f"[Pulse] {subject}",
+                        message=body, now=False)
+    except Exception:
+        frappe.log_error(title="Pulse email notify failed", message=frappe.get_traceback())
+
+
 def _send(user, title, message, tags=None, click=None, priority="default"):
     """Publish a notification to a user's ntfy topic. Never raises."""
     if not user or user in ("Guest",) or not enabled():
@@ -86,7 +114,7 @@ def _pulse_url():
 
 def on_todo_after_insert(doc, method=None):
     """A Task assignment was created -> notify the assignee."""
-    if not enabled() or doc.get("reference_type") != "Task":
+    if not (enabled() or email_enabled()) or doc.get("reference_type") != "Task":
         return
     who = doc.get("allocated_to") or doc.get("owner")
     if not who or who == frappe.session.user:  # don't ping yourself for self-assign
@@ -96,14 +124,14 @@ def on_todo_after_insert(doc, method=None):
     if not t:
         return
     key = t.issue_key or doc.get("reference_name")
-    _send(who, "Task assigned to you",
-          f"{key}: {t.subject}\nassigned by {frappe.session.user}",
-          tags="inbox_tray", click=_pulse_url())
+    _dispatch(who, "Task assigned to you",
+              f"{key}: {t.subject}\nassigned by {frappe.session.user}",
+              tags="inbox_tray", click=_pulse_url())
 
 
 def notify_task_completed(doc):
     """Called from Task on_update -> notify the assigner(s) when a task is completed."""
-    if not enabled():
+    if not (enabled() or email_enabled()):
         return
     is_done = doc.get("status") == "Completed" or doc.get("workflow_state") == "Done"
     if not is_done:
@@ -123,6 +151,6 @@ def notify_task_completed(doc):
     recipients.discard(None)
     recipients.discard(completer)  # don't notify the person who completed it
     for u in recipients:
-        _send(u, "Task completed",
-              f"{key}: {doc.subject}\ncompleted by {completer}",
-              tags="white_check_mark", click=_pulse_url())
+        _dispatch(u, "Task completed",
+                  f"{key}: {doc.subject}\ncompleted by {completer}",
+                  tags="white_check_mark", click=_pulse_url())

@@ -483,6 +483,15 @@ def delete_task(task):
                       ("Pulse Checklist", "task")]:
         for n in frappe.get_all(dt, filters={field: task}, pluck="name"):
             frappe.delete_doc(dt, n, force=True, ignore_permissions=True)
+
+    # Activity log rows point at the task by dynamic link, recorded either by
+    # name or by issue key depending on the write path — clear both.
+    refs = [task]
+    issue_key = frappe.db.get_value("Task", task, "issue_key")
+    if issue_key:
+        refs.append(issue_key)
+    frappe.db.delete("Pulse Activity Log",
+                     {"reference_doctype": "Task", "reference_name": ["in", refs]})
     deps = (frappe.get_all("Pulse Dependency", filters={"source_task": task}, pluck="name")
             + frappe.get_all("Pulse Dependency", filters={"target_task": task}, pluck="name"))
     for d in deps:

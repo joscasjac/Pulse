@@ -69,10 +69,9 @@ const seriesData = computed(() => {
     tasks_by_state: props.series?.tasks_by_state,
     tasks_by_type: props.series?.tasks_by_type,
   }
-  if (map[m]) return map[m]
-  // Sprint burndown / generic: synthesize a descending line from velocity length
-  const n = (props.series?.velocity || []).length || 6
-  return Array.from({ length: n }, (_, i) => ({ label: `D${i + 1}`, value: n - i }))
+  // Never fabricate data: with no real series for this metric, render "No data"
+  // (the burndown widget used to synthesise a fake descending line here).
+  return map[m] || []
 })
 
 const barW = computed(() => {

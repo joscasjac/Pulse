@@ -15,8 +15,6 @@
   "role_ranks",
   "notifications_section",
   "email_notifications",
-  "column_break_2",
-  "desktop_notifications",
   "ntfy_section",
   "ntfy_enabled",
   "ntfy_server_url",
@@ -82,17 +80,8 @@
    "default": "1",
    "fieldname": "email_notifications",
    "fieldtype": "Check",
-   "label": "Enable Email Notifications"
-  },
-  {
-   "fieldname": "column_break_2",
-   "fieldtype": "Column Break"
-  },
-  {
-   "default": "1",
-   "fieldname": "desktop_notifications",
-   "fieldtype": "Check",
-   "label": "Enable Desktop Notifications"
+   "label": "Enable Email Notifications",
+   "description": "Email the assignee when a task is assigned, and the assigner when it is completed."
   },
   {
    "fieldname": "ntfy_section",
@@ -139,14 +128,33 @@
  "owner": "Administrator",
  "permissions": [
   {
-   "create": 0, "delete": 0, "email": 1, "export": 1, "print": 1,
-   "read": 1, "report": 1, "role": "System Manager", "share": 1, "write": 1
+   "create": 0,
+   "delete": 0,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
   },
   {
-   "create": 0, "delete": 0, "email": 1, "export": 1, "print": 1,
-   "read": 1, "report": 1, "role": "Pulse Admin", "share": 1, "write": 1
+   "create": 0,
+   "delete": 0,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Pulse Admin",
+   "share": 1,
+   "write": 1
   },
-  {"read": 1, "role": "Pulse Manager"}
+  {
+   "read": 1,
+   "role": "Pulse Manager"
+  }
  ],
  "sort_field": "modified",
  "sort_order": "DESC"
