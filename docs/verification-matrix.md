@@ -31,6 +31,11 @@ promoting the full backlog or deferred UI/mobile acceptance to complete.
 
 ## Release follow-up checkpoint
 
+- Spreadsheet validation recovery fixed locally: rejected negative Points now
+  shows the server explanation and restores the saved value; a corrected value
+  persists through reload. Build and all 10 frontend tests pass. See
+  browser-views-validation.md. This code follow-up has not been deployed.
+
 - Spreadsheet column browser acceptance: actual Chrome on the isolated QA site
   hid Project, moved Priority before Status, and enabled Points. Reload restored
   the spreadsheet layout and exact header order. Saving a personal view and

@@ -110,6 +110,11 @@ const emit = defineEmits(['close-panel', 'changed'])
 const labels = { subject: 'Title', workflow_state: 'Status', priority: 'Priority', project: 'Project', exp_start_date: 'Start date', exp_end_date: 'Due date', type: 'Type', assignees: 'Assignees', labels: 'Labels', expected_time: 'Estimated hours', pulse_story_points: 'Points', creation: 'Created date', modified: 'Updated date', owner: 'Created by', modules: 'Modules', name: 'Link' }
 // ERPNext Date fields can arrive as midnight datetime strings. Keep their calendar day, not a timezone conversion.
 const dateValue = value => value ? String(value).slice(0, 10) : ''
+// frappe-ui keeps user-facing server validation in messages; message contains the RPC name.
+function requestError(error, fallback) {
+  const messages = Array.isArray(error?.messages) ? error.messages.filter(message => typeof message === 'string' && message.trim()) : []
+  return messages.length ? [...new Set(messages)].join(' ') : fallback
+}
 const groupFields = ['workflow_state', 'assignees', 'priority', 'project', 'labels']
 const defaultConfig = () => ({ order_by: 'pulse_rank', order_direction: 'asc', show_subtasks: true, hide_weekends: true, calendar_layout: 'month', layout: 'spreadsheet', group: '', columns: ['subject', 'workflow_state', 'priority', 'project', 'exp_start_date', 'exp_end_date'], filter: { op: 'and', rules: [] } })
 const config = ref(defaultConfig())
@@ -146,7 +151,7 @@ async function showTaskPicker(day) {
     const filter = { op: 'and', rules: props.project ? [{ field: 'project', op: 'eq', value: props.project }] : [] }
     const result = await call('pulse.api.views.tasks', { config: { ...defaultConfig(), filter } })
     if (token === pickerVersion) pickerTasks.value = result.tasks.filter(task => task.can_write)
-  } catch (e) { if (token === pickerVersion) pickerError.value = e.message || 'Tasks could not be loaded. Close and try again.' }
+  } catch (e) { if (token === pickerVersion) pickerError.value = requestError(e, 'Tasks could not be loaded. Close and try again.') }
   finally { if (token === pickerVersion) pickerLoading.value = false }
 }
 async function schedulePicked(names) {
@@ -156,7 +161,7 @@ async function schedulePicked(names) {
     await call('pulse.api.views.schedule_tasks', { tasks: names, date: pickerDay.value, module: props.module || null })
     pickerDay.value = null; notice.value = 'Tasks scheduled.'; emit('changed')
     await load()
-  } catch (e) { pickerError.value = e.message || 'Tasks could not be scheduled. Nothing was changed; try again.' }
+  } catch (e) { pickerError.value = requestError(e, 'Tasks could not be scheduled. Nothing was changed; try again.') }
   finally { pickerPending.value = false }
 }
 watch(() => createState.created, () => { if (!restoring) load() })
@@ -214,7 +219,7 @@ async function scheduleTimelineTask(task, day) {
   try {
     await call('pulse.api.tasks.bulk_update', { tasks: [task.name], fields: { exp_start_date: day, exp_end_date: end } })
     await load({ background: true }); notice.value = 'Task scheduled.'
-  } catch (e) { error.value = e.message || 'Task could not be scheduled.' }
+  } catch (e) { error.value = requestError(e, 'Task could not be scheduled.') }
   finally { pending.value.delete(task.name) }
 }
 const optimisticDateTasks = new Set()
@@ -227,7 +232,7 @@ async function rescheduleTask(name, day) {
   task.exp_end_date = day
   if (task.exp_start_date) task.exp_start_date = new Date(Date.parse(day) - duration).toISOString().slice(0, 10)
   try { await call('pulse.api.views.schedule_tasks', { tasks: [name], date: day }) }
-  catch(e) { Object.assign(task, previous); error.value = e.message || 'Task could not be rescheduled.' }
+  catch(e) { Object.assign(task, previous); error.value = requestError(e, 'Task could not be rescheduled.') }
   finally { optimisticDateTasks.delete(name); pending.value.delete(name); await load({ background: true }) }
 }
 
@@ -249,13 +254,14 @@ const preferenceContext = computed(() => props.embedded ? `view:${props.project 
 watch(preferenceContext, () => { flushPreferences(); restorePreferences() })
 watch(() => [props.taskNames, props.includeArchived, props.refreshKey], () => { if (!restoring) load({ background: true }) })
 let version = 0, restoring = true, persistTimer, loadedContext
-async function load(options = {}) { if (options?.background && optimisticDateTasks.size) return; const v = ++version; if (!options?.background) { loading.value = true; error.value = '' } try { const result = await call('pulse.api.views.tasks', { config: scopedConfiguration(), include_archived: Number(props.includeArchived) }); if (v === version) { tasks.value = props.taskNames ? result.tasks.filter(task => props.taskNames.includes(task.name) || locallyCreated.value.has(task.name)) : result.tasks; dependencies.value = result.dependencies; for (const project of [...new Set(result.tasks.map(t => t.project).filter(Boolean))]) { if (!projectConfigs.value[project]) { try { projectConfigs.value[project] = await call('pulse.api.task_config.get_config', { project }) } catch { /* Current value remains available when vocabulary is not readable. */ } } } } } catch (e) { if (v === version) error.value = e.message || 'Work could not be loaded.' } finally { if (v === version) loading.value = false } }
+async function load(options = {}) { if (options?.background && optimisticDateTasks.size) return; const v = ++version; if (!options?.background) { loading.value = true; error.value = '' } try { const result = await call('pulse.api.views.tasks', { config: scopedConfiguration(), include_archived: Number(props.includeArchived) }); if (v === version) { tasks.value = props.taskNames ? result.tasks.filter(task => props.taskNames.includes(task.name) || locallyCreated.value.has(task.name)) : result.tasks; dependencies.value = result.dependencies; for (const project of [...new Set(result.tasks.map(t => t.project).filter(Boolean))]) { if (!projectConfigs.value[project]) { try { projectConfigs.value[project] = await call('pulse.api.task_config.get_config', { project }) } catch { /* Current value remains available when vocabulary is not readable. */ } } } } } catch (e) { if (v === version) error.value = requestError(e, 'Work could not be loaded.') } finally { if (v === version) loading.value = false } }
 async function edit(task, key, value) {
   if (!task.can_write || pending.value.has(task.name)) return
+  notice.value = ''
   if (['exp_start_date', 'exp_end_date'].includes(key)) {
     const previous = task[key]; ++version; optimisticDateTasks.add(task.name); pending.value.add(task.name); error.value = ''; task[key] = value || null
     try { await call('pulse.api.tasks.bulk_update', { tasks: [task.name], fields: { [key]: value || null } }) }
-    catch (e) { task[key] = previous; error.value = e.message || 'Task dates could not be updated.' }
+    catch (e) { task[key] = previous; error.value = requestError(e, 'Task dates could not be updated.') }
     finally { optimisticDateTasks.delete(task.name); pending.value.delete(task.name); await load({ background: true }) }
     return
   }
@@ -265,16 +271,16 @@ async function edit(task, key, value) {
     const args = { tasks: [task.name], fields: key === 'assignees' ? {} : { [key === 'labels' ? 'pulse_labels' : key]: values || (value === '' ? null : value) } }
     if (key === 'assignees') { args.assign = values.filter(v => !task.assignees.includes(v)); args.unassign = task.assignees.filter(v => !values.includes(v)) }
     await call('pulse.api.tasks.bulk_update', args); await load({ background: true }); notice.value = 'Task updated.'
-  } catch (e) { await load({ background: true }); error.value = e.message || 'Task could not be updated.' }
+  } catch (e) { await load({ background: true }); error.value = requestError(e, 'Task could not be updated.') }
   finally { pending.value.delete(task.name) }
 }
 function toggleColumn(key) { const enabled = new Set(config.value.columns); if (enabled.has(key) && enabled.size === 1) { notice.value = 'Keep at least one column visible.'; return } enabled.has(key) ? enabled.delete(key) : enabled.add(key); config.value.columns = columnOrder.value.filter(k => enabled.has(k)) }
 function moveColumn(i, delta) { const next = [...columnOrder.value]; [next[i], next[i + delta]] = [next[i + delta], next[i]]; columnOrder.value = next; config.value.columns = next.filter(k => config.value.columns.includes(k)) }
-async function save(update = false) { saving.value = true; error.value = ''; try { const view = await call('pulse.api.views.save_view', { title: title.value, config: scopedConfiguration(), shared: Number(shared.value), name: update === true ? selected.value : null }); saved.value = await call('pulse.api.views.saved_views'); selected.value = view.name; notice.value = 'View saved.'; savePanel.value = false; emit('close-panel') } catch (e) { error.value = e.message || 'View could not be saved.' } finally { saving.value = false } }
+async function save(update = false) { saving.value = true; error.value = ''; try { const view = await call('pulse.api.views.save_view', { title: title.value, config: scopedConfiguration(), shared: Number(shared.value), name: update === true ? selected.value : null }); saved.value = await call('pulse.api.views.saved_views'); selected.value = view.name; notice.value = 'View saved.'; savePanel.value = false; emit('close-panel') } catch (e) { error.value = requestError(e, 'View could not be saved.') } finally { saving.value = false } }
 function openSaved() { const view = saved.value.find(v => v.name === selected.value); if (!view) { if (personalConfig.value) config.value = JSON.parse(JSON.stringify(personalConfig.value)); title.value = ''; shared.value = false; if (props.embedded) config.value.layout = props.mode; load(); return } config.value = typeof view.configuration === 'string' ? JSON.parse(view.configuration) : view.configuration; if (props.embedded) config.value.layout = props.mode; title.value = view.title; shared.value = Boolean(view.shared); columnOrder.value = [...config.value.columns, ...Object.keys(labels).filter(k => !config.value.columns.includes(k))]; load() }
 function drag(event, task) { if (event.target.closest('.resize')) { event.preventDefault(); return } event.dataTransfer.setData('text/plain', task.name); event.dataTransfer.effectAllowed = 'move' }
-async function drop(event, day) { const task = tasks.value.find(t => t.name === event.dataTransfer.getData('text/plain')); if (!task || !task.can_write || pending.value.has(task.name)) return; pending.value.add(task.name); const duration = task.exp_start_date && task.exp_end_date ? Math.max(0, (Date.parse(dateValue(task.exp_end_date)) - Date.parse(dateValue(task.exp_start_date))) / 86400000) : 0; const fields = { exp_end_date: day }; if (task.exp_start_date) fields.exp_start_date = new Date(Date.parse(day) - duration * 86400000).toISOString().slice(0, 10); try { await call('pulse.api.tasks.bulk_update', { tasks: [task.name], fields }); await load() } catch (e) { error.value = e.message || 'Task could not be rescheduled.' } finally { pending.value.delete(task.name) } }
-async function link() { try { await call('pulse.api.spa.add_dependency', { task: dependent.value, depends_on: prerequisite.value }); await load(); notice.value = 'Dependency added.' } catch (e) { error.value = e.message || 'Dependency could not be added.' } }
+async function drop(event, day) { const task = tasks.value.find(t => t.name === event.dataTransfer.getData('text/plain')); if (!task || !task.can_write || pending.value.has(task.name)) return; pending.value.add(task.name); const duration = task.exp_start_date && task.exp_end_date ? Math.max(0, (Date.parse(dateValue(task.exp_end_date)) - Date.parse(dateValue(task.exp_start_date))) / 86400000) : 0; const fields = { exp_end_date: day }; if (task.exp_start_date) fields.exp_start_date = new Date(Date.parse(day) - duration * 86400000).toISOString().slice(0, 10); try { await call('pulse.api.tasks.bulk_update', { tasks: [task.name], fields }); await load() } catch (e) { error.value = requestError(e, 'Task could not be rescheduled.') } finally { pending.value.delete(task.name) } }
+async function link() { try { await call('pulse.api.spa.add_dependency', { task: dependent.value, depends_on: prerequisite.value }); await load(); notice.value = 'Dependency added.' } catch (e) { error.value = requestError(e, 'Dependency could not be added.') } }
 let pendingPreferences = null, preferenceWrites = Promise.resolve(), restoreVersion = 0, disposed = false
 function flushPreferences() {
   clearTimeout(persistTimer)
@@ -282,7 +288,7 @@ function flushPreferences() {
   const snapshot = pendingPreferences
   pendingPreferences = null
   preferenceWrites = preferenceWrites.then(() => call('pulse.api.views.preferences', snapshot)).catch(e => {
-    if (!disposed && snapshot.context === preferenceContext.value) error.value = e.message || 'Layout preferences could not be saved.'
+    if (!disposed && snapshot.context === preferenceContext.value) error.value = requestError(e, 'Layout preferences could not be saved.')
   })
   return preferenceWrites
 }
@@ -312,7 +318,7 @@ async function restorePreferences() {
   } catch (e) {
     if (token !== restoreVersion || disposed) return
     config.value = { ...defaultConfig(), layout: props.embedded ? props.mode : 'spreadsheet' }
-    error.value = e.message || 'Saved preferences could not be loaded.'
+    error.value = requestError(e, 'Saved preferences could not be loaded.')
   } finally {
     if (token === restoreVersion && !disposed) { loadedContext = context; restoring = false; await load() }
   }
@@ -321,7 +327,7 @@ onBeforeUnmount(() => { disposed = true; ++restoreVersion; ++version; flushPrefe
 onMounted(async () => {
   settings.value = ['filters', 'display'].includes(props.panel) ? props.panel : ''
   savePanel.value = props.panel === 'save'
-  await Promise.all([call('frappe.client.get_list', { doctype: 'Project', fields: ['name', 'project_name', 'pulse_project_key'], limit_page_length: 0 }).then(rows => { creationProjects.value = rows }).catch(e => { error.value = e.message || 'Projects could not be loaded.' }), restorePreferences(), call('pulse.api.views.saved_views').then(views => { if (!disposed) saved.value = views }).catch(e => { if (!disposed) error.value = e.message || 'Saved views could not be loaded.' })])
+  await Promise.all([call('frappe.client.get_list', { doctype: 'Project', fields: ['name', 'project_name', 'pulse_project_key'], limit_page_length: 0 }).then(rows => { creationProjects.value = rows }).catch(e => { error.value = requestError(e, 'Projects could not be loaded.') }), restorePreferences(), call('pulse.api.views.saved_views').then(views => { if (!disposed) saved.value = views }).catch(e => { if (!disposed) error.value = requestError(e, 'Saved views could not be loaded.') })])
 })
 </script>
 <style scoped>

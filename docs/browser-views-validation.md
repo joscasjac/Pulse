@@ -1,5 +1,25 @@
 # Views browser validation
 
+## Spreadsheet validation recovery — 2026-09-16 (local follow-up)
+
+Actual Chrome against the real isolated Frappe QA site, project PROJ-0035,
+Administrator, synthetic task `Spreadsheet inline QA`:
+
+- Before the fix, entering -1 Points restored the saved 8 but displayed only
+  `pulse.api.tasks.bulk_update ValidationError`.
+- Views now prefers frappe-ui's normalized server messages, with an operation
+  fallback when no server message exists. It renders them as escaped text.
+- After rebuilding, -1 displayed `Task estimates must be finite nonnegative
+  numbers.` and restored 8. Correcting to 13 cleared the error, showed Task
+  updated, and survived reload. The QA fixture was restored to 8 afterwards.
+- Starting an inline edit also clears stale success feedback.
+- Production build passed. All 10 frontend test cases passed, including delayed
+  timeline rollback with a realistic frappe-ui server error and a network-error
+  fallback. The existing extracted-handler harness now includes the formatter.
+
+Scope: validates estimate rejection/correction in the local spreadsheet, not all
+inline fields or production behavior. This follow-up is not yet deployed.
+
 ## Column persistence and inline estimates — post-release follow-up
 
 Actual Chrome/CUA on `http://127.0.0.1:18016`, Administrator, existing synthetic
