@@ -1,0 +1,1 @@
+# Schema and idempotent compatibility repairs run through after_migrate hooks.
