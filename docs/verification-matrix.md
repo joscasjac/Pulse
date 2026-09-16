@@ -31,6 +31,12 @@ promoting the full backlog or deferred UI/mobile acceptance to complete.
 
 ## Release follow-up checkpoint
 
+- Task rich-description Chrome acceptance passed for a persisted Python code
+  block and selected mention. The recipient's independent Inbox received the
+  mention, opened the task and retained read status. Five focused rich-task tests
+  pass, including new reader-only/nonduplicating mention coverage. Editor image
+  upload and broader suggestion hierarchy remain unverified; see browser-validation.md.
+
 - Shared-view browser acceptance passed with independent owner/restricted-user
   sessions: private view hidden, shared view displays only permitted tasks,
   non-owner offered copy only, private copy update/reload works, original remains
@@ -215,7 +221,7 @@ Other explicit weak evidence remains in rows: global quick-create's earlier empt
 | Project status names, colors and order | Unverified | `pulse/api/task_config.py`; `frontend/src/components/tasks/TaskSettings.vue`; `pulse/tests/test_task_config_unit.py`, `pulse/tests/test_task_flexibility.py` | Unused To Do → Ready rename and later In Progress task persistence passed in browser. Custom color/order and other native mapping variants still require checks. |
 | Configurable task, bug, feature and milestone types | Unverified | Same configuration API/UI; `test_disallowed_type_rejected` in `test_task_config_unit.py` | Configure all requested types, create/edit tasks, reload, reject disallowed type. |
 | Colored labels, hour/point estimates, start/due dates | Unverified | `task_config.py`, `TaskSettings.vue`, `frontend/src/components/TaskDrawer.vue`; validation tests in `test_task_config_unit.py` | 3 hours / 5 points persisted in browser; label creation displayed default blue. Applying labels/custom colors and start/due UI persistence remain untested; runtime validation covers invalid estimates/dates/foreign labels. |
-| Rich descriptions: images, code blocks, mentions | Unverified | `TaskDrawer.vue` embeds frappe-ui `TextEditor`, mention options and private upload arguments | Real toolbar/editor entry, authenticated image upload, code formatting and mention delivery; save/reopen round trip. Installed frappe-ui source contains ExtendedCodeBlock, ImageExtension and MentionExtension. `pulse/tests/test_task_rich_activity.py` passed the rich HTML/Version round trip; real editor/image/mention delivery remains to verify. |
+| Rich descriptions: images, code blocks, mentions | Unverified | `TaskDrawer.vue` embeds frappe-ui `TextEditor`, mention options and private upload arguments | Real toolbar/editor entry, authenticated image upload, code formatting and mention delivery; save/reopen round trip. Installed frappe-ui source contains ExtendedCodeBlock, ImageExtension and MentionExtension. `pulse/tests/test_task_rich_activity.py` passed the rich HTML/Version round trip; real editor code/mention persistence and in-app recipient delivery now pass in the documented follow-up; authenticated editor image upload remains to verify. |
 | Field and assignment activity | Unverified | `pulse/api/tasks.py::activity/record_assignment`, `pulse/install.py` enables Task change tracking; `TaskDrawer.vue`; all 4 `test_task_rich_activity.py` cases passed, including native removal/deletion history | Update a field and native assignment in each entry path; verify actor, event and order in UI. |
 | Bulk edit, move, assign and archive | Unverified | Atomic `pulse/api/tasks.py::bulk_update`; Board now has multi-selection, status/priority/project/assignment and archive/restore controls; four `test_task_flexibility.py` cases passed | Hierarchy ordering/complete-selection/rollback now pass seven real cases, plus four flexibility cases. Multi-selection edit/assign/move/archive controls exist; no complete browser bulk workflow is retained. |
 | Preserve subtasks, dependencies, checklists and comments | Unverified | `TaskDrawer.vue`, `pulse/api/spa.py`; `test_workflows.py`, `test_task_flexibility.py::test_archive_keeps_task_and_its_children` | Archive/migration and hierarchy-safe moves preserve covered relations; native dependencies now merge visibly; task comment persisted in browser. Full relation-rich bulk UI round trip remains unobserved. |

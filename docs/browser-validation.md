@@ -1,5 +1,35 @@
 # Browser acceptance evidence
 
+## Rich task code and mention acceptance — 2026-09-16 local follow-up
+
+In actual Chrome on the isolated QA site, Administrator opened synthetic
+TASK-2026-00107 / BVE-1. Entered a description, typed @Restricted, selected
+Restricted Browser QA with Enter, and used the editor's ```python input rule
+to create a Python code block containing `print("pulse rich QA")`.
+Save description confirmed success. Full reload preserved the paragraph,
+rendered mention and Python code block/language selector.
+
+In the independent permissions.localhost:18018 session, the mentioned synthetic
+user's Inbox displayed “Restricted visible ed13f2b8: you were mentioned in the
+description.” Opening it loaded the correct task and persisted rich description.
+Returning to Inbox displayed Mark unread, proving the read state persisted.
+This establishes in-app notification delivery, not external email delivery or
+live arrival while the recipient's Inbox is already open.
+
+Added a real-backend regression for bulk description updates: an authorized
+project reader and an outsider are both mentioned; only the reader receives a
+Mention notification. Appending text with the same mentions creates no duplicate.
+All five pulse.tests.test_task_rich_activity tests passed in 2.151s, exit 0.
+Log: ../.work/pulse-bench/pulse-rich-task-tests.log. Initial new-test fixture needed
+reload before saving its Project because task insertion updates project metadata;
+the corrected fixture and full focused module passed.
+
+Remaining: authenticated editor image upload/save/reopen, broader mention-picker
+hierarchy coverage. The current task picker reuses the assignable-user list;
+notification delivery separately rechecks actual Task read permission. This
+check does not claim that every valid mention recipient appears in suggestions.
+Synthetic QA description and inbox record retained; no production mutation.
+
 ## Readable label history follow-up — 2026-09-16
 
 Replaced generic child-row counts with named added/removed entries in TaskDrawer.

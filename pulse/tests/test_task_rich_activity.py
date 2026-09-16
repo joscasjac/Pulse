@@ -39,6 +39,26 @@ class TestTaskRichActivity(IntegrationTestCase):
         self.assertIn(["priority", "Low", "High"], changed)
         self.assertTrue(any(change[0] == "description" and 'print(' in change[2] for change in changed))
 
+    def test_description_mentions_notify_only_readers_and_only_when_added(self):
+        from pulse.api.tasks import bulk_update
+        self.project.reload()
+        self.project.append("users", {"user": self.user, "welcome_email_sent": 1})
+        self.project.save()
+        outsider = "mention-outsider-" + frappe.generate_hash(length=8) + "@example.com"
+        frappe.get_doc({"doctype": "User", "email": outsider, "first_name": "Outside reader",
+                        "send_welcome_email": 0, "roles": [{"role": "Pulse Senior Developer"}]}).insert()
+        self.assertTrue(frappe.has_permission("Task", "read", doc=self.task, user=self.user))
+        self.assertFalse(frappe.has_permission("Task", "read", doc=self.task, user=outsider))
+        content = "<p>Review " + " ".join(
+            f'<span class="mention" data-type="mention" data-id="{user}">@Reader</span>'
+            for user in (self.user, outsider)) + "</p>"
+        bulk_update([self.task.name], {"description": content})
+        filters = {"reference_doctype": "Task", "reference_name": self.task.name,
+                   "notification_type": "Mention"}
+        self.assertEqual(frappe.get_all("Pulse Notification", filters=filters, pluck="recipient"), [self.user])
+        bulk_update([self.task.name], {"description": content + "<p>More detail.</p>"})
+        self.assertEqual(frappe.db.count("Pulse Notification", filters), 1)
+
     def test_assignment_api_is_idempotent_and_native_removal_is_recorded_once(self):
         from pulse.api.spa import assign_task, unassign_task
         from pulse.api.tasks import activity
