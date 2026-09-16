@@ -10,6 +10,21 @@ EDITABLE = {"subject", "description", "priority", "type", "project", "workflow_s
             "pulse_sprint", "pulse_epic", "pulse_release", "pulse_archived", "pulse_labels"}
 
 
+@frappe.whitelist()
+def mention_options(task):
+    """Mention readers independently of the assign-down hierarchy."""
+    doc = require_permission("Task", task)
+    # This is an internal candidate scan, never an unrestricted user-directory
+    # response. Evaluate native roles, user permissions and task row scope for
+    # every recipient before exposing their identity to the editor.
+    users = frappe.get_all("User", filters={"enabled": 1, "user_type": "System User"},
+                           fields=["name", "full_name"], order_by="full_name asc, name asc",
+                           limit_page_length=0)
+    return [{"id": user.name, "label": user.full_name or user.name, "value": user.name}
+            for user in users if user.name != "Guest"
+            and frappe.has_permission("Task", "read", doc=doc, user=user.name)]
+
+
 def refresh_dependency_projects(doc, method=None):
     """Keep derived dependency project links aligned with native Task moves."""
     before = doc.get_doc_before_save()

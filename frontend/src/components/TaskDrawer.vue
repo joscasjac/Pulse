@@ -49,7 +49,7 @@
           <div class="mt-4 task-description">
             <div class="description-heading"><span>Description</span><button class="format-toggle" :aria-pressed="formattingOpen" @click="formattingOpen = !formattingOpen">Formatting</button></div>
             <TextEditor :key="task.name" :content="descriptionDraft" :fixed-menu="formattingOpen" :bubble-menu="true"
-              :mentions="assignable.map(u => ({ id: u.name, label: u.full_name || u.name }))"
+              :mentions="mentionOptions"
               :upload-args="{ doctype: 'Task', docname: task.name, is_private: 1 }"
               placeholder="Describe the work. Type @ to mention a teammate."
               editor-class="prose prose-sm min-h-16" @change="descriptionDraft = $event" />
@@ -281,6 +281,7 @@ let taskRequest = 0
 const descriptionDraft = ref('')
 const descriptionSaving = ref(false)
 const assignable = ref([])
+const mentionOptions = ref([])
 const issueTypes = ref([])
 const newCheck = ref('')
 const newComment = ref('')
@@ -337,15 +338,17 @@ async function loadTask(id) {
   drawerTab.value = 'details'
   projectName.value = ''
   formattingOpen.value = false
+  mentionOptions.value = []
   task.value = null; loadError.value = ''; activity.value = []; attachments.value = []; config.value = { statuses: [], labels: [] }
   activityError.value = ''; attachmentError.value = ''
   if (!id) return
   try {
-  const [t, users, types] = await Promise.all([
+  const [t, users, types, mentions] = await Promise.all([
     call('pulse.api.spa.get_task', { task: id }),
     assignable.value.length ? Promise.resolve(assignable.value) : call('pulse.api.spa.get_assignable_users'),
     issueTypes.value.length ? Promise.resolve(issueTypes.value)
       : call('frappe.client.get_list', { doctype: 'Task Type', fields: ['name'], limit_page_length: 0 }).then(r => r.map(x => x.name)),
+    call('pulse.api.tasks.mention_options', { task: id }),
   ])
   if (props.taskId !== id || request !== taskRequest) return
   const projectConfig = t.project ? await call('pulse.api.task_config.get_config', { project: t.project }) : { statuses: [], labels: [] }
@@ -360,6 +363,7 @@ async function loadTask(id) {
   }
   descriptionDraft.value = t.description || ''
   assignable.value = users
+  mentionOptions.value = mentions
   issueTypes.value = types
   config.value = projectConfig
   if (config.value.task_types) issueTypes.value = config.value.task_types

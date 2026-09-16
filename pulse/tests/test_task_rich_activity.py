@@ -39,6 +39,40 @@ class TestTaskRichActivity(IntegrationTestCase):
         self.assertIn(["priority", "Low", "High"], changed)
         self.assertTrue(any(change[0] == "description" and 'print(' in change[2] for change in changed))
 
+    def test_mention_suggestions_require_task_read_and_ignore_assignment_rank(self):
+        from pulse.api.tasks import mention_options
+        from pulse.services.hierarchy_service import can_assign
+        # An outsider cannot use the endpoint as a directory lookup.
+        frappe.set_user(self.user)
+        with self.assertRaises(frappe.PermissionError):
+            mention_options(self.task.name)
+        frappe.set_user("Administrator")
+        self.project.reload()
+        self.project.append("users", {"user": self.user, "welcome_email_sent": 1})
+        suffix = frappe.generate_hash(length=8)
+        junior = "mention-junior-" + suffix + "@example.com"
+        disabled = "mention-disabled-" + suffix + "@example.com"
+        for email, role in ((junior, "Pulse Junior Developer"), (disabled, "Pulse Senior Developer")):
+            frappe.get_doc({"doctype": "User", "email": email, "first_name": "Mention candidate",
+                            "send_welcome_email": 0, "roles": [{"role": role}]}).insert()
+            self.project.append("users", {"user": email, "welcome_email_sent": 1})
+        self.project.save()
+        frappe.db.set_value("User", disabled, "enabled", 0)
+        frappe.set_user(self.user)
+        self.assertFalse(can_assign(self.user, "Administrator"))
+        options = {row["id"]: row for row in mention_options(self.task.name)}
+        self.assertIn("Administrator", options)
+        self.assertIn(self.user, options)
+        self.assertNotIn(junior, options)  # Membership alone is insufficient for juniors.
+        self.assertNotIn(disabled, options)
+        self.assertEqual(options[self.user]["label"], "Activity Reader")
+        # Recheck permissions on each request rather than caching recipient lists.
+        frappe.set_user("Administrator")
+        self.project.reload()
+        self.project.set("users", [])
+        self.project.save()
+        self.assertNotIn(self.user, {row["id"] for row in mention_options(self.task.name)})
+
     def test_description_mentions_notify_only_readers_and_only_when_added(self):
         from pulse.api.tasks import bulk_update
         self.project.reload()

@@ -31,6 +31,11 @@ promoting the full backlog or deferred UI/mobile acceptance to complete.
 
 ## Release follow-up checkpoint
 
+- Task mention suggestions now use a dedicated permission-aware endpoint rather
+  than assignment hierarchy. Six rich-task integration tests and 10 frontend
+  tests pass; Chrome shows a readable higher-rank user to the restricted actor.
+  See browser-validation.md. Local follow-up only, not deployed.
+
 - Task rich-description Chrome acceptance passed for a persisted Python code
   block and selected mention. The recipient's independent Inbox received the
   mention, opened the task and retained read status. Five focused rich-task tests

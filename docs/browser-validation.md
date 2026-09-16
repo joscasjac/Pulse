@@ -1,5 +1,32 @@
 # Browser acceptance evidence
 
+## Task mention audience fix — 2026-09-16 local follow-up
+
+TaskDrawer previously reused assignment candidates for mentions, which excluded
+readable users above the actor's assignment rank and could suggest candidates
+without task access. Added task-scoped mention_options: caller must read Task;
+only enabled System Users who pass native Task read permissions are returned.
+The editor loads a fresh list for each task instead of caching assignment users
+as mention candidates. Assignment rules are unchanged. Notification delivery
+continues to recheck recipient access when saving.
+
+Six rich-task integration tests pass (3.236s), including denied caller, readable
+higher-rank Administrator, disabled user exclusion, unassigned junior exclusion,
+and membership revocation. Build and all 10 frontend tests pass. Logs:
+../.work/pulse-bench/pulse-mention-options-tests.log,
+/tmp/pulse-mention-options-build.log,
+/tmp/pulse-mention-options-frontend-tests.log.
+
+Actual Chrome as the existing restricted Senior Developer on TASK-2026-00107:
+typing @Admin displayed Administrator in People to mention. The suggestion probe
+was discarded via reload; no new mention was saved. This exercises the new
+endpoint through the actual editor; backend tests cover the negative candidates.
+Both existing local HTTP servers were restarted to load the endpoint and are
+listening on 18016/18018. Production was not modified.
+
+Remaining rich-description acceptance: authenticated editor image upload and
+save/reopen. Earlier notes about reusing assignment users are superseded here.
+
 ## Rich task code and mention acceptance — 2026-09-16 local follow-up
 
 In actual Chrome on the isolated QA site, Administrator opened synthetic
