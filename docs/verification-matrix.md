@@ -31,6 +31,13 @@ promoting the full backlog or deferred UI/mobile acceptance to complete.
 
 ## Release follow-up checkpoint
 
+- Spreadsheet column browser acceptance: actual Chrome on the isolated QA site
+  hid Project, moved Priority before Status, and enabled Points. Reload restored
+  the spreadsheet layout and exact header order. Saving a personal view and
+  reopening it from the separate Views page retained those choices. Inline Points
+  editing on the synthetic Spreadsheet inline QA task persisted as 8. See
+  browser-views-validation.md for scope; this does not verify every inline field.
+
 The user deferred mobile acceptance for the first release; the underlying mobile
 backlog remains recorded below. Sprints, Intake and Timesheets are temporarily
 hidden from navigation by request, not removed from the implementation.

@@ -1,5 +1,26 @@
 # Views browser validation
 
+## Column persistence and inline estimates — post-release follow-up
+
+Actual Chrome/CUA on `http://127.0.0.1:18016`, Administrator, existing synthetic
+project `PROJ-0035` (Browser QA September), 2026-09-16:
+
+1. Opened Spreadsheet, Display, then Grouping and columns. Initial headers were
+   Task, Status, Priority, Project, Start date, Due date.
+2. Unchecked Project, moved Priority earlier, and checked Points. Reloaded the
+   page. The restored layout was Spreadsheet and the header order was Task,
+   Priority, Status, Start date, Due date, Points; Project remained absent.
+3. Changed Points on the existing synthetic `Spreadsheet inline QA` task from
+   0 to 8 and blurred the field. The UI displayed `Task updated.`
+4. Created personal saved view `QA column persistence 2219`, navigated away,
+   opened the separate Views page and selected it. The saved view showed nine
+   project tasks, the same header order/visibility, and the task's Points value 8.
+
+This proves local per-user column/layout reload, personal saved-view restoration
+across the two entry points, and inline Points persistence against the real
+backend. It does not establish shared-view access controls, all inline property
+types or production editing. Only synthetic local data/preferences were changed.
+
 2026-09-16, isolated local QA site at `http://127.0.0.1:18016/pulse`, authenticated Administrator, Chrome through CUA only.
 
 ## Observed working
