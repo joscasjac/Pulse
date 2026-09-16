@@ -31,6 +31,12 @@ promoting the full backlog or deferred UI/mobile acceptance to complete.
 
 ## Release follow-up checkpoint
 
+- Shared-view browser acceptance passed with independent owner/restricted-user
+  sessions: private view hidden, shared view displays only permitted tasks,
+  non-owner offered copy only, private copy update/reload works, original remains
+  intact. Three focused real-backend view tests also pass, including denied API
+  update/native owner spoofing. See browser-views-validation.md for exact scope.
+
 - Spreadsheet validation recovery fixed locally: rejected negative Points now
   shows the server explanation and restores the saved value; a corrected value
   persists through reload. Build and all 10 frontend tests pass. See
@@ -226,7 +232,7 @@ Calendar/timeline/spreadsheet UI is `frontend/src/pages/Views.vue`, now embedded
 | Group by status, assignee, priority, project and label | Unverified | `groupFields` and computed `groups` include all five | Calendar/spreadsheet and Gantt now use groups. Real Gantt Status grouping showed Backlog2/Ready1 and aligned bars. Assignee/priority/project/label grouping is source-implemented but lacks retained browser execution. |
 | Show/hide/reorder columns | Unverified | Checkbox controls and move-up/down controls | Change order/visibility and restore after reload/saved view open. |
 | Nested AND/OR filters | Unverified | `frontend/src/components/views/FilterGroup.vue`, `pulse/services/view_filters.py`; `tests/test_view_filters.py` | Simple Title contains filter passed in browser; nested AND/OR result semantics and bounded invalid-tree behavior still need combined runtime/UI evidence. |
-| Saved personal/shared and cross-project views | Unverified | `save_view`, `saved_views`, saved-view permission hooks and broad task query | Three focused view tests pass ownership/spoof rejection/scoped preferences. Personal QA inline work view restored Spreadsheet, Title filter and three rows after reload. Shared-view access and cross-project UI restoration remain unobserved. |
+| Saved personal/shared and cross-project views | Verified for documented owner/member scenarios | `save_view`, `saved_views`, saved-view permission hooks and broad task query | Three focused view tests pass ownership/spoof rejection/scoped preferences. Personal QA inline work view restored Spreadsheet, Title filter and three rows after reload. Shared-view browser follow-up verifies cross-project owner results, permission-filtered member results, copy ownership and reload; see the latest evidence above. |
 | Per-user filter/layout preferences | Unverified | `preferences` API and watched configuration persistence | Focused tests pass user/project/editor isolation and ordering/weekend settings; personal saved-view layout/filter reload now passed. Independent unsaved per-user preferences and column order/visibility reload still lack explicit browser results. |
 
 ## 4. Sprints

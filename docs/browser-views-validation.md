@@ -1,5 +1,37 @@
 # Views browser validation
 
+## Shared-view permissions — 2026-09-16 (local follow-up)
+
+Actual Chrome sessions against the same isolated QA site: Administrator at
+127.0.0.1:18016 and the existing synthetic Senior Developer
+pulse-browser-ed13f2b8@example.test at permissions.localhost:18018.
+
+1. Administrator filtered Title contains `ed13f2b8`. Both Restricted secret and
+   Restricted visible tasks appeared, spanning PROJ-0223 and PROJ-0222.
+2. Saved `QA access private 2310`, then saved a shared copy named
+   `QA access shared 2310`. The owner's save panel offered Update selected view.
+3. After reload the restricted user's saved-view list included the shared view
+   and omitted the owner's private view (and other Administrator private views).
+4. Opening the shared view restored its filter and Task/Priority/Status/Start
+   date/Due date/Points columns, but rendered only Restricted visible, one task.
+   The shared configuration did not grant access to Restricted secret.
+5. Save panel explained “You can save your own copy of this shared view,” offered
+   Save as new view and omitted Update selected view. Saved an unshared copy,
+   then updated its title to `QA restricted copy updated 2310`. Reload/reopen
+   retained the renamed copy, columns and permitted task.
+6. Administrator reloaded/reopened the original shared view: its original title
+   and two-task result remained intact.
+
+Focused real-backend `pulse.tests.test_views` passed all three integration tests
+in 0.975s, exit 0. Includes denied API update and native owner-spoof save, private
+view read denial, malformed configuration and user/context preference isolation.
+Log: ../.work/pulse-bench/pulse-shared-view-tests.log. The first sandboxed run
+could not connect to local DB; the authorized unsandboxed rerun above passed.
+
+No application change was needed. Synthetic saved-view fixtures retained in QA.
+Scope is this owner/member configuration, not every role, revocation race or
+production mutation. Shared views share configuration, not underlying task access.
+
 ## Spreadsheet validation recovery — 2026-09-16 (local follow-up)
 
 Actual Chrome against the real isolated Frappe QA site, project PROJ-0035,
