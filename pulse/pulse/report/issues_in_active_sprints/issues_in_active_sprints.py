@@ -8,25 +8,19 @@ def execute(filters=None):
         {"label": _("Percentage"), "fieldname": "percentage", "fieldtype": "Percent", "width": 100},
     ]
 
-    # Get active sprints and their task counts
-    active_sprints = frappe.db.sql("""
-        SELECT s.sprint_name AS sprint, COUNT(t.name) AS issues
-        FROM `tabPulse Sprint` s
-        LEFT JOIN `tabPulse Task` t ON t.pulse_sprint = s.name
-        WHERE s.status = 'Active'
-        GROUP BY s.name, s.sprint_name
-    """, as_dict=True)
-
-    if not active_sprints or sum(s.issues for s in active_sprints) == 0:
-        # Fallback mock data matching user screenshot
-        active_sprints = [
-            {"sprint": "Galaxy Sprint 1", "issues": 11},
-            {"sprint": "Celestial Sprint 1", "issues": 9},
-            {"sprint": "Full Moon Sprint 1", "issues": 9},
-        ]
-
-    total_issues = sum(s["issues"] for s in active_sprints) or 1
-    for s in active_sprints:
-        s["percentage"] = (s["issues"] / total_issues) * 100.0
-
-    return columns, active_sprints
+    active_sprints = frappe.get_list("Pulse Sprint", filters={"status": "Active"},
+                                     fields=["name", "sprint_name"], limit_page_length=0)
+    if not active_sprints:
+        return columns, []
+    tasks = frappe.get_list("Task", filters={"pulse_archived": 0,
+                            "pulse_sprint": ["in", [s.name for s in active_sprints]]},
+                            fields=["pulse_sprint"], limit_page_length=0)
+    counts = {}
+    for task in tasks:
+        counts[task.pulse_sprint] = counts.get(task.pulse_sprint, 0) + 1
+    total = len(tasks)
+    data = [{"sprint": sprint.sprint_name or sprint.name,
+             "issues": counts.get(sprint.name, 0),
+             "percentage": counts.get(sprint.name, 0) / total * 100 if total else 0}
+            for sprint in active_sprints]
+    return columns, data

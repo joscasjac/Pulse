@@ -46,6 +46,13 @@ def generate_one(template, catch_up=False):
 
 
 def _spawn_task(doc):
+    from pulse.api.task_config import CATEGORY_STATUS, statuses_for
+
+    statuses = statuses_for(doc.project)
+    state = next((row for row in statuses if row["category"] == "To Do"), None)
+    state = state or next((row for row in statuses if row["category"] not in ("Done", "Cancelled")), None)
+    if not state:
+        frappe.throw("Recurring tasks require an open status in the project.")
     task = frappe.get_doc({
         "doctype": "Task",
         "subject": doc.subject,
@@ -54,11 +61,10 @@ def _spawn_task(doc):
         "priority": doc.priority or "Medium",
         "description": doc.description,
         "pulse_recurring": doc.name,
-        "workflow_state": "To Do",
-        "status": "Open",
+        "workflow_state": state["label"],
+        "status": CATEGORY_STATUS[state["category"]],
         "exp_end_date": doc.next_run,
     })
-    task.flags.ignore_links = True
     task.insert(ignore_permissions=True)
 
     if doc.assign_to:
@@ -71,7 +77,7 @@ def _spawn_task(doc):
 
     try:
         from pulse.api.audit import log
-        log("Task Created", "Task", task.issue_key or task.name, doc.project,
+        log("Task Created", "Task", task.name, doc.project,
             f"Recurring: {doc.subject[:120]}")
     except Exception:
         pass

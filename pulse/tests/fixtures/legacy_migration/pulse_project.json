@@ -1,0 +1,103 @@
+{
+  "doctype": "DocType",
+  "name": "Pulse Project",
+  "module": "Pulse",
+  "autoname": "field:project_name",
+  "fields": [
+    {
+      "fieldname": "details_section",
+      "fieldtype": "Section Break",
+      "label": "Details"
+    },
+    {
+      "fieldname": "project_name",
+      "fieldtype": "Data",
+      "in_list_view": 1,
+      "in_standard_filter": 1,
+      "label": "Project Name",
+      "reqd": 1
+    },
+    {
+      "default": "Open",
+      "fieldname": "status",
+      "fieldtype": "Select",
+      "in_list_view": 1,
+      "in_standard_filter": 1,
+      "label": "Status",
+      "options": "Open\nCompleted\nCancelled"
+    },
+    {
+      "fieldname": "cb1",
+      "fieldtype": "Column Break",
+      "label": "Cb1"
+    },
+    {
+      "collapsible": 1,
+      "collapsible_depends_on": "eval:doc.pulse_enable_scrum",
+      "fieldname": "section_break_scrum",
+      "fieldtype": "Section Break",
+      "label": "Scrum Settings"
+    },
+    {
+      "default": "1",
+      "fieldname": "pulse_enable_scrum",
+      "fieldtype": "Check",
+      "label": "Enable Scrum"
+    },
+    {
+      "default": "Scrum",
+      "depends_on": "eval:doc.pulse_enable_scrum",
+      "fieldname": "pulse_board_type",
+      "fieldtype": "Select",
+      "label": "Board Type",
+      "options": "Scrum\nKanban"
+    },
+    {
+      "default": "14",
+      "depends_on": "eval:doc.pulse_enable_scrum",
+      "fieldname": "pulse_default_sprint_length",
+      "fieldtype": "Int",
+      "label": "Default Sprint Length (Days)"
+    },
+    {
+      "fieldname": "cb2",
+      "fieldtype": "Column Break",
+      "label": "Cb2"
+    },
+    {
+      "depends_on": "eval:doc.pulse_enable_scrum",
+      "fieldname": "pulse_project_key",
+      "fieldtype": "Data",
+      "label": "Project Key"
+    },
+    {
+      "fieldname": "section_break_team",
+      "fieldtype": "Section Break",
+      "label": "Team"
+    },
+    {
+      "fieldname": "users",
+      "fieldtype": "Table",
+      "label": "Users",
+      "options": "Pulse Project User"
+    },
+    {
+      "fieldname": "task_counter",
+      "fieldtype": "Int",
+      "label": "Task Counter",
+      "default": "0",
+      "read_only": 1,
+      "hidden": 1
+    }
+  ],
+  "permissions": [
+    {
+      "role": "System Manager",
+      "read": 1,
+      "write": 1,
+      "create": 1,
+      "delete": 1
+    }
+  ],
+  "custom": 1
+}

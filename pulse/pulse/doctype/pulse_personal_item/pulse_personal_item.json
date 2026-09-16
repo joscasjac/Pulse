@@ -1,0 +1,55 @@
+{
+  "doctype": "DocType",
+  "name": "Pulse Personal Item",
+  "module": "Pulse",
+  "autoname": "prompt",
+  "field_order": [
+    "user",
+    "reference_doctype",
+    "reference_name",
+    "kind",
+    "last_opened"
+  ],
+  "fields": [
+    {
+      "fieldname": "user",
+      "fieldtype": "Link",
+      "label": "User",
+      "options": "User",
+      "reqd": 1
+    },
+    {
+      "fieldname": "reference_doctype",
+      "fieldtype": "Link",
+      "label": "Record type",
+      "options": "DocType",
+      "reqd": 1
+    },
+    {
+      "fieldname": "reference_name",
+      "fieldtype": "Dynamic Link",
+      "label": "Record",
+      "options": "reference_doctype",
+      "reqd": 1
+    },
+    {
+      "fieldname": "kind",
+      "fieldtype": "Select",
+      "label": "Kind",
+      "options": "Recent\nFavorite\nFollow",
+      "reqd": 1
+    },
+    {
+      "fieldname": "last_opened",
+      "fieldtype": "Datetime",
+      "label": "Last opened"
+    }
+  ],
+  "permissions": [
+    {
+      "role": "All",
+      "read": 1
+    }
+  ],
+  "track_changes": 0
+}

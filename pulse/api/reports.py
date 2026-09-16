@@ -50,7 +50,7 @@ def sprint_options(project=None):
     filters = {}
     if project:
         filters["project"] = project
-    return frappe.get_all(
+    return frappe.get_list(
         "Pulse Sprint", filters=filters,
         fields=["name", "sprint_name", "status", "project"],
         order_by="start_date desc", limit_page_length=0,
@@ -75,3 +75,37 @@ def run_report(report, project=None, sprint=None):
         "columns": columns or [],
         "data": data or [],
     }
+
+
+def sprint_history_report(filters=None):
+    """Historical chart data starts at the first actual observation, never backfilled."""
+    from pulse.api.planning import _sprint
+    from pulse.api.sprint_history import read_events
+    from pulse.utils.sprint_metrics import replay
+    from frappe.utils import getdate
+    filters = filters or {}
+    name = filters.get("sprint")
+    if not name and filters.get("project"):
+        candidates = frappe.get_list("Pulse Sprint", filters={"project": filters['project'], "status": "Active"}, pluck="name")
+        name = candidates[0] if candidates else None
+    if not name:
+        return [], []
+    sprint = _sprint(name)
+    if not sprint.get("history_started_at"):
+        frappe.throw("Historical data is unavailable for this sprint; no baseline was recorded.")
+    if not sprint.start_date or not sprint.end_date:
+        return [], []
+    start = max(getdate(sprint.start_date), getdate(sprint.history_started_at))
+    end = min(getdate(sprint.end_date), getdate(sprint.closed_at)) if sprint.get('closed_at') else getdate(sprint.end_date)
+    events = read_events(sprint)
+    measure = sprint.get('progress_measure') or 'Tasks'
+    baseline_scope = sum(1 if measure == 'Tasks' else float(e['state'].get(measure.lower(), 0) or 0)
+                         for e in events if e['kind'] == 'Baseline' and e['state']['present'])
+    data = replay(events, start, end, measure, today=getdate(),
+                  baseline_scope=baseline_scope, ideal_end=sprint.end_date)
+    columns = [{"label": label, "fieldname": name, "fieldtype": kind, "width": 145}
+               for name, label, kind in [("date", "Date", "Date"), ("scope", "Scope", "Float"),
+                                        ("completed", "Completed", "Float"),
+                                        ("ideal_remaining", "Ideal Remaining", "Float"),
+                                        ("actual_remaining", "Actual Remaining", "Float")]]
+    return columns, data

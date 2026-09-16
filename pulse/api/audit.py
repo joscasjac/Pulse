@@ -38,7 +38,7 @@ def get_audit_log(limit=150, project=None, user=None):
         act_filters["project"] = project
     if user:
         act_filters["user"] = user
-    for a in frappe.get_all(
+    for a in frappe.get_list(
         "Pulse Activity Log", filters=act_filters,
         fields=["name", "user", "activity_type", "reference_doctype",
                 "reference_name", "project", "description", "creation"],
@@ -56,7 +56,7 @@ def get_audit_log(limit=150, project=None, user=None):
         st_filters["project"] = project
     if user:
         st_filters["changed_by"] = user
-    for s in frappe.get_all(
+    for s in frappe.get_list(
         "Pulse Task Status Log", filters=st_filters,
         fields=["task", "project", "from_state", "to_state", "changed_by", "changed_on"],
         order_by="changed_on desc", limit=limit,

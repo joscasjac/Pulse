@@ -8,6 +8,7 @@ import json
 
 import frappe
 from frappe.utils import today
+from pulse.hooks.permissions import require_permission
 
 
 def _cadence(count, unit):
@@ -21,7 +22,7 @@ def list_recurring(project=None):
     filters = {}
     if project:
         filters["project"] = project
-    rows = frappe.get_all(
+    rows = frappe.get_list(
         "Pulse Recurring Task", filters=filters,
         fields=["name", "subject", "project", "task_type", "priority", "assign_to",
                 "interval_count", "interval_unit", "start_date",
@@ -39,6 +40,7 @@ def create_recurring(subject, project, interval_count=1, interval_unit="Week",
                      assign_to=None, description=None, start_date=None,
                      generate_now=1):
     """Create a recurring template. By default generates the first task at once."""
+    require_permission("Project", project)
     doc = frappe.get_doc({
         "doctype": "Pulse Recurring Task",
         "subject": subject,
@@ -65,7 +67,9 @@ def create_recurring(subject, project, interval_count=1, interval_unit="Week",
 
 @frappe.whitelist()
 def update_recurring(name, **fields):
-    doc = frappe.get_doc("Pulse Recurring Task", name)
+    doc = require_permission("Pulse Recurring Task", name, "write")
+    if fields.get("project"):
+        require_permission("Project", fields["project"])
     allowed = {"subject", "project", "task_type", "priority", "assign_to",
                "interval_count", "interval_unit", "start_date",
                "next_run", "description"}
@@ -79,6 +83,7 @@ def update_recurring(name, **fields):
 
 @frappe.whitelist()
 def toggle_recurring(name, is_active):
+    require_permission("Pulse Recurring Task", name, "write")
     active = 1 if str(is_active) in ("1", "true", "True") else 0
     frappe.db.set_value("Pulse Recurring Task", name, "is_active", active)
     frappe.db.commit()
@@ -87,7 +92,7 @@ def toggle_recurring(name, is_active):
 
 @frappe.whitelist()
 def delete_recurring(name):
-    frappe.delete_doc("Pulse Recurring Task", name, ignore_permissions=True)
+    frappe.delete_doc("Pulse Recurring Task", name)
     frappe.db.commit()
     return {"ok": True}
 
@@ -95,5 +100,6 @@ def delete_recurring(name):
 @frappe.whitelist()
 def generate_now(name):
     """Manually spawn the next task from a template now."""
+    require_permission("Pulse Recurring Task", name, "write")
     from pulse.scheduled.recurring import generate_one
     return {"generated": generate_one(name, catch_up=False)}

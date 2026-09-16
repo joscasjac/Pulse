@@ -10,6 +10,7 @@ down ntfy server can never block or break a task save.
 """
 
 import re
+from html import escape
 
 import frappe
 from frappe.utils import get_url
@@ -65,10 +66,13 @@ def _email(user, subject, message, click=None):
     if not user or user in ("Guest", "Administrator") or not email_enabled():
         return
     try:
-        recipient = frappe.db.get_value("User", user, "email") or user
-        body = message.replace("\n", "<br>")
+        account = frappe.db.get_value("User", user, ["email", "enabled"], as_dict=True)
+        if not account or not account.enabled or not account.email:
+            return
+        recipient = account.email
+        body = escape(message or "").replace("\n", "<br>")
         if click:
-            body += f'<br><br><a href="{click}">Open in Pulse</a>'
+            body += f'<br><br><a href="{escape(click, quote=True)}">Open in Pulse</a>'
         frappe.sendmail(recipients=[recipient], subject=f"[Pulse] {subject}",
                         message=body, now=False)
     except Exception:
@@ -121,7 +125,7 @@ def on_todo_after_insert(doc, method=None):
         return
     t = frappe.db.get_value("Task", doc.get("reference_name"),
                             ["issue_key", "subject"], as_dict=True)
-    if not t:
+    if not t or not frappe.has_permission("Task", "read", doc=doc.reference_name, user=who):
         return
     key = t.issue_key or doc.get("reference_name")
     _dispatch(who, "Task assigned to you",
@@ -151,6 +155,8 @@ def notify_task_completed(doc):
     recipients.discard(None)
     recipients.discard(completer)  # don't notify the person who completed it
     for u in recipients:
+        if not frappe.has_permission("Task", "read", doc=doc.name, user=u):
+            continue
         _dispatch(u, "Task completed",
                   f"{key}: {doc.subject}\ncompleted by {completer}",
                   tags="white_check_mark", click=_pulse_url())

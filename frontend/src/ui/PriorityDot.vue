@@ -1,26 +1,21 @@
 <template>
-  <span class="prio" :style="{ color: c }" :title="`Priority: ${value || 'None'}`">
-    <span class="bars">
-      <i v-for="n in 3" :key="n" :style="{ background: n <= level ? c : 'var(--border)' }" />
-    </span>
-    <span v-if="showLabel" class="lbl">{{ value }}</span>
+  <span class="prio" :style="{ color: color }" :title="`Priority: ${value || 'None'}`">
+    <svg viewBox="0 0 16 16" class="priority-icon" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" aria-hidden="true">
+      <template v-if="urgent"><rect x="1.5" y="1.5" width="13" height="13" rx="3"/><path d="M8 4.5v4M8 11.5h.01"/></template>
+      <template v-else-if="!level"><circle cx="8" cy="8" r="6"/><path d="m4 4 8 8"/></template>
+      <template v-else><path v-for="n in 4" :key="n" :d="`M${2 + (n - 1) * 4} 13v-${n * 3 - 2}`" :opacity="n <= level + 1 ? 1 : .18"/></template>
+    </svg>
+    <span v-if="showLabel">{{ value || 'None' }}</span>
   </span>
 </template>
-
 <script setup>
 import { computed } from 'vue'
 const props = defineProps({ value: { type: String, default: '' }, showLabel: { type: Boolean, default: false } })
-const LEVEL = { Low: 1, Medium: 2, High: 3, Critical: 3, Urgent: 3 }
-const COLOR = { Low: 'var(--muted)', Medium: '#f5b45a', High: '#f59e0b', Critical: '#f2726d', Urgent: '#f2726d' }
-const level = computed(() => LEVEL[props.value] || 0)
-const c = computed(() => COLOR[props.value] || 'var(--muted)')
+const level = computed(() => ({ Low: 1, Medium: 2, High: 3 }[props.value] || 0))
+const urgent = computed(() => ['Urgent', 'Critical'].includes(props.value))
+const color = computed(() => ({ Low: '#6172f3', Medium: '#e69b24', High: '#f97316', Urgent: '#ef4444', Critical: '#ef4444' }[props.value] || 'var(--muted)'))
 </script>
-
 <style scoped>
-.prio { display: inline-flex; align-items: center; gap: 6px; font-size: 11px; }
-.bars { display: inline-flex; align-items: flex-end; gap: 1.5px; height: 10px; }
-.bars i { width: 3px; border-radius: 1px; }
-.bars i:nth-child(1) { height: 5px; }
-.bars i:nth-child(2) { height: 8px; }
-.bars i:nth-child(3) { height: 10px; }
+.prio { display: inline-flex; align-items: center; gap: 5px; font-size: 11px; }
+.priority-icon { width: 14px; height: 14px; flex-shrink: 0; }
 </style>

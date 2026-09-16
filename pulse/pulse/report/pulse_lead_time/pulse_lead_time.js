@@ -4,7 +4,7 @@ frappe.query_reports["Pulse Lead Time"] = {
             "fieldname": "project",
             "label": __("Project"),
             "fieldtype": "Link",
-            "options": "Pulse Project",
+            "options": "Project",
             "reqd": 1
         },
         {

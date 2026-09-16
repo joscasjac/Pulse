@@ -1,24 +1,7 @@
-"""Sprint lifecycle automation."""
-
-import frappe
-from frappe.utils import today
+"""Sprint closure is an explicit planning decision, never an automatic date change."""
 
 
 def auto_close_sprints():
-	"""Complete any Active sprint whose end_date has passed.
-
-	Saving through the document API runs validate/on_update, which captures
-	velocity (completed task count at close).
-	"""
-	due = frappe.get_all(
-		"Pulse Sprint",
-		filters={"status": "Active", "end_date": ["<", today()]},
-		pluck="name",
-	)
-	for name in due:
-		try:
-			sprint = frappe.get_doc("Pulse Sprint", name)
-			sprint.status = "Completed"
-			sprint.save(ignore_permissions=True)
-		except Exception:
-			frappe.log_error(title="Pulse: auto-close sprint failed", message=frappe.get_traceback())
+    # Retained as a no-op for existing scheduler configurations. Managers choose
+    # backlog/next/retain through planning.close_sprint; dates do not imply done.
+    return

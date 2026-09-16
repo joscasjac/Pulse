@@ -15,7 +15,7 @@ def snapshot_burndown():
         return
     rows = frappe.get_all(
         "Task",
-        filters={"pulse_sprint": ["in", active]},
+        filters={"pulse_sprint": ["in", active], "pulse_archived": 0},
         fields=["pulse_sprint", "status", "workflow_state"],
     )
     planned = {}
@@ -24,7 +24,7 @@ def snapshot_burndown():
         sprint = r.pulse_sprint
         planned[sprint] = planned.get(sprint, 0) + 1
         completed.setdefault(sprint, 0)
-        if r.workflow_state == "Done" or r.status == "Completed":
+        if r.status == "Completed":
             completed[sprint] += 1
     for name in active:
         try:

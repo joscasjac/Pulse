@@ -1,0 +1,2 @@
+import{_ as t,a,b as r,L as s}from"./index-x6rkeYHd.js";const i={__name:"Skeleton",props:{width:{type:String,default:"100%"},height:{type:String,default:"14px"},radius:{type:String,default:"6px"}},setup(e){return(n,d)=>(a(),r("span",{class:"sk",style:s({width:e.width,height:e.height,borderRadius:e.radius}),"aria-hidden":"true"},null,4))}},o=t(i,[["__scopeId","data-v-176d6208"]]);export{o as S};
+//# sourceMappingURL=Skeleton-CZleR8eb.js.map

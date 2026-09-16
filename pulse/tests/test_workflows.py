@@ -14,15 +14,16 @@ from frappe.tests import IntegrationTestCase
 class TestPulseWorkflows(IntegrationTestCase):
     def setUp(self):
         frappe.set_user("Administrator")
-        from pulse.erpnext_bridge import ensure_custom_fields, ensure_default_company
-        ensure_custom_fields()
+        from pulse.erpnext_bridge import ensure_default_company
         ensure_default_company()
         from pulse.api import spa
         self.project = spa.save_entity(json.dumps({
-            "doctype": "Project", "project_name": "PYTEST Project", "status": "Open",
+            "doctype": "Project", "project_name": "PYTEST Project " + frappe.generate_hash(length=8), "status": "Open",
         }))["name"]
 
     def tearDown(self):
+        for name in frappe.get_all("Timesheet Detail", filters={"project": self.project}, pluck="parent"):
+            frappe.delete_doc("Timesheet", name, force=True, ignore_permissions=True)
         for t in frappe.get_all("Task", filters={"project": self.project}, pluck="name"):
             frappe.db.set_value("Task", t, "pulse_recurring", None)
             frappe.db.set_value("Task", t, "parent_task", None)
@@ -42,6 +43,18 @@ class TestPulseWorkflows(IntegrationTestCase):
         t = spa.create_task(project=self.project, subject="crud", state="To Do")
         self.assertTrue(t["issue_key"])
         self.assertEqual(frappe.db.get_value("Task", t["name"], "workflow_state"), "To Do")
+
+    def test_task_audit_uses_native_record_names(self):
+        from pulse.api import spa
+        task = spa.create_task(project=self.project, subject="Audit native links", state="Backlog")
+        spa.update_task_state(task['name'], 'In Progress')
+        spa.add_comment(task['name'], 'Audit comment')
+        rows = frappe.get_all('Pulse Activity Log', filters={
+            'reference_doctype': 'Task', 'reference_name': task['name']},
+            pluck='activity_type')
+        self.assertTrue({'Task Created', 'Status Changed', 'Comment Added'}.issubset(set(rows)))
+        self.assertFalse(frappe.db.exists('Pulse Activity Log', {
+            'reference_doctype': 'Task', 'reference_name': task['issue_key']}))
 
     def test_update_and_move_state(self):
         from pulse.api import spa
@@ -66,15 +79,23 @@ class TestPulseWorkflows(IntegrationTestCase):
         spa.add_subtask(t["name"], "child")
         self.assertEqual(frappe.db.get_value("Task", t["name"], "is_group"), 1)
 
-    # --- regression: deleting a task that has logged time must succeed ---
+    # --- regression: time history must survive attempted task deletion ---
     def test_delete_task_with_logged_time(self):
         from pulse.api import spa
         from pulse.api import time as timeapi
         t = spa.create_task(project=self.project, subject="timed", state="To Do")
-        timeapi.log_time(t["name"], 1.5, note="x")
+        # Use a free interval: this QA site can contain legitimate manual time
+        # entries for the same user, and ERPNext correctly rejects overlap.
+        from datetime import timedelta
+        from frappe.utils import get_datetime, now_datetime
+        entries = timeapi._entries(user=frappe.session.user)
+        start = max([now_datetime(), *[get_datetime(row["to_time"]) for row in entries]]) + timedelta(days=1)
+        timeapi.log_time(t["name"], 1.5, note="x", from_time=start)
         self.assertGreaterEqual(timeapi.get_task_time(t["name"]), 1.5)
-        spa.delete_task(t["name"])
-        self.assertFalse(frappe.db.exists("Task", t["name"]))
+        with self.assertRaises(frappe.ValidationError):
+            spa.delete_task(t["name"])
+        self.assertTrue(frappe.db.exists("Task", t["name"]))
+        self.assertGreaterEqual(timeapi.get_task_time(t["name"]), 1.5)
 
     # --- regression: issue keys never collide, even after deletions ---
     def test_issue_keys_unique_after_deletion(self):

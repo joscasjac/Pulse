@@ -21,11 +21,11 @@ const TONES = {
   High: 'amber', Critical: 'red', Urgent: 'red', Medium: 'amber', Low: 'muted',
 }
 const COLORS = {
-  green: ['#34d399', 'rgba(52,211,153,0.13)'],
-  amber: ['#f5b45a', 'rgba(245,180,90,0.13)'],
-  blue: ['#6aa9ff', 'rgba(106,169,255,0.13)'],
-  violet: ['#b491ff', 'rgba(180,145,255,0.13)'],
-  red: ['#f2726d', 'rgba(242,114,109,0.13)'],
+  green: ['var(--status-green)', 'color-mix(in srgb, var(--status-green) 9%, var(--surface))'],
+  amber: ['var(--status-amber)', 'color-mix(in srgb, var(--status-amber) 9%, var(--surface))'],
+  blue: ['var(--status-blue)', 'color-mix(in srgb, var(--status-blue) 9%, var(--surface))'],
+  violet: ['var(--status-violet)', 'color-mix(in srgb, var(--status-violet) 9%, var(--surface))'],
+  red: ['var(--status-red)', 'color-mix(in srgb, var(--status-red) 9%, var(--surface))'],
   muted: ['var(--muted)', 'var(--surface-2)'],
 }
 const c = computed(() => {

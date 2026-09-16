@@ -1,0 +1,56 @@
+{
+  "doctype": "DocType",
+  "name": "Pulse Request Activity",
+  "module": "Pulse",
+  "autoname": "hash",
+  "engine": "InnoDB",
+  "istable": 1,
+  "field_order": [
+    "action",
+    "status",
+    "note",
+    "by",
+    "at",
+    "reviewer",
+    "duplicate_of"
+  ],
+  "fields": [
+    {
+      "fieldname": "action",
+      "fieldtype": "Data",
+      "label": "Action"
+    },
+    {
+      "fieldname": "status",
+      "fieldtype": "Data",
+      "label": "Status"
+    },
+    {
+      "fieldname": "note",
+      "fieldtype": "Small Text",
+      "label": "Note"
+    },
+    {
+      "fieldname": "by",
+      "fieldtype": "Link",
+      "label": "By",
+      "options": "User"
+    },
+    {
+      "fieldname": "at",
+      "fieldtype": "Datetime",
+      "label": "At"
+    },
+    {
+      "fieldname": "reviewer",
+      "fieldtype": "Data",
+      "label": "Reviewer"
+    },
+    {
+      "fieldname": "duplicate_of",
+      "fieldtype": "Data",
+      "label": "Duplicate of"
+    }
+  ],
+  "permissions": []
+}

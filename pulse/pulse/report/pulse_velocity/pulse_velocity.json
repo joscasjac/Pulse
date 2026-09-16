@@ -17,14 +17,28 @@
  "prepared_report": 0,
  "ref_doctype": "Pulse Sprint",
  "report_name": "Pulse Velocity",
- "report_type": "Query Report",
+ "report_type": "Script Report",
  "roles": [
-  {"role": "Pulse Admin"},
-  {"role": "Pulse Manager"},
-  {"role": "Pulse Team Lead"},
-  {"role": "Pulse Senior Developer"},
-  {"role": "Pulse Junior Developer"},
-  {"role": "Pulse Intern"},
-  {"role": "Pulse Viewer"}
+  {
+   "role": "Pulse Admin"
+  },
+  {
+   "role": "Pulse Manager"
+  },
+  {
+   "role": "Pulse Team Lead"
+  },
+  {
+   "role": "Pulse Senior Developer"
+  },
+  {
+   "role": "Pulse Junior Developer"
+  },
+  {
+   "role": "Pulse Intern"
+  },
+  {
+   "role": "Pulse Viewer"
+  }
  ]
 }

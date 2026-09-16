@@ -1,157 +1,255 @@
 {
- "actions": [],
- "allow_rename": 1,
- "autoname": "format:SPR-{project}-{####}",
- "creation": "2026-07-02 00:00:00.000000",
- "doctype": "DocType",
- "editable_grid": 1,
- "engine": "InnoDB",
- "field_order": [
-  "details_section",
-  "sprint_name",
-  "project",
-  "status",
-  "column_break_1",
-  "start_date",
-  "end_date",
-  "is_active",
-  "goal_section",
-  "goal",
-  "metrics_section",
-  "planned_tasks",
-  "completed_tasks",
-  "column_break_2",
-  "velocity"
- ],
- "fields": [
-  {
-   "fieldname": "details_section",
-   "fieldtype": "Section Break",
-   "label": "Details"
-  },
-  {
-   "fieldname": "sprint_name",
-   "fieldtype": "Data",
-   "in_list_view": 1,
-   "in_standard_filter": 1,
-   "label": "Sprint Name",
-   "reqd": 1
-  },
-  {
-   "fieldname": "project",
-   "fieldtype": "Link",
-   "in_list_view": 1,
-   "in_standard_filter": 1,
-   "label": "Project",
-   "options": "Project",
-   "reqd": 1
-  },
-  {
-   "default": "Planned",
-   "fieldname": "status",
-   "fieldtype": "Select",
-   "in_list_view": 1,
-   "in_standard_filter": 1,
-   "label": "Status",
-   "options": "Planned\nActive\nCompleted",
-   "reqd": 1
-  },
-  {
-   "fieldname": "column_break_1",
-   "fieldtype": "Column Break"
-  },
-  {
-   "fieldname": "start_date",
-   "fieldtype": "Date",
-   "label": "Start Date"
-  },
-  {
-   "fieldname": "end_date",
-   "fieldtype": "Date",
-   "label": "End Date"
-  },
-  {
-   "default": "0",
-   "description": "Only one sprint per project may be Active at a time.",
-   "fieldname": "is_active",
-   "fieldtype": "Check",
-   "label": "Is Active",
-   "read_only": 1
-  },
-  {
-   "fieldname": "goal_section",
-   "fieldtype": "Section Break",
-   "label": "Sprint Goal"
-  },
-  {
-   "fieldname": "goal",
-   "fieldtype": "Small Text",
-   "label": "Goal"
-  },
-  {
-   "collapsible": 1,
-   "fieldname": "metrics_section",
-   "fieldtype": "Section Break",
-   "label": "Metrics"
-  },
-  {
-   "description": "Number of tasks committed to this sprint.",
-   "fieldname": "planned_tasks",
-   "fieldtype": "Int",
-   "label": "Planned Tasks",
-   "read_only": 1
-  },
-  {
-   "description": "Number of tasks completed in this sprint.",
-   "fieldname": "completed_tasks",
-   "fieldtype": "Int",
-   "label": "Completed Tasks",
-   "read_only": 1
-  },
-  {
-   "fieldname": "column_break_2",
-   "fieldtype": "Column Break"
-  },
-  {
-   "description": "Tasks completed, captured when the sprint is closed.",
-   "fieldname": "velocity",
-   "fieldtype": "Int",
-   "label": "Velocity (tasks)",
-   "read_only": 1
-  }
- ],
- "index_web_pages_for_search": 1,
- "links": [],
- "modified": "2026-07-02 00:00:00.000000",
- "modified_by": "Administrator",
- "module": "Pulse",
- "name": "Pulse Sprint",
- "naming_rule": "Expression",
- "owner": "Administrator",
- "permissions": [
-  {
-   "create": 1, "delete": 1, "email": 1, "export": 1, "print": 1,
-   "read": 1, "report": 1, "role": "System Manager", "share": 1, "write": 1
-  },
-  {
-   "create": 1, "delete": 1, "email": 1, "export": 1, "print": 1,
-   "read": 1, "report": 1, "role": "Pulse Admin", "share": 1, "write": 1
-  },
-  {
-   "create": 1, "delete": 1, "email": 1, "export": 1, "print": 1,
-   "read": 1, "report": 1, "role": "Pulse Manager", "share": 1, "write": 1
-  },
-  {
-   "create": 1, "delete": 0, "email": 1, "export": 1, "print": 1,
-   "read": 1, "report": 1, "role": "Pulse Team Lead", "share": 1, "write": 1
-  },
-  {"read": 1, "role": "Pulse Senior Developer"},
-  {"read": 1, "role": "Pulse Junior Developer"},
-  {"read": 1, "role": "Pulse Intern"},
-  {"read": 1, "role": "Pulse Viewer"}
- ],
- "sort_field": "modified",
- "sort_order": "DESC",
- "title_field": "sprint_name",
- "track_changes": 1
+  "actions": [],
+  "allow_rename": 1,
+  "autoname": "format:SPR-{project}-{####}",
+  "creation": "2026-07-02 00:00:00.000000",
+  "doctype": "DocType",
+  "editable_grid": 1,
+  "engine": "InnoDB",
+  "field_order": [
+    "details_section",
+    "sprint_name",
+    "project",
+    "status",
+    "column_break_1",
+    "start_date",
+    "end_date",
+    "is_active",
+    "goal_section",
+    "goal",
+    "metrics_section",
+    "planned_tasks",
+    "completed_tasks",
+    "column_break_2",
+    "velocity",
+    "progress_measure",
+    "history_started_at",
+    "closed_at",
+    "closure_summary"
+  ],
+  "fields": [
+    {
+      "fieldname": "details_section",
+      "fieldtype": "Section Break",
+      "label": "Details"
+    },
+    {
+      "fieldname": "sprint_name",
+      "fieldtype": "Data",
+      "in_list_view": 1,
+      "in_standard_filter": 1,
+      "label": "Sprint Name",
+      "reqd": 1
+    },
+    {
+      "fieldname": "project",
+      "fieldtype": "Link",
+      "in_list_view": 1,
+      "in_standard_filter": 1,
+      "label": "Project",
+      "options": "Project",
+      "reqd": 1
+    },
+    {
+      "default": "Planned",
+      "fieldname": "status",
+      "fieldtype": "Select",
+      "in_list_view": 1,
+      "in_standard_filter": 1,
+      "label": "Status",
+      "options": "Planned\nActive\nCompleted",
+      "reqd": 1
+    },
+    {
+      "fieldname": "column_break_1",
+      "fieldtype": "Column Break"
+    },
+    {
+      "fieldname": "start_date",
+      "fieldtype": "Date",
+      "label": "Start Date"
+    },
+    {
+      "fieldname": "end_date",
+      "fieldtype": "Date",
+      "label": "End Date"
+    },
+    {
+      "default": "0",
+      "description": "Only one sprint per project may be Active at a time.",
+      "fieldname": "is_active",
+      "fieldtype": "Check",
+      "label": "Is Active",
+      "read_only": 1
+    },
+    {
+      "fieldname": "goal_section",
+      "fieldtype": "Section Break",
+      "label": "Sprint Goal"
+    },
+    {
+      "fieldname": "goal",
+      "fieldtype": "Small Text",
+      "label": "Goal"
+    },
+    {
+      "collapsible": 1,
+      "fieldname": "metrics_section",
+      "fieldtype": "Section Break",
+      "label": "Metrics"
+    },
+    {
+      "description": "Number of tasks committed to this sprint.",
+      "fieldname": "planned_tasks",
+      "fieldtype": "Int",
+      "label": "Planned Tasks",
+      "read_only": 1
+    },
+    {
+      "description": "Number of tasks completed in this sprint.",
+      "fieldname": "completed_tasks",
+      "fieldtype": "Int",
+      "label": "Completed Tasks",
+      "read_only": 1
+    },
+    {
+      "fieldname": "column_break_2",
+      "fieldtype": "Column Break"
+    },
+    {
+      "description": "Tasks completed, captured when the sprint is closed.",
+      "fieldname": "velocity",
+      "fieldtype": "Int",
+      "label": "Velocity (tasks)",
+      "read_only": 1
+    },
+    {
+      "fieldname": "progress_measure",
+      "label": "Progress Measure",
+      "fieldtype": "Select",
+      "options": "Tasks\nHours\nPoints",
+      "default": "Tasks"
+    },
+    {
+      "fieldname": "history_started_at",
+      "label": "History Started At",
+      "fieldtype": "Datetime",
+      "read_only": 1
+    },
+    {
+      "fieldname": "closed_at",
+      "label": "Closed At",
+      "fieldtype": "Datetime",
+      "read_only": 1
+    },
+    {
+      "fieldname": "closure_summary",
+      "label": "Closure Summary",
+      "fieldtype": "Long Text",
+      "read_only": 1,
+      "permlevel": 1
+    }
+  ],
+  "index_web_pages_for_search": 1,
+  "links": [],
+  "modified": "2026-07-02 00:00:00.000000",
+  "modified_by": "Administrator",
+  "module": "Pulse",
+  "name": "Pulse Sprint",
+  "naming_rule": "Expression",
+  "owner": "Administrator",
+  "permissions": [
+    {
+      "create": 1,
+      "delete": 1,
+      "email": 1,
+      "export": 1,
+      "print": 1,
+      "read": 1,
+      "report": 1,
+      "role": "System Manager",
+      "share": 1,
+      "write": 1
+    },
+    {
+      "create": 1,
+      "delete": 1,
+      "email": 1,
+      "export": 1,
+      "print": 1,
+      "read": 1,
+      "report": 1,
+      "role": "Pulse Admin",
+      "share": 1,
+      "write": 1
+    },
+    {
+      "create": 1,
+      "delete": 1,
+      "email": 1,
+      "export": 1,
+      "print": 1,
+      "read": 1,
+      "report": 1,
+      "role": "Pulse Manager",
+      "share": 1,
+      "write": 1
+    },
+    {
+      "create": 1,
+      "delete": 0,
+      "email": 1,
+      "export": 1,
+      "print": 1,
+      "read": 1,
+      "report": 1,
+      "role": "Pulse Team Lead",
+      "share": 1,
+      "write": 1
+    },
+    {
+      "read": 1,
+      "role": "Pulse Senior Developer"
+    },
+    {
+      "read": 1,
+      "role": "Pulse Junior Developer"
+    },
+    {
+      "read": 1,
+      "role": "Pulse Intern"
+    },
+    {
+      "read": 1,
+      "role": "Pulse Viewer"
+    },
+    {
+      "role": "System Manager",
+      "permlevel": 1,
+      "read": 1,
+      "write": 1
+    },
+    {
+      "role": "Pulse Admin",
+      "permlevel": 1,
+      "read": 1,
+      "write": 1
+    },
+    {
+      "role": "Pulse Manager",
+      "permlevel": 1,
+      "read": 1,
+      "write": 1
+    },
+    {
+      "role": "Pulse Team Lead",
+      "permlevel": 1,
+      "read": 1,
+      "write": 1
+    }
+  ],
+  "sort_field": "modified",
+  "sort_order": "DESC",
+  "title_field": "sprint_name",
+  "track_changes": 1
 }

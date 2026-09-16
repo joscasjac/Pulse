@@ -5,6 +5,17 @@ import path from 'path'
 
 export default defineConfig({
   plugins: [
+    {
+      name: 'pulse-stable-mention-popup',
+      enforce: 'pre',
+      resolveId(source, importer) {
+        // TipTap 3 starts suggestions before async items arrive. Keep a stable
+        // element for Frappe UI's popup renderer even when that list is empty.
+        if (source === '../suggestion/SuggestionList.vue' && importer?.endsWith('/mention/mention-extension.ts')) {
+          return path.resolve(__dirname, 'src/components/documents/MentionSuggestions.vue')
+        }
+      },
+    },
     frappeui({
       frontendRoute: '/pulse',
       lucideIcons: true,

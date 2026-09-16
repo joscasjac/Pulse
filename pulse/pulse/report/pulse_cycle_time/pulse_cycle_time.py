@@ -15,7 +15,12 @@ def execute(filters=None):
     if not project:
         return [], []
 
-    conditions = ["t.project = %(project)s"]
+    from pulse.hooks.permissions import require_permission
+    require_permission("Project", project)
+    visible = frappe.get_list("Task", filters={"project": project}, pluck="name", limit_page_length=0)
+    if not visible:
+        return [], []
+    conditions = ["t.project = %(project)s", "t.name IN %(visible)s"]
     if sprint:
         conditions.append("t.pulse_sprint = %(sprint)s")
     if from_date:
@@ -23,7 +28,7 @@ def execute(filters=None):
     if to_date:
         conditions.append("dn.done_on <= %(to_date)s")
     if task_type:
-        conditions.append("t.task_type = %(task_type)s")
+        conditions.append("t.type = %(task_type)s")
     if assignee:
         conditions.append("t._assign like %(assignee)s")
 
@@ -32,7 +37,7 @@ def execute(filters=None):
         SELECT
             ip.task,
             t.subject,
-            t.task_type AS type,
+            t.type AS type,
             ip.started_on,
             dn.done_on,
             t.project,
@@ -49,13 +54,14 @@ def execute(filters=None):
             WHERE to_state = 'Done' AND project = %(project)s
             GROUP BY task
         ) dn ON dn.task = ip.task
-        JOIN `tabPulse Task` t ON t.name = ip.task
+        JOIN `tabTask` t ON t.name = ip.task
         WHERE ip.started_on < dn.done_on
         AND {" AND ".join(conditions)}
         ORDER BY dn.done_on DESC
         """,
         {
             "project": project,
+            "visible": tuple(visible),
             "sprint": sprint,
             "from_date": from_date,
             "to_date": to_date,
@@ -81,7 +87,7 @@ def execute(filters=None):
             "label": _("Task"),
             "fieldname": "task",
             "fieldtype": "Link",
-            "options": "Pulse Task",
+            "options": "Task",
             "width": 150,
         },
         {
@@ -123,7 +129,7 @@ def execute(filters=None):
 
 
 def get_holiday_list(project):
-    holiday_list = frappe.db.get_value("Pulse Project", project, "holiday_list")
+    holiday_list = frappe.db.get_value("Project", project, "holiday_list")
     if not holiday_list:
         holiday_list = frappe.db.get_single_value(
             "Pulse Settings", "working_days_source"

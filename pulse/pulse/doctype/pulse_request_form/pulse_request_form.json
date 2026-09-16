@@ -1,0 +1,63 @@
+{
+  "doctype": "DocType",
+  "name": "Pulse Request Form",
+  "module": "Pulse",
+  "autoname": "hash",
+  "engine": "InnoDB",
+  "field_order": [
+    "project",
+    "enabled",
+    "public_title",
+    "public_description",
+    "access_key"
+  ],
+  "fields": [
+    {
+      "fieldname": "project",
+      "fieldtype": "Link",
+      "options": "Project",
+      "label": "Project",
+      "reqd": 1,
+      "unique": 1
+    },
+    {
+      "fieldname": "enabled",
+      "fieldtype": "Check",
+      "label": "Enabled",
+      "default": "0"
+    },
+    {
+      "fieldname": "public_title",
+      "fieldtype": "Data",
+      "label": "Public title",
+      "reqd": 1
+    },
+    {
+      "fieldname": "public_description",
+      "fieldtype": "Small Text",
+      "label": "Public instructions"
+    },
+    {
+      "fieldname": "access_key",
+      "fieldtype": "Data",
+      "label": "Access key",
+      "read_only": 1,
+      "hidden": 1,
+      "unique": 1
+    }
+  ],
+  "permissions": [
+    {
+      "role": "System Manager",
+      "read": 1,
+      "create": 1,
+      "write": 1
+    },
+    {
+      "role": "Pulse Admin",
+      "read": 1,
+      "create": 1,
+      "write": 1
+    }
+  ]
+}

@@ -1,0 +1,48 @@
+{
+  "doctype": "DocType",
+  "name": "Pulse Sprint Event",
+  "module": "Pulse",
+  "autoname": "hash",
+  "engine": "InnoDB",
+  "field_order": [
+    "sprint",
+    "task_id",
+    "event_kind",
+    "occurred_at",
+    "snapshot"
+  ],
+  "fields": [
+    {
+      "fieldname": "sprint",
+      "fieldtype": "Link",
+      "options": "Pulse Sprint",
+      "label": "Sprint",
+      "reqd": 1
+    },
+    {
+      "fieldname": "task_id",
+      "fieldtype": "Data",
+      "label": "Task ID",
+      "reqd": 1
+    },
+    {
+      "fieldname": "event_kind",
+      "fieldtype": "Data",
+      "label": "Event",
+      "reqd": 1
+    },
+    {
+      "fieldname": "occurred_at",
+      "fieldtype": "Datetime",
+      "label": "Occurred At",
+      "reqd": 1
+    },
+    {
+      "fieldname": "snapshot",
+      "fieldtype": "Long Text",
+      "label": "Snapshot",
+      "reqd": 1
+    }
+  ],
+  "permissions": []
+}

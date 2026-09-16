@@ -4,8 +4,11 @@ import frappe
 def after_install():
     from pulse.erpnext_bridge import ensure_custom_fields, ensure_default_company
     ensure_custom_fields()
+    enable_task_history()
     ensure_default_company()
     create_pulse_roles()
+    grant_native_project_permissions()
+    grant_timesheet_permissions()
     create_issue_types()
     create_workflow_states()
     create_workflow_action_masters()
@@ -21,16 +24,44 @@ def after_app_install(app_name):
 def after_migrate():
     from pulse.erpnext_bridge import ensure_custom_fields, ensure_default_company
     ensure_custom_fields()
+    enable_task_history()
     ensure_default_company()
     create_pulse_roles()
+    grant_native_project_permissions()
+    grant_timesheet_permissions()
     create_issue_types()
     create_workflow_states()
     create_workflow_action_masters()
     seed_role_ranks()
     backfill_issue_keys()
+    repair_dependency_projects()
     create_pulse_launcher_workspace()
     # Legacy Desk dashboard-charts / number-cards / workspace builders were retired
     # with the Desk pages — the SPA at /pulse is the only UI now.
+
+
+def repair_dependency_projects():
+    """Idempotently repair derived project links without altering task relations."""
+    if not frappe.db.table_exists("Pulse Dependency") or not frappe.db.table_exists("Task"):
+        return
+    dependency = frappe.qb.DocType("Pulse Dependency")
+    task = frappe.qb.DocType("Task")
+    from frappe.query_builder.functions import Coalesce
+    for endpoint in ("source", "target"):
+        task_field = dependency[f"{endpoint}_task"]
+        project_field = dependency[f"{endpoint}_project"]
+        # Keep orphan references intact for separate diagnosis; only repair links
+        # whose canonical task still exists. No modified date/history churn.
+        while True:
+            rows = (frappe.qb.from_(dependency).join(task).on(task.name == task_field)
+                .select(dependency.name, task.project)
+                .where(Coalesce(project_field, "") != Coalesce(task.project, ""))
+                .limit(500)).run(as_dict=True)
+            if not rows:
+                break
+            for row in rows:
+                frappe.db.set_value("Pulse Dependency", row.name,
+                                    f"{endpoint}_project", row.project, update_modified=False)
 
 
 def create_pulse_roles():
@@ -51,7 +82,7 @@ def create_pulse_roles():
 def create_issue_types():
     # Reuse ERPNext Task Type as the issue-type master.
     for name in ["Epic", "Story", "Bug", "Task", "Sub-task",
-                 "Improvement", "Incident", "Feature"]:
+                 "Improvement", "Incident", "Feature", "Milestone"]:
         if not frappe.db.exists("Task Type", name):
             frappe.get_doc({"doctype": "Task Type", "__newname": name,
                             "name": name}).insert(ignore_permissions=True)
@@ -150,7 +181,7 @@ def backfill_issue_keys():
     """Assign issue keys (e.g. OPS-9) to any existing task that lacks one."""
     if not frappe.db.has_column("Task", "issue_key"):
         return
-    from pulse.hooks.doc_events.task import ensure_project_key
+    from pulse.hooks.events.task import ensure_project_key
 
     projects = frappe.get_all("Task", filters={"issue_key": ["is", "not set"]},
                               distinct=True, pluck="project")
@@ -677,3 +708,45 @@ def update_pulse_workspace():
     ws.flags.ignore_mandatory = True
     ws.flags.ignore_links = True
     ws.save(ignore_permissions=True)
+
+
+def grant_native_project_permissions():
+    """Grant role capabilities while row hooks enforce project membership.
+
+    Keep existing ERPNext permissions intact. Pulse viewers remain read-only;
+    project creation and configuration belong to delivery leadership.
+    """
+    from frappe.permissions import add_permission, update_permission_property
+
+    roles = ("Pulse Admin", "Pulse Manager", "Pulse Team Lead",
+             "Pulse Senior Developer", "Pulse Junior Developer", "Pulse Intern", "Pulse Viewer")
+    leadership = {"Pulse Admin", "Pulse Manager", "Pulse Team Lead"}
+    for doctype in ("Project", "Task", "Task Type"):
+        for role in roles:
+            if not frappe.db.exists("Custom DocPerm", {"parent": doctype, "role": role, "permlevel": 0}):
+                add_permission(doctype, role, 0)
+            properties = ["read", "select"]
+            if (doctype == "Task" and role != "Pulse Viewer") or (doctype == "Project" and role in leadership):
+                properties += ["create", "write"]
+            for prop in properties:
+                update_permission_property(doctype, role, 0, prop, 1)
+
+
+def grant_timesheet_permissions():
+    """Allow Pulse users to draft their own native time records.
+
+    Record ownership/user restrictions are enforced by the Timesheet hooks.
+    Never grant submit/cancel/billing permissions implicitly.
+    """
+    from frappe.permissions import add_permission, update_permission_property
+    for role in ("Pulse Admin", "Pulse Manager", "Pulse Team Lead",
+                 "Pulse Senior Developer", "Pulse Junior Developer", "Pulse Intern"):
+        if not frappe.db.exists("Custom DocPerm", {"parent": "Timesheet", "role": role, "permlevel": 0}):
+            add_permission("Timesheet", role, 0)
+        for prop in ("read", "create", "write"):
+            update_permission_property("Timesheet", role, 0, prop, 1)
+
+
+def enable_task_history():
+    from frappe.custom.doctype.property_setter.property_setter import make_property_setter
+    make_property_setter("Task", None, "track_changes", 1, "Check", for_doctype=True)

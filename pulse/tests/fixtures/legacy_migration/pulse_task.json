@@ -1,0 +1,178 @@
+{
+  "doctype": "DocType",
+  "name": "Pulse Task",
+  "module": "Pulse",
+  "autoname": "hash",
+  "fields": [
+    {
+      "fieldname": "section_break_details",
+      "fieldtype": "Section Break",
+      "label": "Details"
+    },
+    {
+      "fieldname": "subject",
+      "fieldtype": "Data",
+      "in_list_view": 1,
+      "in_standard_filter": 1,
+      "reqd": 1,
+      "label": "Subject"
+    },
+    {
+      "fieldname": "issue_key",
+      "fieldtype": "Data",
+      "label": "Issue Key",
+      "read_only": 1,
+      "unique": 1,
+      "in_list_view": 1,
+      "search_index": 1
+    },
+    {
+      "fieldname": "seq",
+      "fieldtype": "Int",
+      "label": "Sequence",
+      "read_only": 1,
+      "hidden": 1
+    },
+    {
+      "fieldname": "description",
+      "fieldtype": "Text Editor",
+      "label": "Description"
+    },
+    {
+      "default": "Open",
+      "fieldname": "status",
+      "fieldtype": "Select",
+      "in_list_view": 1,
+      "in_standard_filter": 1,
+      "options": "Open\nWorking\nOverdue\nPending Review\nCompleted\nCancelled",
+      "label": "Status"
+    },
+    {
+      "fieldname": "cb1",
+      "fieldtype": "Column Break",
+      "label": "Cb1"
+    },
+    {
+      "fieldname": "project",
+      "fieldtype": "Link",
+      "in_list_view": 1,
+      "in_standard_filter": 1,
+      "options": "Pulse Project",
+      "reqd": 1,
+      "label": "Project"
+    },
+    {
+      "default": "Medium",
+      "fieldname": "priority",
+      "fieldtype": "Select",
+      "in_list_view": 1,
+      "options": "Low\nMedium\nHigh\nUrgent",
+      "label": "Priority"
+    },
+    {
+      "fieldname": "section_break_dates",
+      "fieldtype": "Section Break",
+      "label": "Dates"
+    },
+    {
+      "fieldname": "exp_start_date",
+      "fieldtype": "Date",
+      "label": "Expected Start Date"
+    },
+    {
+      "fieldname": "exp_end_date",
+      "fieldtype": "Date",
+      "label": "Expected End Date"
+    },
+    {
+      "fieldname": "cb2",
+      "fieldtype": "Column Break",
+      "label": "Cb2"
+    },
+    {
+      "fieldname": "actual_start_date",
+      "fieldtype": "Date",
+      "label": "Actual Start Date"
+    },
+    {
+      "fieldname": "actual_end_date",
+      "fieldtype": "Date",
+      "label": "Actual End Date"
+    },
+    {
+      "fieldname": "section_break_agile",
+      "fieldtype": "Section Break",
+      "label": "Agile Details"
+    },
+    {
+      "fieldname": "pulse_sprint",
+      "fieldtype": "Link",
+      "in_list_view": 1,
+      "in_standard_filter": 1,
+      "label": "Sprint",
+      "options": "Pulse Sprint"
+    },
+    {
+      "fieldname": "pulse_story_points",
+      "fieldtype": "Float",
+      "label": "Story Points"
+    },
+    {
+      "depends_on": "eval:doc.pulse_epic !== doc.name",
+      "fieldname": "pulse_epic",
+      "fieldtype": "Link",
+      "label": "Epic",
+      "options": "Pulse Task"
+    },
+    {
+      "fieldname": "parent_task",
+      "fieldtype": "Link",
+      "label": "Parent Task",
+      "options": "Pulse Task",
+      "search_index": 1
+    },
+    {
+      "fieldname": "cb3",
+      "fieldtype": "Column Break",
+      "label": "Cb3"
+    },
+    {
+      "fieldname": "pulse_rank",
+      "fieldtype": "Int",
+      "label": "Rank"
+    },
+    {
+      "fieldname": "pulse_release",
+      "fieldtype": "Data",
+      "label": "Release"
+    },
+    {
+      "fieldname": "is_milestone",
+      "fieldtype": "Check",
+      "label": "Is Milestone"
+    },
+    {
+      "fieldname": "task_type",
+      "fieldtype": "Link",
+      "label": "Task Type",
+      "options": "Pulse Issue Type"
+    },
+    {
+      "fieldname": "workflow_state",
+      "fieldtype": "Link",
+      "label": "Workflow State",
+      "options": "Workflow State",
+      "hidden": 1
+    }
+  ],
+  "permissions": [
+    {
+      "role": "System Manager",
+      "read": 1,
+      "write": 1,
+      "create": 1,
+      "delete": 1
+    }
+  ],
+  "custom": 1
+}

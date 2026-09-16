@@ -16,21 +16,18 @@ def execute(filters=None):
     if not project:
         return [], []
 
-    conditions = ["`tabPulse Task Status Log`.`project` = %(project)s"]
+    from pulse.hooks.permissions import require_permission
+    require_permission("Project", project)
+    visible = frappe.get_list("Task", filters={"project": project}, pluck="name", limit_page_length=0)
+    if not visible:
+        return [], []
+    scope = {"project": project, "task": ["in", visible]}
     if sprint:
-        conditions.append("`tabPulse Task Status Log`.`sprint` = %(sprint)s")
-
-    log_rows = frappe.db.sql(
-        f"""
-        SELECT `tabPulse Task Status Log`.`task`, `tabPulse Task Status Log`.`to_state`,
-               `tabPulse Task Status Log`.`changed_on`, `tabPulse Task Status Log`.`project`
-        FROM `tabPulse Task Status Log`
-        WHERE {" AND ".join(conditions)}
-        ORDER BY `tabPulse Task Status Log`.`changed_on` ASC
-        """,
-        {"project": project, "sprint": sprint},
-        as_dict=True,
-    )
+        require_permission("Pulse Sprint", sprint)
+        scope["sprint"] = sprint
+    log_rows = frappe.get_list("Pulse Task Status Log", filters=scope,
+                               fields=["task", "to_state", "changed_on", "project"],
+                               order_by="changed_on asc", limit_page_length=0)
 
     if not log_rows:
         return [], []

@@ -1,6 +1,11 @@
 import { createRouter, createWebHistory } from 'vue-router'
 
 const routes = [
+  { path: '/timesheets', name: 'Timesheets', component: () => import('@/pages/Timesheets.vue') },
+  { path: '/m/timesheets', redirect: '/timesheets' },
+  { path: '/inbox', name: 'Inbox', component: () => import('@/pages/Inbox.vue') },
+  { path: '/documents', name: 'Documents', component: () => import('@/pages/Documents.vue') },
+  { path: '/views', name: 'Views', component: () => import('@/pages/Views.vue') },
   { path: '/', name: 'Home', component: () => import('@/pages/Home.vue') },
   { path: '/dashboard', name: 'Dashboard', component: () => import('@/pages/Dashboard.vue') },
   { path: '/dashboard/custom', name: 'CustomDashboard', component: () => import('@/pages/CustomDashboard.vue') },
@@ -9,8 +14,10 @@ const routes = [
   { path: '/todo', name: 'ToDo', component: () => import('@/pages/ToDo.vue') },
   { path: '/my-work', name: 'MyWork', component: () => import('@/pages/MyWork.vue') },
   { path: '/board', name: 'Board', component: () => import('@/pages/Board.vue') },
+  { path: '/intake', name: 'Intake', component: () => import('@/pages/Intake.vue') },
   { path: '/backlog', name: 'Backlog', component: () => import('@/pages/Backlog.vue') },
   { path: '/sprints', name: 'Sprints', component: () => import('@/pages/Sprints.vue') },
+  { path: '/modules', name: 'ProjectModules', component: () => import('@/pages/ProjectModules.vue') },
   { path: '/recurring', name: 'Recurring', component: () => import('@/pages/Recurring.vue') },
   { path: '/projects', name: 'Projects', component: () => import('@/pages/Projects.vue') },
   { path: '/epics', name: 'Epics', component: () => import('@/pages/Epics.vue') },

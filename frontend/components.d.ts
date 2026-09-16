@@ -9,13 +9,27 @@ export {}
 declare module 'vue' {
   export interface GlobalComponents {
     Bars: typeof import('./src/components/charts/Bars.vue')['default']
+    CalendarTaskPicker: typeof import('./src/components/views/CalendarTaskPicker.vue')['default']
+    CollaborativeEditor: typeof import('./src/components/documents/CollaborativeEditor.vue')['default']
+    CommandPalette: typeof import('./src/components/CommandPalette.vue')['default']
     CreateIssueModal: typeof import('./src/components/CreateIssueModal.vue')['default']
+    CrmTaskEditor: typeof import('./src/components/CrmTaskEditor.vue')['default']
     DashboardWidget: typeof import('./src/components/DashboardWidget.vue')['default']
     Donut: typeof import('./src/components/charts/Donut.vue')['default']
     EntityForm: typeof import('./src/components/EntityForm.vue')['default']
+    FilterGroup: typeof import('./src/components/views/FilterGroup.vue')['default']
     Gauge: typeof import('./src/components/charts/Gauge.vue')['default']
+    InlineTaskCreate: typeof import('./src/components/views/InlineTaskCreate.vue')['default']
+    MentionSuggestions: typeof import('./src/components/documents/MentionSuggestions.vue')['default']
+    PersonalControls: typeof import('./src/components/PersonalControls.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
+    SprintPlanner: typeof import('./src/components/sprints/SprintPlanner.vue')['default']
     TaskDrawer: typeof import('./src/components/TaskDrawer.vue')['default']
+    TaskModules: typeof import('./src/components/tasks/TaskModules.vue')['default']
+    TaskSettings: typeof import('./src/components/tasks/TaskSettings.vue')['default']
+    TaskSpreadsheet: typeof import('./src/components/views/TaskSpreadsheet.vue')['default']
+    TaskTime: typeof import('./src/components/TaskTime.vue')['default']
+    TaskTimeline: typeof import('./src/components/views/TaskTimeline.vue')['default']
   }
 }

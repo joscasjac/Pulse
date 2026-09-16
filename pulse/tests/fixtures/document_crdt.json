@@ -1,0 +1,7 @@
+{
+  "baseline": "AQPI7crrBAAHAQdkZWZhdWx0AwlwYXJhZ3JhcGgHAMjtyusEAAYEAMjtyusEAQtTaGFyZWQgcGxhbgA=",
+  "alice": "AgPI7crrBAAHAQdkZWZhdWx0AwlwYXJhZ3JhcGgHAMjtyusEAAYEAMjtyusEAQtTaGFyZWQgcGxhbgHp7PyrBABEyO3K6wQCB0FsaWNlOiAA",
+  "bob": "AgPI7crrBAAHAQdkZWZhdWx0AwlwYXJhZ3JhcGgHAMjtyusEAAYEAMjtyusEAQtTaGFyZWQgcGxhbgGs8aSXAwCEyO3K6wQMBiArIEJvYgA=",
+  "merged": "AwPI7crrBAAHAQdkZWZhdWx0AwlwYXJhZ3JhcGgHAMjtyusEAAYEAMjtyusEAQtTaGFyZWQgcGxhbgHp7PyrBABEyO3K6wQCB0FsaWNlOiABrPGklwMAhMjtyusEDAYgKyBCb2IA",
+  "expected": "<paragraph>Alice: Shared plan + Bob</paragraph>"
+}

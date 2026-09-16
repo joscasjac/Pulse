@@ -1,0 +1,24 @@
+{
+  "doctype": "DocType",
+  "name": "Pulse Project Task Type",
+  "module": "Pulse",
+  "engine": "InnoDB",
+  "istable": 1,
+  "editable_grid": 1,
+  "autoname": "hash",
+  "field_order": [
+    "task_type"
+  ],
+  "fields": [
+    {
+      "fieldname": "task_type",
+      "fieldtype": "Link",
+      "label": "Task Type",
+      "in_list_view": 1,
+      "options": "Task Type",
+      "reqd": 1
+    }
+  ],
+  "permissions": [],
+  "track_changes": 0
+}

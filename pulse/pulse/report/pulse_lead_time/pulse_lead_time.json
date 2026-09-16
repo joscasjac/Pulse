@@ -15,16 +15,30 @@
  "name": "Pulse Lead Time",
  "owner": "Administrator",
  "prepared_report": 0,
- "ref_doctype": "Pulse Task",
+ "ref_doctype": "Task",
  "report_name": "Pulse Lead Time",
  "report_type": "Script Report",
  "roles": [
-  {"role": "Pulse Admin"},
-  {"role": "Pulse Manager"},
-  {"role": "Pulse Team Lead"},
-  {"role": "Pulse Senior Developer"},
-  {"role": "Pulse Junior Developer"},
-  {"role": "Pulse Intern"},
-  {"role": "Pulse Viewer"}
+  {
+   "role": "Pulse Admin"
+  },
+  {
+   "role": "Pulse Manager"
+  },
+  {
+   "role": "Pulse Team Lead"
+  },
+  {
+   "role": "Pulse Senior Developer"
+  },
+  {
+   "role": "Pulse Junior Developer"
+  },
+  {
+   "role": "Pulse Intern"
+  },
+  {
+   "role": "Pulse Viewer"
+  }
  ]
 }

@@ -1,32 +1,22 @@
+"""Average submitted time-entry duration, from permitted native records only."""
 import frappe
 from frappe import _
+from pulse.api.time import _entries
+
 
 def execute(filters=None):
     columns = [
-        {"label": _("Project"), "fieldname": "project", "fieldtype": "Data", "width": 200},
-        {"label": _("Average Days Spent"), "fieldname": "days_spent", "fieldtype": "Float", "width": 150},
+        {"label": _("Project"), "fieldname": "project", "fieldtype": "Link", "options": "Project", "width": 200},
+        {"label": _("Average Hours per Entry"), "fieldname": "average_hours", "fieldtype": "Float", "width": 180},
+        {"label": _("Submitted Entries"), "fieldname": "entries", "fieldtype": "Int", "width": 150},
     ]
-
-    # Try to fetch real timesheet averages
-    db_data = frappe.db.sql("""
-        SELECT p.project_name as project, AVG(tsd.hours) / 8.0 as days_spent
-        FROM `tabTimesheet Detail` tsd
-        JOIN `tabProject` p ON p.name = tsd.project
-        WHERE tsd.docstatus = 1 AND tsd.project IS NOT NULL AND tsd.project != ''
-        GROUP BY p.project_name
-    """, as_dict=True)
-
-    if db_data:
-        data = db_data
-    else:
-        # Fallback mock data matching user screenshot
-        data = [
-            {"project": "Pulse Core Development", "days_spent": 5.2},
-            {"project": "Teams in Space", "days_spent": 4.1},
-            {"project": "Internal Service Desk", "days_spent": 3.2},
-            {"project": "QA Team", "days_spent": 2.8},
-            {"project": "Scrum Project", "days_spent": 1.9},
-            {"project": "ITSM Project", "days_spent": 1.5},
-        ]
-
-    return columns, data
+    visible = set(frappe.get_list("Project", pluck="name", limit_page_length=0))
+    totals = {}
+    for entry in _entries():
+        if entry["docstatus"] != 1 or entry["project"] not in visible:
+            continue
+        row = totals.setdefault(entry["project"], {"project": entry["project"], "hours": 0, "entries": 0})
+        row["hours"] += entry["hours"]
+        row["entries"] += 1
+    return columns, [{"project": row["project"], "average_hours": row["hours"] / row["entries"],
+                      "entries": row["entries"]} for row in sorted(totals.values(), key=lambda row: row["project"])]

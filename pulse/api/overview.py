@@ -12,7 +12,7 @@ OPEN_STATES = ["Completed", "Cancelled"]
 
 @frappe.whitelist()
 def summary():
-    projects = frappe.get_all("Project", fields=["name", "project_name", "status",
+    projects = frappe.get_list("Project", fields=["name", "project_name", "status",
                                                  "expected_end_date", "pulse_project_key"],
                               order_by="modified desc", limit_page_length=0)
     total = len(projects)
@@ -20,7 +20,7 @@ def summary():
     running = sum(1 for p in projects if p.status == "Open")
     pending = sum(1 for p in projects if p.status == "Cancelled")
 
-    tasks = frappe.get_all("Task", fields=["name", "status", "workflow_state", "_assign",
+    tasks = frappe.get_list("Task", fields=["name", "status", "workflow_state", "_assign",
                                            "subject", "issue_key", "project", "exp_end_date",
                                            "modified"],
                            limit_page_length=0)
@@ -31,7 +31,7 @@ def summary():
 
     # weekly throughput: tasks completed per weekday over the last 7 days
     start = getdate(add_days(today(), -6))
-    logs = frappe.get_all(
+    logs = frappe.get_list(
         "Pulse Task Status Log",
         filters={"to_state": "Done", "changed_on": [">=", start]},
         fields=["task", "changed_on"],
@@ -72,7 +72,7 @@ def summary():
     # next meeting, if the Meetings module has one
     next_meeting = None
     try:
-        rows = frappe.get_all("Pulse Meeting",
+        rows = frappe.get_list("Pulse Meeting",
                               filters={"date": [">=", today()]},
                               fields=["name", "title", "date", "organizer"],
                               order_by="date asc", limit_page_length=1)
@@ -84,9 +84,10 @@ def summary():
 
     # hours tracked this week (from Super Productivity sync)
     week_start = add_days(today(), -getdate(today()).weekday())
-    hours = frappe.db.sql(
-        """SELECT COALESCE(SUM(hours), 0) FROM `tabPulse Timesheet Entry`
-           WHERE date >= %s""", (week_start,))[0][0]
+    # Native ERPNext time is summed by the shared permission-aware time API.
+    from pulse.api.time import get_user_hours
+    hours = get_user_hours(from_date=week_start)
+
 
     return {
         "projects": {"total": total, "ended": ended, "running": running, "pending": pending},

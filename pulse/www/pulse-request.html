@@ -1,0 +1,29 @@
+{% extends "templates/web.html" %}
+{% block title %}Submit a request{% endblock %}
+{% block page_content %}
+<main class="public-intake" data-csrf="{{ csrf_token }}">
+  <h1 id="request-heading">Submit a request</h1>
+  <p id="request-instructions"></p>
+  <p id="request-status" role="status">Loading request form…</p>
+  <form id="public-request-form" hidden>
+    <label for="request-title">Title</label>
+    <input id="request-title" name="title" required maxlength="140" autocomplete="off">
+    <label for="request-description">Description</label>
+    <textarea id="request-description" name="description" rows="7" maxlength="20000" placeholder="Describe your request and the outcome you need."></textarea>
+    <p id="request-error" role="alert"></p>
+    <button type="submit" class="btn btn-primary">Submit request</button>
+  </form>
+</main>
+<style>
+.public-intake { max-width: 680px; margin: 40px auto; padding: 0 20px; overflow-wrap: anywhere; }
+.public-intake h1 { font-size: 32px; margin-bottom: 20px; }
+.public-intake label { display: block; font-weight: 600; margin-top: 24px; }
+.public-intake input, .public-intake textarea { display: block; width: 100%; padding: 12px; border: 1px solid #9ca3af; border-radius: 6px; color: #18212b; background: #fff; }
+.public-intake input:focus-visible, .public-intake textarea:focus-visible, .public-intake button:focus-visible { outline: 2px solid #285a91; outline-offset: 3px; }
+.public-intake button { margin-top: 16px; }
+.public-intake button:disabled { opacity: .6; cursor: wait; }
+#request-instructions { white-space: pre-wrap; }
+#request-error { margin-top: 16px; color: #a02d21; }
+</style>
+<script src="/assets/pulse/js/public-request.js"></script>
+{% endblock %}

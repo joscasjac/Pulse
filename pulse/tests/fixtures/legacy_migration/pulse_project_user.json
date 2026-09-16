@@ -1,0 +1,32 @@
+{
+  "doctype": "DocType",
+  "name": "Pulse Project User",
+  "module": "Pulse",
+  "autoname": "format:PU-{####}",
+  "fields": [
+    {
+      "fieldname": "user",
+      "fieldtype": "Link",
+      "in_list_view": 1,
+      "label": "User",
+      "options": "User",
+      "reqd": 1
+    },
+    {
+      "fieldname": "role",
+      "fieldtype": "Link",
+      "in_list_view": 1,
+      "label": "Role",
+      "options": "Role"
+    },
+    {
+      "fieldname": "is_lead",
+      "fieldtype": "Check",
+      "in_list_view": 1,
+      "label": "Is Lead"
+    }
+  ],
+  "permissions": [],
+  "istable": 1,
+  "custom": 1
+}

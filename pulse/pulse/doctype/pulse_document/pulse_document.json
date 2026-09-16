@@ -14,7 +14,10 @@
   "is_published",
   "icon",
   "sec_content",
-  "content"
+  "content",
+  "task_links",
+  "collab_updates",
+  "collab_sequence"
  ],
  "fields": [
   {
@@ -63,6 +66,28 @@
    "fieldname": "content",
    "fieldtype": "Text Editor",
    "label": "Content"
+  },
+  {
+   "fieldname": "task_links",
+   "fieldtype": "Table",
+   "label": "Linked tasks",
+   "options": "Pulse Document Task"
+  },
+  {
+   "fieldname": "collab_updates",
+   "fieldtype": "Long Text",
+   "label": "Collab Updates",
+   "hidden": 1,
+   "read_only": 1,
+   "no_copy": 1
+  },
+  {
+   "fieldname": "collab_sequence",
+   "fieldtype": "Int",
+   "label": "Collab Sequence",
+   "hidden": 1,
+   "read_only": 1,
+   "no_copy": 1
   }
  ],
  "index_web_pages_for_search": 1,

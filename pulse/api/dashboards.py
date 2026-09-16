@@ -79,10 +79,9 @@ def _serialize(dashboard):
 
 
 def _find_default_template():
-    name = frappe.db.get_value(
-        "Pulse Dashboard", {"is_default": 1, "scope": ["!=", "Personal"]}, "name"
-    ) or frappe.db.get_value("Pulse Dashboard", {"is_default": 1}, "name")
-    return frappe.get_doc("Pulse Dashboard", name) if name else None
+    names = frappe.get_list("Pulse Dashboard", filters={"is_default": 1, "scope": ["!=", "Personal"]}, pluck="name", limit_page_length=1)
+    return frappe.get_doc("Pulse Dashboard", names[0]) if names else None
+
 
 
 @frappe.whitelist()
@@ -174,91 +173,49 @@ def get_widget_catalog():
 @frappe.whitelist()
 def get_dashboard_stats(user=None):
     """KPI stats for dashboard number cards (standalone Pulse data)."""
-    user = user or frappe.session.user
-    today_str = today()
-
-    has_assign = frappe.db.has_column("Task", "_assign")
-    roles = frappe.get_roles(user)
-    limited = "Pulse Admin" not in roles and "Pulse Manager" not in roles
-
-    def assign_sql(where):
-        if not has_assign:
-            return 0
-        clause = " AND JSON_CONTAINS(_assign, %s)" if limited else ""
-        params = (json.dumps(user),) if limited else ()
-        return frappe.db.sql(
-            f"SELECT COUNT(*) FROM `tabTask` WHERE {where}{clause}", params
-        )[0][0]
-
-    my_tasks = assign_sql("status NOT IN ('Completed','Cancelled')")
-    in_progress = assign_sql("workflow_state = 'In Progress'")
-    overdue = assign_sql(f"exp_end_date < '{today_str}' AND status NOT IN ('Completed','Cancelled')")
-    due_today = assign_sql(f"exp_end_date = '{today_str}' AND status NOT IN ('Completed','Cancelled')")
-
-    completed_today = frappe.db.count("Task", {
-        "status": "Completed", "modified": [">=", today_str + " 00:00:00"],
-    })
-    active_projects = frappe.db.count("Project", {"status": "Open"})
-    total_open = frappe.db.count("Task", {"status": ["not in", ["Completed", "Cancelled"]]})
-    blocked = frappe.db.sql(
-        "SELECT COUNT(*) FROM `tabTask` WHERE workflow_state='In Review' AND DATEDIFF(NOW(), modified) > 5"
-    )[0][0]
-
+    if user and user != frappe.session.user:
+        frappe.throw(_("Dashboard statistics are scoped to the signed-in user."), frappe.PermissionError)
+    user = frappe.session.user
+    day = today()
+    tasks = frappe.get_list("Task", fields=["name", "status", "workflow_state", "exp_end_date", "modified", "_assign"], limit_page_length=0)
+    open_tasks = [t for t in tasks if t.status not in ("Completed", "Cancelled")]
+    from pulse.api.time import get_user_hours
     week_start = (datetime.now() - timedelta(days=datetime.now().weekday())).strftime("%Y-%m-%d")
-    hours_this_week = frappe.db.sql(
-        """SELECT COALESCE(SUM(tte.hours), 0)
-           FROM `tabPulse Timesheet Entry` tte
-           JOIN `tabPulse Timesheet` tt ON tte.parent = tt.name
-           WHERE tt.user = %s AND tte.date >= %s""",
-        (user, week_start),
-    )[0][0] or 0
-
     return {
-        "my_tasks": int(my_tasks), "in_progress": int(in_progress),
-        "completed_today": int(completed_today), "overdue": int(overdue),
-        "due_today": int(due_today), "active_projects": int(active_projects),
-        "total_open": int(total_open), "blocked": int(blocked),
-        "hours_this_week": float(hours_this_week),
+        "my_tasks": sum(user in (frappe.parse_json(t._assign or "[]") or []) for t in open_tasks),
+        "in_progress": sum(t.workflow_state == "In Progress" for t in open_tasks),
+        "completed_today": sum(t.status == "Completed" and str(t.modified)[:10] == day for t in tasks),
+        "overdue": sum(bool(t.exp_end_date) and str(t.exp_end_date)[:10] < day for t in open_tasks),
+        "due_today": sum(str(t.exp_end_date)[:10] == day for t in open_tasks),
+        "active_projects": len(frappe.get_list("Project", filters={"status": "Open"}, pluck="name", limit_page_length=0)),
+        "total_open": len(open_tasks),
+        "blocked": sum(t.workflow_state == "Blocked" for t in open_tasks),
+        "hours_this_week": get_user_hours(from_date=week_start),
     }
 
 
 @frappe.whitelist()
 def get_dashboard_series():
-    """Real aggregate series for chart widgets (tasks by state/type, workload, velocity)."""
+    """Aggregate only records readable by the current user."""
+    tasks = frappe.get_list("Task", fields=["status", "workflow_state", "type", "_assign", "pulse_sprint"], limit_page_length=0)
     def group_count(field):
-        rows = frappe.db.sql(
-            f"""SELECT `{field}` AS k, COUNT(name) AS c
-                FROM `tabTask` WHERE `{field}` IS NOT NULL AND `{field}` != ''
-                GROUP BY `{field}` ORDER BY c DESC""",
-            as_dict=True,
-        )
-        return [{"label": r.k, "value": r.c} for r in rows]
-
-    # workload = open task count per assignee (from _assign)
+        counts = {}
+        for task in tasks:
+            if task.get(field):
+                counts[task[field]] = counts.get(task[field], 0) + 1
+        return [{"label": k, "value": v} for k, v in sorted(counts.items(), key=lambda item: -item[1])]
     workload = {}
-    for a in frappe.db.get_all("Task",
-                               filters={"status": ["not in", ["Completed", "Cancelled"]]},
-                               fields=["_assign"]):
-        for u in (frappe.parse_json(a._assign or "[]") or []):
-            workload[u] = workload.get(u, 0) + 1
-    workload_series = [
-        {"label": (k.split("@")[0]), "value": v}
-        for k, v in sorted(workload.items(), key=lambda x: -x[1])[:8]
-    ]
-
-    # velocity = number of tasks completed per sprint
-    velocity = []
-    for s in frappe.db.get_all("Pulse Sprint", fields=["name", "sprint_name"],
-                               order_by="start_date asc"):
-        done = frappe.db.count("Task", {"pulse_sprint": s.name, "status": "Completed"})
-        velocity.append({"label": s.sprint_name or s.name, "value": float(done or 0)})
-
-    return {
-        "tasks_by_state": group_count("workflow_state"),
-        "tasks_by_type": group_count("type"),
-        "workload": workload_series,
-        "velocity": velocity,
-    }
+    for task in tasks:
+        if task.status in ("Completed", "Cancelled"):
+            continue
+        for user in frappe.parse_json(task._assign or "[]") or []:
+            workload[user] = workload.get(user, 0) + 1
+    velocity = [{"label": s.sprint_name or s.name,
+                 "value": sum(t.status == "Completed" and t.pulse_sprint == s.name for t in tasks)}
+                for s in frappe.get_list("Pulse Sprint", fields=["name", "sprint_name"], order_by="start_date asc", limit_page_length=0)]
+    return {"tasks_by_state": group_count("workflow_state"), "tasks_by_type": group_count("type"),
+            "workload": [{"label": k.split("@")[0], "value": v} for k, v in sorted(workload.items(), key=lambda item: -item[1])[:8]],
+            "velocity": velocity}
 
 
 @frappe.whitelist()
@@ -266,7 +223,11 @@ def set_default_template(name):
     """Admin/Manager: mark a shared dashboard as the org default template."""
     if not _is_manager(frappe.session.user):
         frappe.throw(_("Only Pulse Admins or Managers can set the default dashboard."))
-    for other in frappe.get_all("Pulse Dashboard", filters={"is_default": 1}, pluck="name"):
+    from pulse.hooks.permissions import require_permission
+    dashboard = require_permission("Pulse Dashboard", name, "write")
+    if dashboard.scope == "Personal":
+        frappe.throw(_("Share the dashboard before making it the default."))
+    for other in frappe.get_list("Pulse Dashboard", filters={"is_default": 1}, pluck="name"):
         if other != name:
             frappe.db.set_value("Pulse Dashboard", other, "is_default", 0)
     frappe.db.set_value("Pulse Dashboard", name, "is_default", 1)

@@ -3,6 +3,13 @@ from frappe.model.document import Document
 
 
 class PulseSettings(Document):
+	def validate(self):
+		from pulse.scheduled.reminders import parse_reminder_days
+		try:
+			parse_reminder_days(self.get("reminder_days_before"))
+		except ValueError as exc:
+			frappe.throw(str(exc))
+
 	def get_role_rank_map(self):
 		"""Return {role: rank} from the configured Role Ranks table."""
 		return {r.role: int(r.rank or 0) for r in (self.role_ranks or [])}
