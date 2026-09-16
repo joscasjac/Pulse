@@ -35,7 +35,20 @@ The latest focused run used the isolated Frappe QA site's runner and passed in
 Email sending was mocked; these results do
 not establish inbox delivery. Local QA has no outgoing account.
 
-## Connected ERP readiness — 2026-09-16
+## Production installation — 2026-09-16
+
+Pulse `8844ab3` was installed successfully on `questmedia.frappe.cloud` after
+Cloud deployment and site migration. Read-only MCP checks of Pulse Settings
+confirmed `email_notifications=1`, `advance_reminders=1` and
+`reminder_days_before="3, 1, 0"`. Scheduled Job Type now contains
+`pulse.scheduled.reminders.send_advance_reminders` and
+`pulse.scheduled.overdue.flag_overdue_tasks`, both daily and `stopped=0`.
+All six Pulse jobs are registered. A subsequent read still showed null
+`last_execution` values: registration is proven; execution and actual Pulse
+recipient delivery are not. No test messages were sent and no recipient settings
+were changed during these checks.
+
+## Connected ERP readiness before deployment — 2026-09-16
 
 Read-only checks through the user's ERPNext MCP connection confirmed:
 

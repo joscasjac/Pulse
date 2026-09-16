@@ -1,5 +1,30 @@
 # Runtime validation evidence
 
+## Post-release local regression — 2026-09-16
+
+Reran `bench --site pulse-qa.localhost run-tests --app pulse` against the isolated
+local site after the hook expectation correction and packaging changes. The
+command exited 0: all 127 integration cases passed; the unit phase reported
+60 tests, OK with one skip (CRM is absent from this QA site; the separate
+combined-app CRM evidence remains applicable). Retained output:
+`../.work/pulse-bench/pulse-post-deploy-tests.log`.
+This supersedes the earlier combined-command failure caused by the old hook
+expectation. It is local regression evidence, not a production write test.
+
+## Production release — 2026-09-16
+
+Cloud deployment `932m1l2ohu` completed successfully in 15m 23s. Site migration
+`dbirujabp8` completed in 1m 52s and Pulse installation `4e0vggql7o` in 34s.
+The site returned to Active. Pulse `8844ab3`, Quest Media Tools `dce89f2` and
+Quest Automations `b530d27` are the released revisions. A fresh onsite backup
+completed before release (September 16, 3:33 PM as displayed by Cloud).
+
+Production Home and all five task layouts loaded in authenticated Chrome against
+an existing empty project. The ERPNext MCP automation catalog exposes ten Pulse
+actions. Read-only settings/job checks establish enabled email/reminder settings
+and scheduler registration, but not scheduler execution or recipient delivery.
+See verification-matrix.md and email-reminders.md for the exact boundaries.
+
 ## Native Task document read boundary
 
 Reproduced private dependency title/ID disclosure through `frappe.client.get`.

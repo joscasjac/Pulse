@@ -1,5 +1,34 @@
 # Pulse backlog verification matrix
 
+## Production release — 2026-09-16
+
+Post-release local regression completed with exit 0: 127 integration cases
+passed; unit phase reported 60 tests, OK with one CRM-environment skip. See
+`../.work/pulse-bench/pulse-post-deploy-tests.log`. This closes the earlier stale
+hook-expectation full-suite result, not the remaining browser acceptance gaps.
+
+Deployed to `questmedia.frappe.cloud` after a successful fresh database/file backup.
+Cloud pipeline `932m1l2ohu` succeeded, site migration `dbirujabp8` succeeded,
+and Pulse installation `4e0vggql7o` succeeded. Released revisions: Pulse
+`8844ab3`, Quest Media Tools `dce89f2`, Quest Automations `b530d27`.
+Unrelated framework/ERPNext/CRM updates were excluded. The first image build
+failed before migration because Pulse redundantly declared Frappe as a Python
+dependency; the released fix leaves Frappe version compatibility in Bench metadata.
+
+Authenticated Chrome loaded production Home and the list, Kanban, spreadsheet,
+calendar and timeline layouts for an existing project. This was an empty-project
+smoke check, not production task mutation, drag/resize or permissions acceptance.
+The connected ERPNext automation catalog returns all ten Pulse actions. The new
+`pulse_work` tool's discovery in a refreshed MCP client remains unverified.
+
+Read-only production checks confirm email notifications and advance reminders
+enabled with `3, 1, 0` thresholds. All six Pulse Scheduled Job Types are registered
+and not stopped; their execution timestamps were still null at the follow-up.
+Actual Pulse reminder execution and recipient delivery remain outstanding.
+
+These observations supersede older deployment-pending statements below, without
+promoting the full backlog or deferred UI/mobile acceptance to complete.
+
 ## Release follow-up checkpoint
 
 The user deferred mobile acceptance for the first release; the underlying mobile
