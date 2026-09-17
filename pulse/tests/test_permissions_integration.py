@@ -47,6 +47,33 @@ class TestPermissionBoundaries(IntegrationTestCase):
         with self.assertRaises(frappe.PermissionError):
             spa.list_attachments(self.hidden_task.name)
 
+    def test_private_uploaded_file_download_is_revoked_even_for_uploader(self):
+        from pathlib import Path
+        from frappe.utils.file_manager import save_file
+        from pulse.api import spa
+        content = ("Private attachment acceptance " + self.suffix).encode()
+        attachment = save_file("pulse-private-" + self.suffix + ".txt", content,
+                               "Task", self.visible_task.name, is_private=1)
+        # The filename/content are unique to this test; clean up only its blob.
+        path = Path(attachment.get_full_path())
+        self.addCleanup(lambda: path.unlink(missing_ok=True))
+        self.assertEqual(attachment.owner, self.user)
+        self.assertTrue(attachment.file_url.startswith("/private/files/"))
+        self.assertEqual(path.read_bytes(), content)
+        self.assertTrue(attachment.is_downloadable())
+        self.assertIn(attachment.name, [row.name for row in spa.list_attachments(self.visible_task.name)])
+        frappe.set_user("Administrator")
+        self.visible.reload()
+        self.visible.set("users", [])
+        self.visible.save()
+        frappe.set_user(self.user)
+        attachment.reload()
+        self.assertFalse(attachment.is_downloadable())
+        self.assertFalse(frappe.has_permission("File", "read", doc=attachment))
+        self.assertFalse(frappe.get_list("File", filters={"name": attachment.name}, pluck="name"))
+        with self.assertRaises(frappe.PermissionError):
+            spa.list_attachments(self.visible_task.name)
+
     def test_related_writes_cannot_escape_task_scope(self):
         from pulse.api import spa
         for action in (

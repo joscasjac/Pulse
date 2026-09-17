@@ -1,5 +1,27 @@
 # Browser acceptance evidence
 
+## Editor image-upload attempt and private-file regression — 2026-09-16 follow-up
+
+Opened BVE-1 in actual Chrome, expanded Formatting, and used its Image button
+with the supported browser file-chooser flow. The chooser was obtained, but
+setFiles for the synthetic /tmp/pulse-rich-image-qa.png was denied by the browser
+extension (`Not allowed`). Browser guidance requires enabling Allow access to
+file URLs for the ChatGPT extension; instructions were provided to the user.
+No image was uploaded or saved. Reload left the previous saved description intact.
+The editor upload/save/reopen criterion remains unverified. This is not an
+application upload failure, and no extension permissions were changed by the agent.
+
+Independent real-backend coverage was added to test_permissions_integration:
+Frappe save_file writes unique private file bytes linked to a readable task;
+the uploader can download and list the attachment. After project membership
+revocation, the same file owner fails is_downloadable, native File read permission,
+File list visibility and the Pulse attachment-list endpoint. The test cleans up
+its unique physical blob. All 11 tests in the module passed in 2.744s, exit 0.
+Log: ../.work/pulse-bench/pulse-file-permission-tests.log.
+
+This verifies native private-file authorization with actual storage. It does not
+replace the blocked browser image flow or an HTTP download acceptance check.
+
 ## Task mention audience fix — 2026-09-16 local follow-up
 
 TaskDrawer previously reused assignment candidates for mentions, which excluded

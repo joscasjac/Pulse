@@ -31,6 +31,11 @@ promoting the full backlog or deferred UI/mobile acceptance to complete.
 
 ## Release follow-up checkpoint
 
+- Added real stored-file uploader-revocation coverage; all 11 permission
+  integration tests pass. Editor image upload remains blocked by the Chrome
+  extension's file-URL access setting: chooser opened, setFiles denied, no upload
+  occurred. See browser-validation.md. Other backlog work can continue.
+
 - Task mention suggestions now use a dedicated permission-aware endpoint rather
   than assignment hierarchy. Six rich-task integration tests and 10 frontend
   tests pass; Chrome shows a readable higher-rank user to the restricted actor.
