@@ -74,9 +74,20 @@ existing **Joseph - Quest Media** account through the native composer and Send N
 Communication `e9ehd9thbp`, Email Queue `e9el3g93p0`, Gmail message `1a1a251920cb8ca4`.
 This confirms that transport path only.
 
-The new explicit scheduled-reminder email implementation is local and not deployed.
-After the final release build and normal site migration, verify both reminder jobs,
-workers and settings, then run the separately authorized scheduled-recipient test.
-Inspect its Pulse Notification/queue reference, native processing status and actual
-recipient inbox. Production scheduled reminder delivery through ERP Notifications
-remains pending; no second test message is claimed by this document.
+The explicit scheduled-reminder implementation was deployed on November 3. The
+single authorized production test used Task `TASK-2026-00118`, assigned to
+`joseph@questmediahub.com`, due November 4. The actual advance-reminder job completed
+at 12:59:16 (Scheduled Job Log `8lhb6t462n`). It created exactly one stable Pulse
+Notification and Email Queue `8lhj2evh3c` through **ERP Notifications**.
+
+The ordinary `frappe.email.queue.flush` scheduler processed the queue at 13:04:06;
+no Send Now action was used. The queue and recipient show Sent. Gmail independently
+showed one matching message in INBOX at 13:04, from
+`notifications@noreply.questmediahub.com` to `joseph@questmediahub.com`, with the
+correct native task link. Sender details showed TLS and the expected signing domain.
+Screenshot: `/tmp/pulse-scheduled-reminder-inbox-proof.png`.
+
+The test task was completed at 13:06:21 so it cannot generate subsequent due/overdue
+reminders. No further test email is authorized or needed. This verifies the deployed
+job, stable notification, real account, automatic queue processing and inbox receipt;
+it does not guarantee future delivery independent of SMTP/provider availability.

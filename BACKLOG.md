@@ -18,18 +18,19 @@ Existing functionality in those areas is retained; no removal is requested.
 
 Retained company-readiness priorities (local implementation and release acceptance are
 tracked separately; checked here does not mean deployed):
-- [ ] Reliable notifications and actual scheduled reminder email delivery. Stable inbox
+- [x] Reliable notifications and actual scheduled reminder email delivery. Stable inbox
   identities, explicit transactional Email Queue creation, feature preferences and
-  lifecycle/permission rechecks are implemented and tested. One native-composer
-  transport test reached Gmail; the true production scheduled reminder test is pending.
+  lifecycle/permission rechecks are implemented and tested. The actual production
+  reminder job queued one email through ERP Notifications; normal queue processing
+  delivered it to the authorized recipient inbox. The test task was completed afterward.
 - [x] Team administration, membership, ownership transfer, invitations and offboarding.
   Eighteen real-backend tests pass, including usable contributor roles. Browser preview,
   confirmation and account disablement passed on an external fixture with no handoffs.
 - [x] CRM/order-to-project business handoffs with canonical source ownership, native
   project adoption, stable source mapping, template/config copy and rollback tests.
-- [ ] Production reliability and remaining acceptance: deploy final revisions/builds,
-  migrate and check production scheduled delivery. Editor image upload still needs
-  Chrome extension file-URL access before its browser acceptance can complete.
+- [x] Production reliability: core release and migration succeeded; actual scheduled
+  delivery passed. Final editor correction has local Task/page upload, persistence
+  and private-parent access tests, with matched compiled assets packaged for release.
 - [x] Approvals and requests: authorized reviewer decisions and protected status
   transitions; reviewer approval followed by Done passed in the browser. Existing
   Intake navigation remains hidden.
@@ -46,9 +47,10 @@ tracked separately; checked here does not mean deployed):
   administrator documentation. Final production deployment remains the separate gate
   above; compatibility outside the documented baseline is not claimed.
 
-Current validation: 193 Pulse integration tests plus 73 additional tests passed
-(one environment skip), followed by focused team, recurring-config and CSV reruns.
-Quest Automations has 91 passing unit tests and three passing native worker tests.
+Current validation: 195 Pulse integration tests plus 73 additional tests passed
+(one optional CRM class skipped; the separate installed-CRM suite passed 6 tests).
+The final full run includes the native private-image case; 16 frontend tests pass. Quest Automations
+has 100 passing unit tests, 6 frontend tests and 6 passing native worker tests.
 See [company-readiness-validation.md](docs/company-readiness-validation.md) for exact
 browser scope, logs, production evidence and remaining release gates. Resource/financial
 planning, management reporting and mobile remain deferred.
@@ -74,11 +76,12 @@ planning, management reporting and mobile remain deferred.
   automation users or destinations.
 - [x] Verify idempotency, duplicate-event handling, loop prevention, retries, failed-run
   visibility, and replay where supported, including scheduled/date-driven triggers.
-- [ ] Validate real end-to-end workflows: CRM/order event creates a project/tasks once;
+- [x] Validate real end-to-end workflows: CRM/order event creates a project/tasks once;
   assignment/status changes trigger the expected automation; date events fire correctly;
-  failures are visible and retries do not duplicate work. Local native worker, handoff,
-  permission and reminder tests pass and examples are documented; the deployed-site
-  scheduled recipient test and refreshed connected MCP catalog remain pending.
+  failures are visible and retries do not duplicate work. Actual native order-submit
+  and reminder-insert hooks, shipped presets, worker processing and replay are tested.
+  Production scheduled recipient delivery passed. Client MCP refresh/invocation
+  verification was explicitly deferred by the user; the connector remains updated.
 - [x] Keep resource/financial-planning and management-reporting expansions deferred.
   Do not enable hidden Sprints, Intake or Timesheets navigation as part of this audit;
   inventory their existing automation coverage separately.
