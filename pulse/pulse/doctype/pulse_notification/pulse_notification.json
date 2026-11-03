@@ -14,7 +14,8 @@
   "message",
   "is_read",
   "is_seen",
-  "link_url"
+  "link_url",
+  "email_queued"
  ],
  "fields": [
   {
@@ -66,6 +67,14 @@
    "fieldname": "link_url",
    "fieldtype": "Data",
    "label": "Link URL"
+  },
+  {
+   "fieldname": "email_queued",
+   "fieldtype": "Check",
+   "label": "Reminder email queued",
+   "default": "0",
+   "read_only": 1,
+   "description": "A reminder email was added to Email Queue. This is not confirmation of delivery."
   }
  ],
  "index_web_pages_for_search": 0,

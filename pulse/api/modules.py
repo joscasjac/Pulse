@@ -77,21 +77,19 @@ def set_tasks(name,tasks,remove=0):
     for task in tasks:
         if require_permission('Task',task,'write').project != module.project:
             frappe.throw('Tasks must belong to this module’s project.')
-    savepoint = 'pulse_module_' + frappe.generate_hash(length=10)
-    frappe.db.savepoint(savepoint)
-    try:
+    from pulse.services.atomic import atomic_scope
+    with atomic_scope('pulse_module'):
         frappe.db.sql('SELECT name FROM `tabPulse Module` WHERE name=%s FOR UPDATE',(name,))
         for task in tasks:
             existing = frappe.db.get_value('Pulse Module Task',{'module':name,'task':task},'name',for_update=True)
             if str(remove).lower() in ('1','true'):
                 if existing:
                     frappe.delete_doc('Pulse Module Task',existing)
+                    _membership_event(module, task, 'Removed')
             elif not existing:
                 frappe.get_doc(dict(doctype='Pulse Module Task',module=name,task=task,project=module.project)).insert()
+                _membership_event(module, task, 'Added')
         return get_module(name)
-    except Exception:
-        frappe.db.rollback(save_point=savepoint)
-        raise
 
 
 
@@ -137,3 +135,12 @@ def task_project_changed(doc, method=None):
 def task_deleted(doc, method=None):
     if frappe.db.table_exists('Pulse Module Task'):
         frappe.db.delete('Pulse Module Task', {'task':doc.name})
+
+
+def _membership_event(module, task, action):
+    # Durable scoped event survives removal of the membership row. Consumers use
+    # a generic document trigger and filter this explicit activity type.
+    frappe.get_doc({'doctype': 'Pulse Activity Log', 'user': frappe.session.user,
+        'activity_type': 'Module Membership Changed', 'reference_doctype': 'Task',
+        'reference_name': task, 'project': module.project,
+        'description': f'{action} module {module.name}'}).insert(ignore_permissions=True)

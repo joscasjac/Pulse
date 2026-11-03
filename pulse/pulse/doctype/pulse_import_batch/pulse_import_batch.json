@@ -1,0 +1,45 @@
+{
+  "doctype": "DocType",
+  "name": "Pulse Import Batch",
+  "module": "Pulse",
+  "autoname": "field:fingerprint",
+  "engine": "InnoDB",
+  "field_order": [
+    "project",
+    "fingerprint",
+    "result"
+  ],
+  "fields": [
+    {
+      "fieldname": "project",
+      "label": "Project",
+      "fieldtype": "Link",
+      "options": "Project",
+      "reqd": 1
+    },
+    {
+      "fieldname": "fingerprint",
+      "label": "Fingerprint",
+      "fieldtype": "Data",
+      "unique": 1,
+      "reqd": 1
+    },
+    {
+      "fieldname": "result",
+      "label": "Result",
+      "fieldtype": "JSON",
+      "reqd": 1
+    }
+  ],
+  "permissions": [
+    {
+      "role": "System Manager",
+      "read": 1
+    },
+    {
+      "role": "Pulse Admin",
+      "read": 1
+    }
+  ],
+  "track_changes": 1
+}

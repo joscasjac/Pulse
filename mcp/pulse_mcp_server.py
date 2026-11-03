@@ -6,7 +6,7 @@ Exposes Pulse project-management operations as MCP tools so an AI assistant
 tasks, sprints and projects in plain language.
 
 It talks to a running Frappe/Pulse site over the REST API using an API
-key + secret (token auth). Nothing here depends on ERPNext.
+key + secret (token auth). The site must have ERPNext and Pulse installed.
 
 Environment variables
 ---------------------
@@ -21,6 +21,7 @@ Run:  python pulse_mcp_server.py     (stdio transport)
 
 import json
 import os
+from typing import Any
 
 import httpx
 from mcp.server.fastmcp import FastMCP
@@ -84,6 +85,17 @@ def call(method: str, **params):
         return r.json().get("message", r.json())
     except Exception:
         return {"error": r.text}
+
+
+@mcp.tool()
+def pulse_work(operation: str, values: dict) -> Any:
+    """Execute a bounded Pulse action using native record IDs and current permissions.
+
+    Covers projects/tasks, module/page/request work, team handoffs, custom fields,
+    approval decisions, external shares and CSV import/export. Use the installed
+    Pulse action catalog and inspect records before retrying uncertain writes.
+    """
+    return call("pulse.api.automation.execute", operation=operation, values=values)
 
 
 def _resolve(ref: str) -> str:

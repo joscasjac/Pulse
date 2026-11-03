@@ -22,6 +22,7 @@ def projects():
     for row in rows:
         row.taskCount = len(frappe.get_list('Task', filters={'project': row.name}, pluck='name', limit_page_length=0))
         row.can_write = frappe.has_permission('Project', 'write', doc=row.name)
+        row.can_manage_team = row.can_write and (frappe.session.user == 'Administrator' or bool(set(frappe.get_roles()) & {'System Manager', 'Pulse Admin'}))
     return rows
 
 
@@ -67,24 +68,35 @@ def clone_template(template, project_name, customer=None, sales_order=None):
                              fields=['name', 'label_name', 'color'], limit_page_length=0)
     # A failed clone must not leave a partially populated project, including callers
     # which catch the exception inside the same request.
-    frappe.db.savepoint('pulse_clone')
-    try:
+    from pulse.services.atomic import atomic_scope
+    with atomic_scope('pulse_clone'):
         project = frappe.get_doc({'doctype': 'Project', 'project_name': project_name.strip(),
             'company': source.company, 'customer': customer, 'sales_order': sales_order,
-            'notes': source.notes,
+            'notes': source.notes if source.has_permlevel_access_to('notes', permission_type='read') and not source.meta.get_field('notes').get('mask') else None,
             'pulse_board_type': source.get('pulse_board_type'),
             'pulse_enable_scrum': source.get('pulse_enable_scrum'),
             'pulse_default_sprint_length': source.get('pulse_default_sprint_length'),
             'pulse_task_statuses': [dict(label=r.label, category=r.category, color=r.color) for r in source.get('pulse_task_statuses') or []],
-            'pulse_task_types': [dict(task_type=r.task_type) for r in source.get('pulse_task_types') or []]}).insert()
+            'pulse_task_types': [dict(task_type=r.task_type) for r in source.get('pulse_task_types') or []],
+            'pulse_task_field_rules': [dict(fieldname=r.fieldname, show_in_form=r.show_in_form, required_statuses=r.required_statuses) for r in source.get('pulse_task_field_rules') or []],
+            'pulse_approval_statuses': source.get('pulse_approval_statuses') or ''}).insert()
         label_mapping = {}
         for label in labels:
             copied = frappe.get_doc({'doctype': 'Pulse Label', 'project': project.name,
                 'label_name': label.label_name, 'color': label.color}).insert()
             label_mapping[label.name] = copied.name
         mapping = {}
+        from pulse.api.task_config import configurable_fields
+        writable = {field.fieldname for field in configurable_fields('write')}
+        custom = {row.fieldname for row in source.get('pulse_task_field_rules') or []
+                  if row.fieldname.startswith('custom_') and row.fieldname in writable}
         for task in tasks:
-            fields = {key: task.get(key) for key in ('subject', 'description', 'type', 'priority', 'expected_time', 'is_group', 'pulse_story_points')}
+            keys = {'subject', 'description', 'type', 'priority', 'expected_time', 'is_group', 'pulse_story_points'} | custom
+            fields = {}
+            for key in keys:
+                field = task.meta.get_field(key)
+                if field and not field.get('mask') and task.has_permlevel_access_to(key, df=field, permission_type='read'):
+                    fields[key] = task.get(key)
             clone = frappe.get_doc({'doctype': 'Task', 'project': project.name, **fields,
                 'workflow_state': initial['label'], 'status': CATEGORY_STATUS[initial['category']],
                 'pulse_labels': [{'label': label_mapping[row.label]} for row in task.get('pulse_labels') or []]}).insert()
@@ -102,9 +114,6 @@ def clone_template(template, project_name, customer=None, sales_order=None):
                 if dep.target_task in mapping:
                     frappe.get_doc({'doctype': 'Pulse Dependency', **dict(dep), 'source_task': mapping[dep.source_task], 'target_task': mapping[dep.target_task], 'status': 'Active'}).insert()
         return {'project': project.name, 'tasks': mapping}
-    except Exception:
-        frappe.db.rollback(save_point='pulse_clone')
-        raise
 
 
 def capacity_hours(start, end, allocations, leaves):

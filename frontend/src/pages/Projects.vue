@@ -7,6 +7,8 @@
       <button @click="openEntity('Project')" class="btn-primary"><Plus class="w-3.5 h-3.5" /> New project</button>
     </header>
 
+    <details class="delivery-create"><summary class="btn-ghost">Create delivery work from CRM or sales…</summary><DeliveryHandoff @created="reload" /></details>
+
     <nav class="project-tabs" aria-label="Project views">
       <button :class="{ selected: activeTab === 'projects' }" :aria-current="activeTab === 'projects' ? 'page' : undefined" @click="chooseTab('projects')">All projects <span>{{ projects.length }}</span></button>
       <button :class="{ selected: activeTab === 'templates' }" :aria-current="activeTab === 'templates' ? 'page' : undefined" @click="chooseTab('templates')">Templates <span>{{ templateCount }}</span></button>
@@ -22,6 +24,8 @@
       </div>
       <p v-if="activeTab === 'templates'" class="section-hint">Start repeatable work from a template. Mark any project as a template in its business details.</p>
 
+      <TaskTransfer v-if="transferProject" :key="transferProject.name" :project="transferProject" @close="transferProject = null" @changed="reload" />
+      <ProjectTeam v-if="teamProject" :key="teamProject.name" :project="teamProject" @close="teamProject = null" />
       <form v-if="editing" class="project-editor" @submit.prevent="saveBusiness" @keydown.esc="editing = null">
         <div class="editor-heading"><h2>{{ editing.project_name }} <span class="text-muted">/ Business details</span></h2><button type="button" class="icon-control" aria-label="Close business details" @click="editing = null"><X class="w-4 h-4" /></button></div>
         <div class="editor-fields">
@@ -52,6 +56,8 @@
               <button @click="goBoard(p.name); closeMenu($event)">Open tasks</button>
               <button @click="openEntity('Project', p.name); closeMenu($event)">Project details</button>
               <button v-if="p.can_write" @click="editBusiness(p); closeMenu($event)">Business details</button>
+              <button v-if="p.can_write" @click="transferProject = p; teamProject = null; closeMenu($event)">Import / export tasks</button>
+              <button v-if="p.can_manage_team" @click="teamProject = p; transferProject = null; closeMenu($event)">Manage team</button>
               <button v-if="p.pulse_is_template" @click="useTemplate(p); closeMenu($event)">Use template</button>
             </div></details>
           </div>
@@ -82,6 +88,9 @@
 import { ref, computed, watch, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { call } from 'frappe-ui'
+import DeliveryHandoff from '@/components/DeliveryHandoff.vue'
+import TaskTransfer from '@/components/TaskTransfer.vue'
+import ProjectTeam from '@/components/ProjectTeam.vue'
 import PersonalControls from '@/components/PersonalControls.vue'
 import StatusPill from '@/ui/StatusPill.vue'
 import Skeleton from '@/ui/Skeleton.vue'
@@ -93,6 +102,7 @@ import Folder from '~icons/lucide/folder'
 import X from '~icons/lucide/x'
 
 const router = useRouter()
+const teamProject = ref(null), transferProject = ref(null)
 const loading = ref(true)
 const projects = ref([])
 const activeTab = ref('projects'), search = ref(''), statusFilter = ref('')

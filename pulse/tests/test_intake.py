@@ -132,3 +132,18 @@ class TestIntake(IntegrationTestCase):
                 accept_request(name)
         finally:
             frappe.set_user("Administrator")
+
+    def test_failed_acceptance_does_not_leave_orphan_native_task(self):
+        from unittest.mock import patch
+        from pulse.api.intake import create_request, accept_request
+        from pulse.pulse.doctype.pulse_request.pulse_request import PulseRequest
+        name = create_request(self.project.name, 'Atomic acceptance')['name']
+        before = frappe.db.count('Task', {'project': self.project.name})
+        with patch.object(PulseRequest, 'save', side_effect=frappe.ValidationError('Injected review failure')):
+            with self.assertRaises(frappe.ValidationError):
+                accept_request(name)
+        self.assertEqual(frappe.db.count('Task', {'project': self.project.name}), before)
+        source = frappe.get_doc('Pulse Request', name)
+        self.assertEqual(source.status, 'Incoming')
+        self.assertFalse(source.accepted_task)
+        self.assertFalse(frappe.flags.get('pulse_accepting_request'))

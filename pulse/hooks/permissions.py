@@ -8,6 +8,8 @@ import frappe
 
 
 def require_permission(doctype, name, permission_type="read"):
+    if not isinstance(name, str) or not name.strip():
+        frappe.throw("Provide an exact record ID.")
     doc = frappe.get_doc(doctype, name)
     doc.check_permission(permission_type)
     return doc

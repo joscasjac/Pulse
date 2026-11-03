@@ -18,7 +18,7 @@
           <div class="project-row">
             <label class="fld">
               <span class="lbl">Project</span>
-              <select v-model="form.project" @change="changeProject" class="in">
+              <select v-model="form.project" @change="changeProject" class="in" :disabled="submitting">
                 <option v-for="p in projects" :key="p.name" :value="p.name">{{ p.project_name || p.name }}</option>
               </select>
             </label>
@@ -47,6 +47,23 @@
             </label>
 
           </div>
+
+          <section v-if="visibleCompanyFields.length && !form.repeat" class="company-fields" aria-label="Project task fields">
+            <h3 class="lbl">Project fields</h3>
+            <label v-for="field in visibleCompanyFields" :key="field.fieldname" class="fld">
+              <span class="lbl">{{ field.label }} <b v-if="fieldRequired(field)" style="color:var(--accent)">* required in {{ form.state }}</b></span>
+              <input v-if="field.fieldtype === 'Check'" v-model="form.field_values[field.fieldname]" type="checkbox" :aria-label="field.label" :aria-required="fieldRequired(field)" />
+              <select v-else-if="field.fieldtype === 'Select'" v-model="form.field_values[field.fieldname]" class="in" :aria-label="field.label" :required="fieldRequired(field)"><option value="">Choose {{ field.label }}</option><option v-for="option in field.options.split('\n').filter(Boolean)" :key="option" :value="option">{{ option }}</option></select>
+              <textarea v-else-if="['Small Text', 'Text'].includes(field.fieldtype)" v-model="form.field_values[field.fieldname]" class="in" rows="2" :aria-label="field.label" :required="fieldRequired(field)" />
+              <input v-else-if="['Int', 'Float', 'Currency', 'Percent'].includes(field.fieldtype)" v-model.number="form.field_values[field.fieldname]" type="number" :step="field.fieldtype === 'Int' ? '1' : 'any'" class="in" :aria-label="field.label" :required="fieldRequired(field)" />
+              <input v-else v-model="form.field_values[field.fieldname]" :type="field.fieldtype === 'Date' ? 'date' : 'text'" class="in" :aria-label="field.label" :required="fieldRequired(field)" />
+            </label>
+          </section>
+          <p v-if="requiredFieldsUnavailable && !form.repeat" role="alert" class="load-error">Required project fields are unavailable with your current access. Ask a project administrator to review field permissions.</p>
+          <p v-if="form.repeat && companyFields.fields.length" class="text-xs text-muted">Project custom-field values are supported for one-off tasks. Scheduled templates do not store them.</p>
+          <p v-if="form.repeat && companyFields.recurring_custom_fields_required" role="alert" class="load-error">This project's recurring start status requires custom fields. Create a one-off task instead, or ask an administrator to change its field requirements.</p>
+
+          <p v-if="form.repeat && companyFields.recurring_approval_required" role="alert" class="load-error">The recurring start status requires approval. Create a one-off task or ask an administrator to choose an unprotected start status.</p>
 
           <!-- assignees -->
           <div class="fld">
@@ -135,6 +152,7 @@ import Check from '~icons/lucide/check'
 
 const config = ref({ statuses: [], labels: [] })
 const configLoading = ref(false)
+const companyFields = ref({ fields: [], unavailable_required_statuses: [], recurring_custom_fields_required: false, recurring_approval_required: false })
 let projectRequest = 0
 const dataError = ref(''), dataLoading = ref(false)
 const projects = ref([])
@@ -148,10 +166,14 @@ const form = reactive({
   project: null, module: null, task_type: 'Task', subject: '', description: '',
   priority: 'Medium', state: 'Backlog',
   exp_end_date: '', exp_start_date: '', expected_time: 0, pulse_story_points: 0, pulse_labels: [], pulse_sprint: null, assignees: [],
+  field_values: {},
   repeat: false, interval_count: 1, interval_unit: 'Week',
 })
 
-const canSubmit = computed(() => form.project && form.subject.trim() && !configLoading.value && config.value.statuses.length)
+const fieldRequired = field => field.required_statuses.includes(form.state)
+const visibleCompanyFields = computed(() => companyFields.value.fields.filter(field => field.show_in_form || fieldRequired(field)))
+const requiredFieldsUnavailable = computed(() => companyFields.value.unavailable_required_statuses.includes(form.state))
+const canSubmit = computed(() => form.project && form.subject.trim() && !dataLoading.value && !configLoading.value && config.value.statuses.length && (form.repeat ? !companyFields.value.recurring_custom_fields_required && !companyFields.value.recurring_approval_required : !requiredFieldsUnavailable.value))
 const cadenceLabel = computed(() => {
   const n = form.interval_count || 1
   const u = (form.interval_unit || 'Week').toLowerCase()
@@ -184,12 +206,16 @@ async function loadProject() {
   const project = form.project
   configLoading.value = true
   config.value = { statuses: [], labels: [] }
+  companyFields.value = { fields: [], unavailable_required_statuses: [], recurring_custom_fields_required: false, recurring_approval_required: false }
+  form.field_values = {}
   try {
     await loadSprints()
     if (!project) return
-    const result = await call('pulse.api.task_config.get_config', { project })
+    const [result, fields] = await Promise.all([call('pulse.api.task_config.get_config', { project }), call('pulse.api.task_config.get_creation_fields', { project })])
     if (request !== projectRequest || form.project !== project) return
     config.value = result
+    companyFields.value = fields
+    form.field_values = Object.fromEntries(fields.fields.filter(field => field.default_value !== null && field.default_value !== undefined).map(field => [field.fieldname, field.fieldtype === 'Check' ? !!Number(field.default_value) : field.default_value]))
     issueTypes.value = result.task_types
     if (!issueTypes.value.includes(form.task_type)) form.task_type = issueTypes.value[0] || null
     if (!result.statuses.some(s => s.label === form.state)) form.state = result.statuses[0]?.label
@@ -246,7 +272,7 @@ async function submit() {
       })
       toast.success(`Recurring task created (${cadenceLabel.value})`)
       markCreated()
-      form.subject = ''; form.description = ''; nextTick(() => first.value?.focus())
+      form.subject = ''; form.description = ''; form.field_values = {}; nextTick(() => first.value?.focus())
       return
     }
     const res = await call('pulse.api.spa.create_task', {
@@ -256,6 +282,7 @@ async function submit() {
       exp_start_date: form.exp_start_date || null, exp_end_date: form.exp_end_date || null,
       expected_time: form.expected_time || 0, pulse_story_points: form.pulse_story_points || 0,
       pulse_labels: JSON.stringify(form.pulse_labels),
+      field_values: Object.fromEntries(Object.entries(form.field_values).filter(([fieldname]) => visibleCompanyFields.value.some(field => field.fieldname === fieldname))),
     })
     if (res.blocked && res.blocked.length) {
       toast.error(`${res.issue_key} created, but ${res.blocked.length} assignment(s) blocked by hierarchy`)
@@ -265,7 +292,7 @@ async function submit() {
       toast.success(`${res.issue_key} created`)
     }
     markCreated()
-    form.subject = ''; form.description = ''; nextTick(() => first.value?.focus())
+    form.subject = ''; form.description = ''; form.field_values = {}; nextTick(() => first.value?.focus())
   } catch (e) {
     toast.error(e?.messages?.[0] || 'Could not create issue')
   } finally {
@@ -300,6 +327,7 @@ textarea.in { resize: vertical; font-family: inherit; }
 .fade-enter-active, .fade-leave-active { transition: opacity 0.16s; }
 .fade-enter-from, .fade-leave-to { opacity: 0; }
 .form-section-title { margin-top: 10px; padding-top: 16px; border-top: 1px solid var(--border); font-size: 13px; font-weight: 600; }
+.company-fields { display: grid; gap: 12px; border-top: 1px solid var(--border-soft); padding-top: 14px; }
 .load-error { font-size: 13px; padding: 10px; border: 1px solid var(--border); border-radius: 6px; }
 button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 @media(max-width: 560px) { .body { padding: 18px; } .row, .row4 { grid-template-columns: 1fr; } }

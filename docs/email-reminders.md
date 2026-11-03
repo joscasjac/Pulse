@@ -1,70 +1,82 @@
 # Email notifications and reminders
 
-Pulse uses the site's existing Frappe outgoing Email Account and email queue.
-No separate Pulse SMTP credentials are required. A working outgoing account,
-scheduler and email workers are required; configuring an account alone does not
-prove delivery.
+Pulse uses the site's existing Frappe outgoing Email Account and Email Queue. No
+separate Pulse SMTP credentials are required. A working account, scheduler and email
+workers are all required; an account's configuration alone is not delivery evidence.
 
-Assignment and completion emails use Enable Email Notifications in Pulse Settings.
-They require an existing, enabled User with an email address; missing or disabled
-accounts are skipped instead of falling back to an old assignment identifier.
-Advance reminders use Enable Advance Task Reminders and Days Before Due Date in
-Pulse Settings. The default is `3, 1, 0`: three days before, one day before, and on
-the due date. They run daily in the site's timezone, not at a chosen clock time.
-Apply normal site migration on deployment to install these settings and register
-the scheduler hook.
+## Settings and recipient checks
 
-Advance and overdue reminders use native Notification Log alerts. Email delivery
-respects each recipient's Frappe notification settings. Recipients must be enabled,
-assigned to the task, and currently permitted to read it. Archived, completed and
-cancelled tasks are excluded. Advance reminders have deterministic identities per
-task, recipient, due date and threshold, preventing duplicate queueing on retries.
-Rescheduling a task permits reminders for its new due date.
+Enable Email Notifications in Pulse Settings controls assignment, completion and
+scheduled reminder emails. Recipients must be existing, enabled ERP users with an
+email address. Missing, disabled and addressless accounts are skipped.
 
-Advance reminders also appear in Pulse's inbox as Due Reminder notifications,
-with the same permission filtering and read/unread controls as other updates.
-Their stable identities prevent duplicate inbox entries on a scheduler retry.
-The due-date query covers the complete site-local day for both Date and Datetime
-fields, including ERPNext sites with a customized task due-time field.
+Advance reminders also require Enable Advance Task Reminders. Days Before Due Date
+defaults to `3, 1, 0`: three days before, one day before and on the due date. The daily
+job uses the site's timezone and the complete local due-date day. It does not promise
+a user-selected clock time. Overdue reminders run daily without changing Task status.
+Archived, completed and cancelled tasks are excluded.
 
-Validation: two real-backend reminder integration tests passed, including repeat
-execution and denied access; four email queue tests passed, including escaped
-content, disabled/missing/addressless recipients and nonblocking queue failure.
-The latest focused run used the isolated Frappe QA site's runner and passed in
-0.001 seconds; log: `../.work/pulse-bench/pulse-email-recipient-tests.log`.
-Email sending was mocked; these results do
-not establish inbox delivery. Local QA has no outgoing account.
+Reminder email respects the recipient's enabled Notification Settings and email
+**event-reminder feature** preference. On supported Frappe versions Pulse calls the
+native feature-preference helper; its compatibility fallback checks the global email
+and event-reminder fields. Missing preference rows retain native default-on behavior.
+The native notification-type allow-list is not the reminder-email switch.
 
-## Production installation — 2026-09-16
+## Inbox and explicit email queue
 
-Pulse `8844ab3` was installed successfully on `questmedia.frappe.cloud` after
-Cloud deployment and site migration. Read-only MCP checks of Pulse Settings
-confirmed `email_notifications=1`, `advance_reminders=1` and
-`reminder_days_before="3, 1, 0"`. Scheduled Job Type now contains
-`pulse.scheduled.reminders.send_advance_reminders` and
-`pulse.scheduled.overdue.flag_overdue_tasks`, both daily and `stopped=0`.
-All six Pulse jobs are registered. A subsequent read still showed null
-`last_execution` values: registration is proven; execution and actual Pulse
-recipient delivery are not. No test messages were sent and no recipient settings
-were changed during these checks.
+Advance and overdue reminders write both Pulse Due Reminder inbox notifications and
+native Notification Log Alerts. **Frappe Alert logs do not send reminder email by
+themselves.** Pulse therefore queues reminder email explicitly through
+`pulse.scheduled.reminder_email.queue_reminder_email`.
 
-## Connected ERP readiness before deployment — 2026-09-16
+Advance identities are stable per task, recipient, due date and configured threshold.
+Overdue identities are stable per task, recipient, due date and site-local reminder
+day. Retries do not duplicate inbox notices or reset their read state. Rescheduling
+permits a notice for the new due date; another overdue day permits its daily notice.
 
-Read-only checks through the user's ERPNext MCP connection confirmed:
+Before queueing, Pulse locks and re-reads the User, Task and notification. It verifies
+current assignment, enabled account/email, current due date, task lifecycle, row access,
+readable/unmasked subject and due-date fields, and email preferences. Title/due fields
+which the recipient may not read are also excluded from inbox creation.
 
-- `ERP Notifications` is enabled for outgoing mail and is the default outgoing
-  Email Account. No SMTP credentials were read or changed.
-- The five most recent Email Queue entries, created on September 15, have status
-  `Sent`. This establishes historical queue processing, not recipient inbox
-  delivery or delivery of a Pulse notification.
-- `frappe.email.queue.flush` and `frappe.email.queue.retry_sending_emails` are
-  not stopped and have September 16 execution timestamps. Other daily email
-  jobs also have September 16 timestamps.
-- No Scheduled Job Type matched `pulse.%`. Pulse's new reminder hook therefore
-  remains a deployment prerequisite on the connected site.
+The native Email Queue row and the inbox notice's `email_queued` marker commit together.
+The marker is set only after an actual queue row exists. A queue attempt failure rolls
+back that attempt, keeps the inbox/read state and remains eligible for a scheduler
+retry; Error Log records **Pulse reminder email queue failed**. Once queued, subsequent
+SMTP failure/retry belongs to the existing native queue entry. Queueing is not SMTP
+acceptance, and SMTP Sent is not confirmed inbox receipt.
 
-The existing default account can be reused. After deploying and migrating,
-verify the `pulse.scheduled.reminders.send_advance_reminders` job is registered,
-enable the desired Pulse reminder settings, and inspect its execution and queue
-results. A real recipient delivery check is still outstanding; the readiness
-inspection sent no messages and changed no production settings.
+## Local validation — 2026-11-03
+
+Seven real-backend scheduled reminder integration tests pass, including an actual
+Email Queue row without enabling Alert email, duplicate suppression, preferences,
+queue rollback/retry, access denial, disabled recipients, changed dates/assignments,
+completion and field masking. Ten focused reminder unit tests also pass. Relevant logs
+are `../.work/pulse-bench/pulse-reminder-email-tests.log` and
+`../.work/pulse-bench/pulse-reminder-unit-tests.log`.
+
+The isolated QA site has no real outgoing SMTP account. Tests exercise native queue
+creation with controlled fixture configuration and mocked external sending; they do
+not establish production inbox delivery.
+
+## Production evidence and release follow-up
+
+The last recorded production release installed Pulse `8844ab3` on September 16 after
+Frappe Cloud deployment and migration. Settings confirmed email notifications and
+advance reminders enabled with `3, 1, 0` thresholds. All six Pulse Scheduled Job Types
+were registered and not stopped. November 3 read-only checks found execution timestamps,
+superseding the earlier September observation of null timestamps. General historical
+Email Queue records have Sent status.
+
+The default outgoing account was recorded as **ERP Notifications**. A single authorized
+transport test on November 3 reached `joscasjac24@gmail.com` in INBOX. It used the
+existing **Joseph - Quest Media** account through the native composer and Send Now:
+Communication `e9ehd9thbp`, Email Queue `e9el3g93p0`, Gmail message `1a1a251920cb8ca4`.
+This confirms that transport path only.
+
+The new explicit scheduled-reminder email implementation is local and not deployed.
+After the final release build and normal site migration, verify both reminder jobs,
+workers and settings, then run the separately authorized scheduled-recipient test.
+Inspect its Pulse Notification/queue reference, native processing status and actual
+recipient inbox. Production scheduled reminder delivery through ERP Notifications
+remains pending; no second test message is claimed by this document.

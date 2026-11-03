@@ -4,6 +4,7 @@
     <header class="home-header">
       <div><p class="home-date">{{ dateStr }}</p><h1>{{ greeting }}, {{ firstName }}</h1><p class="home-subtitle">Pick up where you left off.</p></div>
     </header>
+    <router-link to="/getting-started" class="home-subtitle" style="display:inline-block;margin-bottom:20px;text-decoration:underline">Getting started · project setup, imports and team workflows →</router-link>
     <div v-if="error" class="home-error" role="alert">{{ error }} <button class="btn-ghost" @click="reload">Try again</button></div>
     <div v-if="loading" class="home-loading" role="status">Loading your workspace…</div>
     <template v-else>

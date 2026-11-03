@@ -4,6 +4,7 @@ from urllib.parse import quote
 
 import frappe
 from frappe.utils import add_days, today, get_url
+from pulse.scheduled.reminder_email import queue_reminder_email, can_read_title_due
 
 
 def parse_reminder_days(value):
@@ -36,7 +37,7 @@ def send_advance_reminders():
             for user in {u for u in users if isinstance(u, str)}:
                 if user == "Guest" or not frappe.db.get_value("User", user, "enabled"):
                     continue
-                if not frappe.has_permission("Task", "read", doc=task.name, user=user):
+                if not frappe.has_permission("Task", "read", doc=task.name, user=user) or not can_read_title_due(user):
                     continue
                 # Stable per recipient, due date and threshold: retries cannot
                 # enqueue another reminder; rescheduling creates a new reminder.
@@ -56,13 +57,13 @@ def send_advance_reminders():
                         frappe.publish_realtime("pulse_notification", {"refresh": True}, user=user, after_commit=True)
                     except frappe.DuplicateEntryError:
                         pass
-                if frappe.db.exists("Notification Log", name):
-                    continue
-                doc = frappe.get_doc({"doctype": "Notification Log", "for_user": user,
-                    "type": "Alert", "document_type": "Task", "document_name": task.name,
-                    "subject": message,
-                    "link": get_url("/pulse/board?task=" + quote(task.name, safe=""))})
-                try:
-                    doc.insert(ignore_permissions=True, set_name=name)
-                except frappe.DuplicateEntryError:
-                    pass
+                if not frappe.db.exists("Notification Log", name):
+                    doc = frappe.get_doc({"doctype": "Notification Log", "for_user": user,
+                        "type": "Alert", "document_type": "Task", "document_name": task.name,
+                        "subject": message,
+                        "link": get_url("/pulse/board?task=" + quote(task.name, safe=""))})
+                    try:
+                        doc.insert(ignore_permissions=True, set_name=name)
+                    except frappe.DuplicateEntryError:
+                        pass
+                queue_reminder_email(name, due)

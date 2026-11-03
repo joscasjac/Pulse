@@ -18,6 +18,7 @@
     <p class="text-xs text-muted mb-2">No selection allows all task types.</p>
     <div class="flex flex-wrap gap-3"><label v-for="t in types" :key="t" class="text-sm flex gap-1"><input type="checkbox" v-model="selectedTypes" :value="t" />{{ t }}</label></div>
     <button class="control mt-4" :disabled="saving" @click="save">{{ saving ? 'Saving…' : 'Save workflow' }}</button>
+    <TaskFieldSettings :key="project" :project="project" :statuses="statuses" @changed="$emit('changed')" />
     <h3 class="font-medium mt-6 mb-2">Labels</h3>
     <div v-for="label in labels" :key="label.name" class="label-row">
       <input type="color" v-model="label.color" :aria-label="`Color for ${label.label_name}`" />
@@ -30,6 +31,7 @@
 <script setup>
 import { ref, reactive, watch } from 'vue'
 import { call } from 'frappe-ui'
+import TaskFieldSettings from './TaskFieldSettings.vue'
 const props = defineProps({ project: String })
 const emit = defineEmits(['close', 'changed'])
 const statuses = ref([]), labels = ref([]), types = ref([]), selectedTypes = ref([]), saving = ref(false), error = ref('')

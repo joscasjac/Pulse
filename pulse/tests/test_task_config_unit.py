@@ -23,7 +23,7 @@ class TaskConfigurationTests(unittest.TestCase):
         self.project = Doc(pulse_task_statuses=[Doc(label="Queued", category="To Do", color="#123456"),
                                                Doc(label="Delivered", category="Done", color="#654321")],
                            pulse_task_types=[Doc(task_type="Bug")])
-        self.frappe = SimpleNamespace(whitelist=lambda: lambda f: f, throw=throw, get_doc=Mock(return_value=self.project), db=SimpleNamespace(get_value=Mock(return_value="Other Project")))
+        self.frappe = SimpleNamespace(whitelist=lambda **kwargs: lambda f: f, throw=throw, get_doc=Mock(return_value=self.project), db=SimpleNamespace(get_value=Mock(return_value="Other Project")))
         spec = importlib.util.spec_from_file_location('task_config_under_test', Path(__file__).parents[1] / 'api' / 'task_config.py')
         self.config = importlib.util.module_from_spec(spec)
         with patch.dict(sys.modules, {'frappe': self.frappe, 'frappe.utils': SimpleNamespace(getdate=lambda v: date.fromisoformat(str(v))),

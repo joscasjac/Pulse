@@ -30,7 +30,7 @@
    "fieldname": "activity_type",
    "fieldtype": "Select",
    "label": "Type",
-   "options": "Task Created\nTask Updated\nStatus Changed\nComment Added\nTime Logged\nAttachment Added\nPriority Changed\nAssignment Changed\nSprint Changed\nTask Completed\nProject Created\nSprint Started\nSprint Completed\nGoal Updated",
+   "options": "Task Created\nTask Updated\nStatus Changed\nComment Added\nTime Logged\nAttachment Added\nPriority Changed\nAssignment Changed\nSprint Changed\nTask Completed\nProject Created\nProject Ownership Changed\nModule Membership Changed\nSprint Started\nSprint Completed\nGoal Updated",
    "in_list_view": 1
   },
   {

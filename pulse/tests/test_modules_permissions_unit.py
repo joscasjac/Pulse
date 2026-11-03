@@ -16,7 +16,7 @@ class ModulePermissionTests(unittest.TestCase):
             db=SimpleNamespace(escape=lambda v: "'" + v + "'", savepoint=Mock(), rollback=Mock(), sql=Mock(), get_value=Mock(return_value=None)),
             generate_hash=Mock(return_value='test'),
         )
-        self.require = Mock(return_value=SimpleNamespace(project='project'))
+        self.require = Mock(return_value=SimpleNamespace(project='project', name='module'))
         self.scope = Mock(return_value=True)
         spec = importlib.util.spec_from_file_location('module_api_under_test', Path(__file__).parents[1] / 'api' / 'modules.py')
         self.api = importlib.util.module_from_spec(spec)
@@ -43,7 +43,10 @@ class ModulePermissionTests(unittest.TestCase):
 
     def test_late_membership_failure_rolls_back_earlier_insert(self):
         self.frappe.get_doc = Mock(side_effect=[SimpleNamespace(insert=Mock()), SimpleNamespace(insert=Mock(side_effect=RuntimeError('second row failed')))])
-        with self.assertRaises(RuntimeError):
+        from pulse.services import atomic
+        for event in ('before_commit', 'after_commit', 'before_rollback', 'after_rollback'):
+            setattr(self.frappe.db, event, Mock())
+        with patch.object(atomic, 'frappe', self.frappe), patch.object(self.api, '_membership_event'), self.assertRaises(RuntimeError):
             self.api.set_tasks('module', ['first', 'second'])
         self.frappe.db.rollback.assert_called_once_with(save_point='pulse_module_test')
 

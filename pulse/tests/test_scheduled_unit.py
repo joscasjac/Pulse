@@ -14,22 +14,28 @@ class ScheduledTests(unittest.TestCase):
         utils = types.ModuleType("frappe.utils")
         utils.today = lambda: "2026-09-16"
         utils.getdate = lambda value: value
+        utils.get_url = lambda value: "https://qa.invalid" + value
         frappe.get_all = MagicMock()
         frappe.parse_json = json.loads
         frappe.db = MagicMock()
+        frappe.db.exists.return_value = False
+        frappe.publish_realtime = MagicMock()
         frappe.has_permission = MagicMock()
         frappe.get_doc = MagicMock()
         frappe._ = lambda value: value
         path = Path(__file__).parents[1] / "scheduled" / (name + ".py")
         spec = importlib.util.spec_from_file_location("scheduled_under_test", path)
         module = importlib.util.module_from_spec(spec)
-        with patch.dict(sys.modules, {"frappe": frappe, "frappe.utils": utils}):
+        helper = types.ModuleType("pulse.scheduled.reminder_email")
+        helper.queue_reminder_email = MagicMock()
+        helper.can_read_title_due = MagicMock(return_value=True)
+        with patch.dict(sys.modules, {"frappe": frappe, "frappe.utils": utils, "pulse.scheduled.reminder_email": helper}):
             spec.loader.exec_module(module)
         return module, frappe
 
     def test_overdue_native_tasks_only_notify_enabled_authorized_assignees(self):
         job, frappe = self.load_job("overdue")
-        frappe.get_all.return_value = [types.SimpleNamespace(name="TASK-1", subject="Private task",
+        frappe.get_all.return_value = [types.SimpleNamespace(name="TASK-1", subject="Private task", exp_end_date="2026-09-15",
             _assign=json.dumps(["member", "member", "removed", "disabled", "Guest"]))]
         frappe.db.get_value.side_effect = lambda dt, user, field: user != "disabled"
         frappe.has_permission.side_effect = lambda dt, perm, doc, user: user == "member"
@@ -38,11 +44,14 @@ class ScheduledTests(unittest.TestCase):
         self.assertEqual(query.args, ("Task",))
         self.assertEqual(query.kwargs["filters"]["pulse_archived"], 0)
         self.assertEqual(query.kwargs["filters"]["status"], ["not in", ("Completed", "Cancelled")])
-        self.assertEqual(frappe.get_doc.call_count, 1)
+        self.assertEqual(frappe.get_doc.call_count, 2)
         notification = frappe.get_doc.call_args.args[0]
         self.assertEqual(notification["document_type"], "Task")
         self.assertEqual(notification["for_user"], "member")
-        frappe.get_doc.return_value.insert.assert_called_once_with(ignore_permissions=True)
+        self.assertEqual(frappe.get_doc.return_value.insert.call_count, 2)
+        names = [call.kwargs["set_name"] for call in frappe.get_doc.return_value.insert.call_args_list]
+        self.assertEqual(names[0], names[1])
+        self.assertTrue(names[0].startswith("pulse-overdue-"))
         frappe.db.bulk_insert.assert_not_called()
 
     def test_bad_assignment_metadata_does_not_abort_other_tasks(self):

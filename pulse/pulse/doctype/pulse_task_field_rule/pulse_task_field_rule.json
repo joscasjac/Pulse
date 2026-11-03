@@ -1,0 +1,10 @@
+{
+  "doctype": "DocType", "name": "Pulse Task Field Rule", "module": "Pulse",
+  "engine": "InnoDB", "istable": 1, "editable_grid": 1, "autoname": "hash",
+  "field_order": ["fieldname", "show_in_form", "required_statuses"],
+  "fields": [
+    {"fieldname": "fieldname", "fieldtype": "Data", "label": "Task field", "reqd": 1, "in_list_view": 1},
+    {"fieldname": "show_in_form", "fieldtype": "Check", "label": "Show in task details", "default": "1", "in_list_view": 1},
+    {"fieldname": "required_statuses", "fieldtype": "Small Text", "label": "Required in statuses", "description": "One project task status per line. Empty means optional."}
+  ], "permissions": [], "track_changes": 0
+}

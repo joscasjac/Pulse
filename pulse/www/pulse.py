@@ -19,6 +19,7 @@ def get_context(context):
         "csrf_token": frappe.sessions.get_csrf_token(),
         "sitename": frappe.local.site,
         "user": frappe.session.user,
+        "pulse_user_type": frappe.db.get_value("User", frappe.session.user, "user_type"),
         # realtime: the SPA connects to socket.io on this port, in a namespace
         # named after the site (Frappe's socketio rejects any other namespace).
         "socketio_port": frappe.conf.get("socketio_port") or 9000,

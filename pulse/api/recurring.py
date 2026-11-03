@@ -17,6 +17,27 @@ def _cadence(count, unit):
     return f"every {unit}" if count == 1 else f"every {count} {unit}s"
 
 
+def _validate_recurring_start(template, project=None):
+    """Reject templates that cannot satisfy the project's first task state."""
+    from pulse.api.task_config import statuses_for, validate_required_fields
+    project = project or require_permission('Project', template.project)
+    statuses = statuses_for(project)
+    initial = next((row for row in statuses if row['category'] == 'To Do'), None)
+    initial = initial or next((row for row in statuses if row['category'] not in ('Done', 'Cancelled')), None)
+    if not initial:
+        frappe.throw('Recurring tasks require an open status in the project.')
+    if initial['label'] in (project.get('pulse_approval_statuses') or '').splitlines():
+        frappe.throw('The recurring start status requires approval. Create a one-off task or choose an unprotected recurring start status.')
+    if any(rule.fieldname.startswith('custom_') and initial['label'] in (rule.required_statuses or '').splitlines()
+           for rule in project.get('pulse_task_field_rules') or []):
+        frappe.throw('The recurring start status requires project custom fields. Scheduled templates do not store these values; create a one-off task or change the field requirements.')
+    task = frappe.new_doc('Task')
+    task.update({'project': template.project, 'workflow_state': initial['label'], 'subject': template.subject,
+        'description': template.description, 'priority': template.priority, 'type': template.task_type,
+        'exp_end_date': template.get('next_run') or template.get('start_date') or today()})
+    validate_required_fields(task, project)
+
+
 @frappe.whitelist()
 def list_recurring(project=None):
     filters = {}
@@ -53,6 +74,7 @@ def create_recurring(subject, project, interval_count=1, interval_unit="Week",
         "description": description,
         "start_date": start_date or today(),
     })
+    _validate_recurring_start(doc)
     doc.insert()
     frappe.db.commit()
 
@@ -76,6 +98,7 @@ def update_recurring(name, **fields):
     for k, v in fields.items():
         if k in allowed:
             doc.set(k, v)
+    _validate_recurring_start(doc)
     doc.save()
     frappe.db.commit()
     return {"name": doc.name}
@@ -85,6 +108,8 @@ def update_recurring(name, **fields):
 def toggle_recurring(name, is_active):
     require_permission("Pulse Recurring Task", name, "write")
     active = 1 if str(is_active) in ("1", "true", "True") else 0
+    if active:
+        _validate_recurring_start(frappe.get_doc('Pulse Recurring Task', name))
     frappe.db.set_value("Pulse Recurring Task", name, "is_active", active)
     frappe.db.commit()
     return {"name": name, "is_active": active}

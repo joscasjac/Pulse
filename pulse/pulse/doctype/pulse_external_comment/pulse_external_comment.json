@@ -1,0 +1,33 @@
+{
+ "doctype": "DocType",
+ "name": "Pulse External Comment",
+ "module": "Pulse",
+ "autoname": "hash",
+ "engine": "InnoDB",
+ "field_order": [
+  "task",
+  "content"
+ ],
+ "fields": [
+  {
+   "fieldname": "task",
+   "fieldtype": "Link",
+   "label": "Task",
+   "reqd": 1,
+   "options": "Task"
+  },
+  {
+   "fieldname": "content",
+   "fieldtype": "Small Text",
+   "label": "Comment",
+   "reqd": 1
+  }
+ ],
+ "permissions": [
+  {
+   "role": "System Manager",
+   "read": 1
+  }
+ ],
+ "track_changes": 1
+}

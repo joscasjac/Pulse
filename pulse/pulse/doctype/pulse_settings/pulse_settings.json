@@ -83,7 +83,7 @@
    "fieldname": "email_notifications",
    "fieldtype": "Check",
    "label": "Enable Email Notifications",
-   "description": "Email the assignee when a task is assigned, and the assigner when it is completed."
+   "description": "Enable assignment, completion and scheduled reminder emails through the ERP outgoing account. Reminders also respect each user’s Notification Settings email and event-reminder preferences."
   },
   {
    "fieldname": "ntfy_section",

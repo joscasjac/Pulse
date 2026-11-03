@@ -44,6 +44,9 @@
 
           </div>
           <TaskModules :key="task.name" :task="task.name" @changed="$emit('changed')" />
+          <TaskFieldEditor :key="task.name" :task="task.name" @changed="$emit('changed')" />
+          <TaskExternalSharing v-if="task.can_write" :key="task.name" :task="task.name" />
+          <TaskApprovals :key="task.name" :task="task.name" />
           <nav class="drawer-tabs" aria-label="Task sections"><button :class="{ active: drawerTab === 'details' }" @click="drawerTab = 'details'">Details</button><button :class="{ active: drawerTab === 'activity' }" @click="drawerTab = 'activity'">Activity & comments <span>{{ task.comments.length }}</span></button></nav>
           <div v-show="drawerTab === 'details'" class="task-details-layout">
           <div class="mt-4 task-description">
@@ -243,6 +246,9 @@ import Maximize2 from '~icons/lucide/maximize-2'
 import Minimize2 from '~icons/lucide/minimize-2'
 import PersonalControls from './PersonalControls.vue'
 import TaskModules from './tasks/TaskModules.vue'
+import TaskFieldEditor from './tasks/TaskFieldEditor.vue'
+import TaskApprovals from './tasks/TaskApprovals.vue'
+import TaskExternalSharing from './TaskExternalSharing.vue'
 import { ref, computed, watch, nextTick, onBeforeUnmount } from 'vue'
 import { call, TextEditor } from 'frappe-ui'
 import { toast } from '@/ui/toast'

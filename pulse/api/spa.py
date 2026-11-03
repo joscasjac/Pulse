@@ -133,7 +133,7 @@ def get_board(project=None, sprint=None, include_archived=0):
 def create_task(project, subject, state=None, task_type=None, priority="Medium",
                 description=None, assignees=None, pulse_sprint=None,
                 exp_end_date=None, parent_task=None, exp_start_date=None,
-                expected_time=0, pulse_story_points=0, pulse_labels=None, module=None):
+                expected_time=0, pulse_story_points=0, pulse_labels=None, module=None, field_values=None):
     """Create a task and (optionally) assign people to it in one step.
 
     Assignment goes through the standard mechanism, so the hierarchical-assignment
@@ -146,6 +146,19 @@ def create_task(project, subject, state=None, task_type=None, priority="Medium",
     if not state:
         configuration = statuses_for(project_doc)
         state = next((r["label"] for r in configuration if r["category"] == "Backlog"), configuration[0]["label"])
+    from pulse.api.task_config import creation_field_metadata
+    if isinstance(field_values, str):
+        try:
+            field_values = frappe.parse_json(field_values)
+        except (ValueError, TypeError):
+            frappe.throw('Provide a JSON object of configured custom task field values.')
+    field_values = {} if field_values is None else field_values
+    creation_fields = {field.fieldname: field for field, _rule in creation_field_metadata(project_doc)}
+    if not isinstance(field_values, dict) or set(field_values) - set(creation_fields):
+        frappe.throw("Provide only this project's configured, writable custom fields.")
+    import math
+    if any(not isinstance(value, (str, int, float, bool, type(None))) or (isinstance(value, float) and not math.isfinite(value)) for value in field_values.values()):
+        frappe.throw('Custom task field values must be ordinary scalar values.')
     from pulse.api.tasks import _prepare_fields
     labels = _prepare_fields({"pulse_labels": pulse_labels or []})["pulse_labels"]
     if parent_task:
@@ -172,6 +185,20 @@ def create_task(project, subject, state=None, task_type=None, priority="Medium",
         "workflow_state": state,
         "status": STATE_TO_STATUS.get(state, "Open"),
     })
+    doc.update(field_values)
+    native_defaults = frappe.new_doc('Task')
+    for fieldname in creation_fields:
+        if fieldname not in field_values and doc.get(fieldname) is None:
+            doc.set(fieldname, native_defaults.get(fieldname))
+    for rule in project_doc.get('pulse_task_field_rules') or []:
+        if not rule.fieldname.startswith('custom_') or state not in (rule.required_statuses or '').splitlines():
+            continue
+        field = creation_fields.get(rule.fieldname)
+        if not field:
+            frappe.throw('Required project fields are unavailable with your current access. Ask a project administrator to review field permissions.')
+        value = doc.get(rule.fieldname)
+        if value is None or value == '' or (field.fieldtype == 'Check' and not value):
+            frappe.throw(f'{field.label} is required in {state}. Open the full New task form to fill project fields before creating this task.')
     doc.insert()
 
     # Belt and braces: the issue key normally comes from the before_insert hook,
@@ -269,6 +296,7 @@ def get_task(task):
             parent["name"] = doc.parent_task
 
     return {
+        "can_write": frappe.has_permission("Task", "write", doc=doc),
         "name": doc.name, "issue_key": doc.issue_key,
         "subject": doc.subject, "description": doc.description,
         "status": doc.status, "workflow_state": doc.workflow_state,

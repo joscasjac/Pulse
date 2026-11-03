@@ -4,6 +4,13 @@ from frappe import _
 from pulse.services.hierarchy_service import can_assign, hierarchy_enabled
 
 
+def lock_enabled_assignee(assignee):
+    # A locking read observes a concurrent offboarding commit rather than an old
+    # transaction snapshot. All native ToDo writes and Pulse bulk assignments use it.
+    if not frappe.db.get_value('User', assignee, 'enabled', for_update=True):
+        frappe.throw(_('Choose an enabled user for this assignment.'))
+
+
 def enforce_hierarchy(doc, method=None):
     if getattr(doc, "doctype", None) != "ToDo":
         return
@@ -13,6 +20,8 @@ def enforce_hierarchy(doc, method=None):
     assignee = doc.get("allocated_to")
     if not assignee:
         return
+    if doc.get('status') not in ('Closed', 'Cancelled'):
+        lock_enabled_assignee(assignee)
     if not hierarchy_enabled():
         return
     assigner = frappe.session.user
@@ -29,6 +38,7 @@ def enforce_hierarchy(doc, method=None):
 
 
 def validate_assignment(assigner, assignee, doc=None):
+    lock_enabled_assignee(assignee)
     if not hierarchy_enabled():
         return
     if assigner in ("Administrator",) or "Pulse Admin" in frappe.get_roles(assigner):

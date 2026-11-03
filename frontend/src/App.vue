@@ -1,5 +1,9 @@
 <template>
-  <div class="pulse-shell bg-app text-app">
+  <main v-if="externalUser" class="external-shell bg-app text-app" id="main-content">
+    <ExternalWork v-if="!pageError" />
+    <div v-else role="alert"><p>Shared work could not load.</p><button class="btn-ghost" @click="retryPage">Reload page</button></div>
+  </main>
+  <div v-else class="pulse-shell bg-app text-app">
     <a href="#main-content" class="skip-link">Skip to content</a>
     <button v-if="mobileOpen" class="nav-backdrop" aria-label="Close navigation" @click="mobileOpen = false" />
     <aside ref="sidebar" id="primary-navigation" :inert="isMobile && !mobileOpen" :class="['pulse-sidebar', { 'is-open': mobileOpen }]">
@@ -58,6 +62,7 @@ import { theme, toggleTheme } from './theme'
 import { openCreate, createState } from './ui/create'
 import { entityState } from './ui/entity'
 import { MODULES } from './modules'
+import ExternalWork from './pages/ExternalWork.vue'
 import Avatar from './ui/Avatar.vue'
 import Toaster from './ui/Toaster.vue'
 import CommandPalette from './components/CommandPalette.vue'
@@ -79,6 +84,7 @@ import MoreHorizontal from '~icons/lucide/ellipsis'
 import ChevronDown from '~icons/lucide/chevron-down'
 import ChevronRight from '~icons/lucide/chevron-right'
 
+const externalUser = window.pulse_user_type === 'Website User'
 const route = useRoute()
 const media = window.matchMedia('(max-width: 767px)')
 const isMobile = ref(media.matches), mobileOpen = ref(false), searchOpen = ref(false), pageError = ref(false)
@@ -117,10 +123,11 @@ function projectRoute(path) { return { path, query: { project: projectId.value }
 function createTask() { mobileOpen.value = false; openCreate(projectId.value ? { project: projectId.value } : {}) }
 function resize(event) { isMobile.value = event.matches }
 watch(() => route.fullPath, () => { mobileOpen.value = false; pageError.value = false; if (projectId.value && !projects.value.some(p => p.name === projectId.value)) loadProjects() })
-watch(projectId, project => { if (project) call('pulse.api.personal.remember', { doctype: 'Project', name: project }).catch(() => {}) }, { immediate: true })
+watch(projectId, project => { if (!externalUser && project) call('pulse.api.personal.remember', { doctype: 'Project', name: project }).catch(() => {}) }, { immediate: true })
 onErrorCaptured(() => { pageError.value = true; return false })
 function retryPage() { window.location.reload() }
 function shortcuts(event) {
+  if (externalUser) return
   if (isMobile.value && mobileOpen.value && !document.querySelector('dialog[open], [role=dialog]') && event.key === 'Tab') {
     const focusable = [...sidebar.value.querySelectorAll('a, button, summary, [tabindex="0"]')].filter(el => el.getClientRects().length && !el.disabled)
     const first = focusable[0], last = focusable.at(-1)
@@ -134,6 +141,7 @@ function shortcuts(event) {
   else if (event.key === 'Escape') mobileOpen.value = false
 }
 async function loadProjects() {
+  if (externalUser) return
   projectsLoading.value = true; projectsError.value = false
   try { projects.value = await call('frappe.client.get_list', { doctype: 'Project', fields: ['name', 'project_name', 'pulse_project_key', 'modified'], order_by: 'modified desc', limit_page_length: 0 }) }
   catch { projectsError.value = true }
@@ -141,6 +149,7 @@ async function loadProjects() {
   personalProjects.value = await call('pulse.api.personal.items').catch(() => [])
 }
 onMounted(() => {
+  if (externalUser) return
   media.addEventListener('change', resize); window.addEventListener('keydown', shortcuts); window.addEventListener('pulse-projects-changed', loadProjects)
   call('frappe.auth.get_logged_user').then(value => { user.value = value }).catch(() => {})
   loadProjects()
@@ -148,6 +157,7 @@ onMounted(() => {
 onBeforeUnmount(() => { media.removeEventListener('change', resize); window.removeEventListener('keydown', shortcuts); window.removeEventListener('pulse-projects-changed', loadProjects) })
 </script>
 <style scoped>
+.external-shell { height:100%; overflow:auto; }
 .pulse-shell { display:flex; height:100%; font-size:14px; overflow:hidden; }
 .pulse-sidebar { width:224px; flex-shrink:0; display:flex; flex-direction:column; border-right:1px solid var(--border); background:var(--sidebar, var(--surface-2)); }
 .workspace-brand { display:flex; align-items:center; gap:9px; min-height:56px; padding:0 16px; color:var(--text); font-size:15px; font-weight:600; }

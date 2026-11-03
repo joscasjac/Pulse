@@ -2,6 +2,87 @@
 
 Branch: `codex/erpnext-backlog`. Base: `96859dd`. Unchecked items are not complete, including where upstream has partial schemas/UI. Completion requires usable UI/API and appropriate validation on real Frappe/ERPNext.
 
+## Current company-readiness scope — 2026-11-03
+
+This prioritization supersedes older roadmap priorities below; historical implementation
+and acceptance records remain for reference. The previous automatic development goal
+was cleared. The user subsequently authorized implementation and testing of the retained
+scope below; this does not restart the cleared automatic goal.
+
+Deferred for now by the user:
+- Resource and financial planning: expanded capacity planning, working calendars,
+  budgets, cost rates, time approval for financial planning, and profitability.
+- Management visibility: expanded portfolio dashboards, delivery forecasts, budget
+  variance, and management reporting.
+Existing functionality in those areas is retained; no removal is requested.
+
+Retained company-readiness priorities (local implementation and release acceptance are
+tracked separately; checked here does not mean deployed):
+- [ ] Reliable notifications and actual scheduled reminder email delivery. Stable inbox
+  identities, explicit transactional Email Queue creation, feature preferences and
+  lifecycle/permission rechecks are implemented and tested. One native-composer
+  transport test reached Gmail; the true production scheduled reminder test is pending.
+- [x] Team administration, membership, ownership transfer, invitations and offboarding.
+  Eighteen real-backend tests pass, including usable contributor roles. Browser preview,
+  confirmation and account disablement passed on an external fixture with no handoffs.
+- [x] CRM/order-to-project business handoffs with canonical source ownership, native
+  project adoption, stable source mapping, template/config copy and rollback tests.
+- [ ] Production reliability and remaining acceptance: deploy final revisions/builds,
+  migrate and check production scheduled delivery. Editor image upload still needs
+  Chrome extension file-URL access before its browser acceptance can complete.
+- [x] Approvals and requests: authorized reviewer decisions and protected status
+  transitions; reviewer approval followed by Done passed in the browser. Existing
+  Intake navigation remains hidden.
+- [x] Company-specific scalar fields, stage requirements, templates and forms. Required
+  custom fields can be supplied on first save; browser creation persisted the value.
+  Unsupported recurring initial requirements are rejected before saving a template;
+  active templates prevent incompatible project configuration changes.
+- [x] Scoped client/vendor collaboration: isolated Website User task portal, narrow
+  explicit grants, separate comments and revocation; browser comment/revoke passed.
+- [x] Adoption tools: bounded CSV preview/import/update, duplicate-safe replay,
+  field/row permissions, configured-field round-trip and spreadsheet-safe export.
+  Browser preview/import/replay/export passed; onboarding/admin procedures are documented.
+- [x] Open-source installation, upgrades, tested v16 compatibility, demo data and
+  administrator documentation. Final production deployment remains the separate gate
+  above; compatibility outside the documented baseline is not claimed.
+
+Current validation: 193 Pulse integration tests plus 73 additional tests passed
+(one environment skip), followed by focused team, recurring-config and CSV reruns.
+Quest Automations has 91 passing unit tests and three passing native worker tests.
+See [company-readiness-validation.md](docs/company-readiness-validation.md) for exact
+browser scope, logs, production evidence and remaining release gates. Resource/financial
+planning, management reporting and mobile remain deferred.
+
+### Quest Automations: complete Pulse action and trigger coverage
+
+- [x] Audit the existing Quest Automations catalog and Pulse integration before adding
+  anything. Record supported, missing, and deferred operations/events; reuse existing
+  actions/triggers and add only the gaps. An existing endpoint is not proof that an
+  action or trigger is available and usable in the automation builder.
+- [x] Cover actions for finding/reading/creating/updating projects and tasks; task status,
+  assignment/unassignment, dates, priority, type, labels, supported custom fields,
+  subtasks, dependencies, checklists, comments, archive/restore, and project templates.
+- [x] Cover module creation/update and task membership; documentation/page creation,
+  updates and task links; supported intake/review/approval operations; and CRM/ERPNext
+  record linking and conversion for the retained company-readiness workflows.
+- [x] Cover triggers for project/task creation and updates, task completion/status changes,
+  assignments, due/overdue milestones, comments/mentions, module membership, page updates,
+  request submission/review/conversion, approval decisions, and linked CRM/order events.
+  Confirm whether each event already has a usable native or generic document trigger.
+- [x] Define input/output schemas, stable record IDs, required fields, permission checks,
+  event payloads and filtering. Do not publish private task/project data to unauthorized
+  automation users or destinations.
+- [x] Verify idempotency, duplicate-event handling, loop prevention, retries, failed-run
+  visibility, and replay where supported, including scheduled/date-driven triggers.
+- [ ] Validate real end-to-end workflows: CRM/order event creates a project/tasks once;
+  assignment/status changes trigger the expected automation; date events fire correctly;
+  failures are visible and retries do not duplicate work. Local native worker, handoff,
+  permission and reminder tests pass and examples are documented; the deployed-site
+  scheduled recipient test and refreshed connected MCP catalog remain pending.
+- [x] Keep resource/financial-planning and management-reporting expansions deferred.
+  Do not enable hidden Sprints, Intake or Timesheets navigation as part of this audit;
+  inventory their existing automation coverage separately.
+
 ## 1. Foundation
 - [ ] Native ERPNext Project/Task/assignments/Timesheet sources of truth; preserve legacy data with migrations.
 - [ ] Consistent list, board, search, detail and API permissions, including restricted-user integration tests.

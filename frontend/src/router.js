@@ -1,6 +1,8 @@
 import { createRouter, createWebHistory } from 'vue-router'
 
 const routes = [
+  { path: '/getting-started', name: 'Getting started', component: () => import('@/pages/GettingStarted.vue') },
+  { path: '/external', name: 'Shared work', component: () => import('@/pages/ExternalWork.vue') },
   { path: '/timesheets', name: 'Timesheets', component: () => import('@/pages/Timesheets.vue') },
   { path: '/m/timesheets', redirect: '/timesheets' },
   { path: '/inbox', name: 'Inbox', component: () => import('@/pages/Inbox.vue') },

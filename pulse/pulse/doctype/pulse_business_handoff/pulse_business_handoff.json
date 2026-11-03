@@ -1,0 +1,42 @@
+{
+ "doctype": "DocType",
+ "name": "Pulse Business Handoff",
+ "module": "Pulse",
+ "autoname": "hash",
+ "engine": "InnoDB",
+ "field_order": [
+  "source_doctype",
+  "source_name",
+  "project"
+ ],
+ "fields": [
+  {
+   "fieldname": "source_doctype",
+   "fieldtype": "Link",
+   "label": "Source type",
+   "reqd": 1,
+   "options": "DocType"
+  },
+  {
+   "fieldname": "source_name",
+   "fieldtype": "Dynamic Link",
+   "label": "Source",
+   "reqd": 1,
+   "options": "source_doctype"
+  },
+  {
+   "fieldname": "project",
+   "fieldtype": "Link",
+   "label": "Project",
+   "reqd": 1,
+   "options": "Project"
+  }
+ ],
+ "permissions": [
+  {
+   "role": "System Manager",
+   "read": 1
+  }
+ ],
+ "track_changes": 1
+}

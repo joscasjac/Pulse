@@ -91,21 +91,23 @@ def accept_request(name, reviewer=None, note=None):
     from pulse.api.task_config import get_config, CATEGORY_STATUS
     config = get_config(doc.project)
     initial = next((s for s in config["statuses"] if s["category"] not in {"Done", "Cancelled"}), config["statuses"][0])
-    task = frappe.get_doc({"doctype": "Task", "subject": doc.title, "description": doc.description,
-                           "project": doc.project, "workflow_state": initial["label"], "status": CATEGORY_STATUS[initial["category"]]})
-    # Do not call create_task: its explicit commit would break atomic conversion.
-    task.insert()
-    previous = frappe.flags.get("pulse_accepting_request")
-    try:
-        frappe.flags.pulse_accepting_request = True
-        doc.status = "Accepted"
-        doc.accepted_task = task.name
-        if reviewer is not None:
-            doc.reviewer = reviewer or None
-        doc.review_note = "Accepted as " + (task.get("issue_key") or task.name)
-        if note:
-            doc.review_note += " — " + str(note)
-        doc.save()
-    finally:
-        frappe.flags.pulse_accepting_request = previous
-    return {"task": task.name}
+    from pulse.services.atomic import atomic_scope
+    with atomic_scope('pulse_accept_request'):
+        task = frappe.get_doc({"doctype": "Task", "subject": doc.title, "description": doc.description,
+                               "project": doc.project, "workflow_state": initial["label"], "status": CATEGORY_STATUS[initial["category"]]})
+        # Do not call create_task: its explicit commit would break atomic conversion.
+        task.insert()
+        previous = frappe.flags.get("pulse_accepting_request")
+        try:
+            frappe.flags.pulse_accepting_request = True
+            doc.status = "Accepted"
+            doc.accepted_task = task.name
+            if reviewer is not None:
+                doc.reviewer = reviewer or None
+            doc.review_note = "Accepted as " + (task.get("issue_key") or task.name)
+            if note:
+                doc.review_note += " — " + str(note)
+            doc.save()
+        finally:
+            frappe.flags.pulse_accepting_request = previous
+        return {"task": task.name}

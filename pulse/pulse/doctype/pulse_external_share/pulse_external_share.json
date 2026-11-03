@@ -1,0 +1,43 @@
+{
+ "doctype": "DocType",
+ "name": "Pulse External Share",
+ "module": "Pulse",
+ "autoname": "hash",
+ "engine": "InnoDB",
+ "field_order": [
+  "task",
+  "user",
+  "enabled"
+ ],
+ "fields": [
+  {
+   "fieldname": "task",
+   "fieldtype": "Link",
+   "label": "Task",
+   "options": "Task",
+   "reqd": 1,
+   "search_index": 1
+  },
+  {
+   "fieldname": "user",
+   "fieldtype": "Link",
+   "label": "User",
+   "options": "User",
+   "reqd": 1,
+   "search_index": 1
+  },
+  {
+   "fieldname": "enabled",
+   "fieldtype": "Check",
+   "label": "Enabled",
+   "default": "1"
+  }
+ ],
+ "permissions": [
+  {
+   "role": "System Manager",
+   "read": 1
+  }
+ ],
+ "track_changes": 1
+}

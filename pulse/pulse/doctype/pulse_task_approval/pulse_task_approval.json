@@ -1,0 +1,91 @@
+{
+  "doctype": "DocType",
+  "name": "Pulse Task Approval",
+  "module": "Pulse",
+  "engine": "InnoDB",
+  "autoname": "hash",
+  "track_changes": 1,
+  "field_order": [
+    "task",
+    "project",
+    "requested_by",
+    "reviewer",
+    "content_hash",
+    "decision",
+    "note",
+    "decided_by",
+    "decided_at"
+  ],
+  "fields": [
+    {
+      "fieldname": "task",
+      "fieldtype": "Link",
+      "label": "Task",
+      "options": "Task",
+      "reqd": 1
+    },
+    {
+      "fieldname": "project",
+      "fieldtype": "Link",
+      "label": "Project",
+      "options": "Project",
+      "reqd": 1
+    },
+    {
+      "fieldname": "requested_by",
+      "fieldtype": "Link",
+      "label": "Requested by",
+      "options": "User",
+      "reqd": 1
+    },
+    {
+      "fieldname": "reviewer",
+      "fieldtype": "Link",
+      "label": "Reviewer",
+      "options": "User",
+      "reqd": 1
+    },
+    {
+      "fieldname": "content_hash",
+      "fieldtype": "Data",
+      "label": "Approved content version",
+      "reqd": 1
+    },
+    {
+      "fieldname": "decision",
+      "fieldtype": "Select",
+      "label": "Decision",
+      "options": "Pending\nApproved\nRejected",
+      "default": "Pending",
+      "reqd": 1
+    },
+    {
+      "fieldname": "note",
+      "fieldtype": "Small Text",
+      "label": "Decision note"
+    },
+    {
+      "fieldname": "decided_by",
+      "fieldtype": "Link",
+      "label": "Decided by",
+      "options": "User"
+    },
+    {
+      "fieldname": "decided_at",
+      "fieldtype": "Datetime",
+      "label": "Decided at"
+    }
+  ],
+  "permissions": [
+    {
+      "role": "System Manager",
+      "read": 1,
+      "report": 1
+    },
+    {
+      "role": "Pulse Admin",
+      "read": 1,
+      "report": 1
+    }
+  ]
+}

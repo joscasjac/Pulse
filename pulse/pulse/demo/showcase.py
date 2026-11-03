@@ -294,6 +294,7 @@ def assign_tasks():
 # ---------------------------------------------------------------------------
 
 def run():
+    frappe.throw('This legacy seeder targets retired Pulse records. Use pulse.demo.seed on an opt-in demo site.')
     random.seed(7)
     print("Seeding Pulse demo data ...")
     ensure_users()
@@ -309,6 +310,7 @@ def run():
 
 
 def clear():
+    frappe.throw('Legacy blanket demo deletion is disabled. Remove only explicitly identified demo records through normal administration.')
     """Remove demo data (child tables cascade with their parents)."""
     print("Clearing Pulse demo data ...")
     for doctype in reversed(ORDER):
