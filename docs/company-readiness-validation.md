@@ -48,11 +48,12 @@ Intake and Timesheets navigation remains hidden.
 
 ## Validation evidence
 
-The latest complete Pulse run passed **193 integration tests** in 42.405 seconds,
-plus **73 additional tests**, with one environment skip. Log:
-`../.work/pulse-bench/pulse-readiness-final-tests.log`.
+The final complete Pulse run passed **194 integration tests** in 28.604 seconds,
+plus **73 additional tests**, with the optional CRM test class skipped in this bench.
+The separate installed-CRM bench passed all six CRM integration tests. Log:
+`../.work/pulse-bench/pulse-final-readiness-tests.log`.
 
-Narrow changes after that run were checked separately:
+Supporting focused runs also passed:
 
 - Team default-role usability: 18 integration tests passed in 6.731 seconds,
   `pulse-team-expanded-tests.log`.
@@ -97,8 +98,9 @@ proves that account's transport and receipt, not automatic queue timing, the def
 ERP Notifications account, or scheduled Pulse reminder execution.
 
 The true scheduled reminder test and deployment are still pending. The earlier Quest
-rich-email editor stale-callback defect has a local fix; its final browser regression
-check remains separate from the successful native-composer transport test. Earlier
+rich-email editor stale-callback regression passed in the browser: editing the body
+preserved recipient and subject, and rendered the expected preview. This is separate
+from the successful native-composer transport test. Earlier
 editor image-upload acceptance remains blocked by Chrome extension file-URL access;
 no successful image upload is claimed here.
 
@@ -109,7 +111,10 @@ The final Pulse full-app run passed **194 integration tests and 73 additional te
 6 tests). Quest Automations passed **91 unit tests and 3 real Frappe worker tests**
 after integrating current upstream AI/live-followup changes. The no-send browser
 email-editor regression preserved the recipient and subject while editing the body
-and rendered its preview correctly. Browser acceptance found Pulse actions missing
-from the action picker despite backend catalog coverage; that UI gap is being closed
-before release. Deployment and the authorized production scheduled-email test remain
+and rendered its preview correctly. Browser acceptance found and fixed Pulse actions missing
+from the action picker. All 61 actions now appear. A manual draft with native project
+ID, subject and nested required company-field value saved correctly and its workflow
+preview succeeded; real worker execution is covered separately. Screenshot:
+`/tmp/quest-pulse-action-builder-acceptance.png`. Approval/request event filtering is
+receiving a final regression check before release. Deployment and the authorized production scheduled-email test remain
 pending.
