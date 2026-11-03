@@ -28,7 +28,8 @@
             <label>Template<select v-model="template" @change="applyTemplate"><option value="">Blank page</option><option value="brief">Project brief</option><option value="meeting">Meeting notes</option><option value="specification">Specification</option></select></label>
           </div>
           <CollaborativeEditor v-if="page.name" ref="collaborativeEditor" :key="page.name" :name="page.name" :content="page.content" :mentions="mentions" @synced="page.modified = $event" />
-          <TextEditor v-else :key="editorKey" :content="draft.content" :fixed-menu="true" :mentions="mentionOptions" :upload-args="{ doctype: 'Pulse Document', docname: page.name, is_private: 1 }" placeholder="Write your page. Type @ to mention a teammate." editor-class="prose prose-sm doc-editor" @change="draft.content = $event" />
+          <TextEditor v-else :key="editorKey" :content="draft.content" :fixed-menu="draftEditorMenu" :mentions="mentionOptions" :upload-function="uploadPageImage" placeholder="Write your page. Type @ to mention a teammate." editor-class="prose prose-sm doc-editor" @change="draft.content = $event" />
+          <p v-if="!page.name" class="text-muted text-sm">Create this page before uploading images or files so attachments stay private and linked to it.</p>
           <details class="page-panel"><summary>Linked tasks <span>{{ draft.tasks.length }}</span></summary><div class="panel-content"><label>Choose tasks<select v-model="draft.tasks" multiple size="4"><option v-for="task in taskOptions" :key="task.name" :value="task.name">{{ task.subject }} ({{ task.name }})</option></select></label><small>Use Ctrl or Command to select several tasks.</small></div></details>
         </template>
         <template v-else>
@@ -42,7 +43,7 @@
           <TextEditor :key="page.modified" :content="page.content" :mentions="mentionOptions" :editable="false" editor-class="prose prose-sm doc-reader" />
           <div class="page-tools">
             <details class="page-panel"><summary>Linked tasks <span>{{ page.tasks?.length || 0 }}</span></summary><div class="panel-content"><a v-for="task in page.tasks" :key="task.name" class="task-link" :href="`/app/task/${encodeURIComponent(task.name)}`"><span>{{ task.subject }}</span><small>{{ task.name }}</small></a><p v-if="!page.tasks?.length" class="text-muted">No linked tasks. Edit this page to connect it to your work.</p></div></details>
-            <details class="page-panel"><summary>Comments <span>{{ page.comments?.length || 0 }}</span></summary><div class="panel-content"><ol class="comment-list"><li v-for="item in page.comments" :key="item.name"><small>{{ item.owner }} · {{ item.creation }}</small><TextEditor :content="item.content" :mentions="mentionOptions" :editable="false" editor-class="prose prose-sm" /></li></ol><TextEditor :key="commentKey" :content="comment" :mentions="mentionOptions" placeholder="Add a comment or @mention a teammate" editor-class="prose prose-sm doc-comment" @change="comment = $event" /><div class="comment-actions"><button class="btn-ghost" :disabled="busy || !plain(comment).trim()" @click="postComment">Post comment</button></div></div></details>
+            <details class="page-panel"><summary>Comments <span>{{ page.comments?.length || 0 }}</span></summary><div class="panel-content"><ol class="comment-list"><li v-for="item in page.comments" :key="item.name"><small>{{ item.owner }} · {{ item.creation }}</small><TextEditor :content="item.content" :mentions="mentionOptions" :editable="false" editor-class="prose prose-sm" /></li></ol><TextEditor :key="commentKey" :content="comment" :mentions="mentionOptions" :upload-function="uploadPageImage" placeholder="Add a comment or @mention a teammate" editor-class="prose prose-sm doc-comment" @change="comment = $event" /><div class="comment-actions"><button class="btn-ghost" :disabled="busy || !plain(comment).trim()" @click="postComment">Post comment</button></div></div></details>
             <details class="page-panel" @toggle="loadHistory"><summary>Revision history</summary><div class="panel-content"><p v-if="historyError" role="alert">{{ historyError }}</p><ol class="revision-list"><li v-for="revision in history" :key="revision.name"><small>{{ revision.creation }} · {{ revision.owner }}</small><details><summary>View changes</summary><div v-for="(change,index) in changes(revision)" :key="index"><strong>{{ change[0] }}</strong><p class="revision-value">Previous: {{ plain(change[1]) }}</p><p class="revision-value">Updated: {{ plain(change[2]) }}</p></div></details></li></ol><p v-if="!history.length" class="text-muted">No saved revisions yet.</p></div></details>
           </div>
         </template>
@@ -54,12 +55,15 @@
 <script setup>
 import { ref, onMounted, watch } from 'vue'
 import { useRoute, useRouter, onBeforeRouteLeave, onBeforeRouteUpdate } from 'vue-router'
-import { call, TextEditor, FeatherIcon } from 'frappe-ui'
+import { call, TextEditor, FeatherIcon, useFileUpload } from 'frappe-ui'
+import { createPrivateEditorUpload } from '@/utils/privateEditorUpload'
 import CollaborativeEditor from '../components/documents/CollaborativeEditor.vue'
 import PersonalControls from '../components/PersonalControls.vue'
 const collaborativeEditor = ref(null)
 const route = useRoute(), router = useRouter()
 const pages=ref([]), projects=ref([]), project=ref(typeof route.query.project === 'string' ? route.query.project : ''), query=ref(''), page=ref(null), loading=ref(false), busy=ref(false), error=ref(''), actionError=ref(''), notice=ref(''), editing=ref(false)
+const draftEditorMenu = ['Paragraph', ['Heading 1', 'Heading 2', 'Heading 3', 'Heading 4', 'Heading 5', 'Heading 6'], 'Separator', 'Bold', 'Italic', 'Strikethrough', 'Link', 'FontColor', 'Separator', 'Bullet List', 'Numbered List', 'Task List', 'Separator', 'Align Left', 'Align Center', 'Align Right', 'Separator', 'Blockquote', 'Code', 'Iframe', 'Separator', 'Horizontal Rule', ['InsertTable', 'AddColumnBefore', 'AddColumnAfter', 'DeleteColumn', 'AddRowBefore', 'AddRowAfter', 'DeleteRow', 'MergeCells', 'SplitCell', 'ToggleHeaderColumn', 'ToggleHeaderRow', 'ToggleHeaderCell', 'DeleteTable'], 'Separator', 'TableOfContents', 'Separator', 'Undo', 'Redo']
+const uploadPageImage = createPrivateEditorUpload((file, args) => useFileUpload().upload(file, args), () => ({ doctype: 'Pulse Document', docname: page.value?.name }))
 const draft=ref({title:'', project:'', content:'', tasks:[]}), template=ref(''), templateContents=ref({}), mentions=ref([]), taskOptions=ref([]), editorKey=ref(0), comment=ref(''), commentKey=ref(0), history=ref([]), historyError=ref('')
 const mentionOptions={mentions:()=>mentions.value}
 const api=(method,args={})=>call(`pulse.api.documents.${method}`,args)

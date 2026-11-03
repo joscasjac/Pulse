@@ -3,18 +3,20 @@
     <p class="sync-state" role="status">{{ status }}</p>
     <p v-if="error" role="alert">{{ error }} <button class="btn-ghost" @click="synchronize">Retry sync</button></p>
     <TextEditor v-if="!ready" ref="seedEditor" :content="content" :mentions="mentionOptions" :editable="false" editor-class="prose prose-sm doc-editor" />
-    <TextEditor v-else ref="editor" :extensions="extensions" :starterkit-options="{ undoRedo: false }" :fixed-menu="true" :mentions="mentionOptions" :upload-args="{ doctype: 'Pulse Document', docname: name, is_private: 1 }" placeholder="Write together. Type @ to mention a teammate." editor-class="prose prose-sm doc-editor" />
+    <TextEditor v-else ref="editor" :extensions="extensions" :starterkit-options="{ undoRedo: false }" :fixed-menu="true" :mentions="mentionOptions" :upload-function="uploadPageImage" placeholder="Write together. Type @ to mention a teammate." editor-class="prose prose-sm doc-editor" />
   </div>
 </template>
 <script setup>
 import { ref, shallowRef, onMounted, onBeforeUnmount, nextTick } from 'vue'
-import { call, TextEditor } from 'frappe-ui'
+import { call, TextEditor, useFileUpload } from 'frappe-ui'
+import { createPrivateEditorUpload } from '../../utils/privateEditorUpload'
 import * as Y from 'yjs'
 import Collaboration from '@tiptap/extension-collaboration'
 import { prosemirrorToYDoc } from 'y-prosemirror'
 import { applyStates, encodeState } from '../../utils/documentSync'
 const props = defineProps({ name: String, content: String, mentions: Array })
 const emit = defineEmits(['synced'])
+const uploadPageImage = createPrivateEditorUpload((file, args) => useFileUpload().upload(file, args), () => ({ doctype: 'Pulse Document', docname: props.name }))
 const mentionOptions = { mentions: () => props.mentions || [] }
 const ready = ref(false), seedEditor = ref(null), editor = ref(null), extensions = shallowRef([])
 const error = ref(''), status = ref('Connecting to shared page…')

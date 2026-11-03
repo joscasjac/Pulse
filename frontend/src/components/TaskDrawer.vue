@@ -53,7 +53,7 @@
             <div class="description-heading"><span>Description</span><button class="format-toggle" :aria-pressed="formattingOpen" @click="formattingOpen = !formattingOpen">Formatting</button></div>
             <TextEditor :key="task.name" :content="descriptionDraft" :fixed-menu="formattingOpen" :bubble-menu="true"
               :mentions="mentionOptions"
-              :upload-args="{ doctype: 'Task', docname: task.name, is_private: 1 }"
+              :upload-function="uploadDescriptionImage"
               placeholder="Describe the work. Type @ to mention a teammate."
               editor-class="prose prose-sm min-h-16" @change="descriptionDraft = $event" />
             <button v-if="descriptionDraft !== (task.description || '')" class="btn mt-2" :disabled="descriptionSaving" @click="saveDescription">{{ descriptionSaving ? 'Saving…' : 'Save description' }}</button>
@@ -250,7 +250,8 @@ import TaskFieldEditor from './tasks/TaskFieldEditor.vue'
 import TaskApprovals from './tasks/TaskApprovals.vue'
 import TaskExternalSharing from './TaskExternalSharing.vue'
 import { ref, computed, watch, nextTick, onBeforeUnmount } from 'vue'
-import { call, TextEditor } from 'frappe-ui'
+import { call, TextEditor, useFileUpload } from 'frappe-ui'
+import { createPrivateEditorUpload } from '@/utils/privateEditorUpload'
 import { toast } from '@/ui/toast'
 import StatusPill from '@/ui/StatusPill.vue'
 import TaskTime from './TaskTime.vue'
@@ -295,6 +296,7 @@ const newSub = ref('')
 const depQ = ref('')
 const depResults = ref([])
 const attachments = ref([])
+const uploadDescriptionImage = createPrivateEditorUpload((file, args) => useFileUpload().upload(file, args), () => ({ doctype: 'Task', docname: task.value?.name }))
 const uploading = ref(false)
 const epics = ref([])
 const releases = ref([])
@@ -315,7 +317,7 @@ async function uploadFile(e) {
     const fd = new FormData()
     fd.append('file', file, file.name)
     fd.append('doctype', 'Task')
-    fd.append('docname', props.taskId)
+    fd.append('docname', task.value.name)
     fd.append('is_private', '1')
     const res = await fetch('/api/method/upload_file', {
       method: 'POST',
