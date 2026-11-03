@@ -14,7 +14,7 @@
           <button v-for="task in tasks.slice(0, 6)" :key="task.name" class="task-row" @click="openId = task.name">
             <span class="task-state" :class="{ working: task.status === 'Working' }" aria-hidden="true"></span>
             <span class="task-main"><span class="task-subject">{{ task.subject }}</span><span class="task-context">{{ task.issue_key || task.name }}<template v-if="task.project"> · {{ projectNames[task.project] || task.project }}</template></span></span>
-            <span class="task-status">{{ task.workflow_state || task.status }}</span><span v-if="task.exp_end_date" class="task-date" :class="{ overdue: task.exp_end_date < today }">{{ formatDate(task.exp_end_date) }}</span>
+            <span class="task-status">{{ task.workflow_state || task.status }}</span><span v-if="task.exp_end_date" class="task-date" :class="{ overdue: nativeDateDay(task.exp_end_date) && nativeDateDay(task.exp_end_date) < today }">{{ formatDate(task.exp_end_date) }}</span>
           </button>
           <div v-if="!tasks.length" class="home-empty"><strong>No open tasks assigned to you</strong><p>Browse your projects to find work, or create a task to get started.</p><router-link to="/projects">Browse projects →</router-link></div>
         </div>
@@ -36,6 +36,7 @@
 <script setup>
 import { ref, computed, onMounted, watch } from 'vue'
 import { call } from 'frappe-ui'
+import { nativeDateDay, formatNativeDate as formatDate } from '@/utils/nativeDate'
 import TaskDrawer from '@/components/TaskDrawer.vue'
 import { createState } from '@/ui/create'
 const firstName = ref('there'), tasks = ref([]), projects = ref([]), recents = ref([]), openId = ref(null), loading = ref(true), error = ref('')
@@ -44,7 +45,6 @@ const today = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0'
 const greeting = computed(() => now.getHours() < 12 ? 'Good morning' : now.getHours() < 18 ? 'Good afternoon' : 'Good evening')
 const dateStr = now.toLocaleDateString(undefined, { weekday: 'long', month: 'long', day: 'numeric' })
 const projectNames = computed(() => Object.fromEntries(projects.value.map(p => [p.name, p.project_name])))
-function formatDate(date) { return new Date(`${date}T12:00:00`).toLocaleDateString(undefined, { month: 'short', day: 'numeric' }) }
 async function reload() {
   loading.value = true; error.value = ''
   try {

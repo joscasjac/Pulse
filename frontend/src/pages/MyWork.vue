@@ -23,6 +23,7 @@
 <script setup>
 import { ref, computed, onMounted, onBeforeUnmount, watch } from 'vue'
 import { call } from 'frappe-ui'
+import { nativeDateDay, formatNativeDate as formatDate } from '@/utils/nativeDate'
 import CrmTaskEditor from '@/components/CrmTaskEditor.vue'
 import TaskDrawer from '@/components/TaskDrawer.vue'
 import PriorityDot from '@/ui/PriorityDot.vue'
@@ -35,7 +36,7 @@ function crmSaved(row) { tasks.value = tasks.value.map(task => task.identity ===
 const scopedTasks = computed(() => tasks.value.filter(task => source.value === 'all' || (source.value === 'crm' ? task.source === 'frappe_crm' : task.source !== 'frappe_crm')))
 const now = new Date(), today = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`
 const isOpen = task => !['Completed', 'Cancelled'].includes(task.status)
-const isOverdue = task => isOpen(task) && task.exp_end_date && task.exp_end_date < today
+const isOverdue = task => isOpen(task) && nativeDateDay(task.exp_end_date) && nativeDateDay(task.exp_end_date) < today
 const tabs = computed(() => [{ value: 'open', label: 'Open', count: scopedTasks.value.filter(isOpen).length }, { value: 'overdue', label: 'Overdue', count: scopedTasks.value.filter(isOverdue).length }, { value: 'completed', label: 'Completed', count: scopedTasks.value.filter(t => t.status === 'Completed').length }, { value: 'all', label: 'All', count: scopedTasks.value.length }])
 const visible = computed(() => scopedTasks.value.filter(task => {
   if (selected.value === 'open' && !isOpen(task)) return false
@@ -45,9 +46,8 @@ const visible = computed(() => scopedTasks.value.filter(task => {
 }))
 const groups = computed(() => {
   if (selected.value !== 'open') return visible.value.length ? [{ title: tabs.value.find(t => t.value === selected.value).label + ' tasks', tasks: visible.value }] : []
-  return [{ title: 'Overdue', tasks: visible.value.filter(isOverdue) }, { title: 'Due today', tasks: visible.value.filter(t => t.exp_end_date === today) }, { title: 'Upcoming', tasks: visible.value.filter(t => t.exp_end_date > today) }, { title: 'No due date', tasks: visible.value.filter(t => !t.exp_end_date) }].filter(g => g.tasks.length)
+  return [{ title: 'Overdue', tasks: visible.value.filter(isOverdue) }, { title: 'Due today', tasks: visible.value.filter(t => nativeDateDay(t.exp_end_date) === today) }, { title: 'Upcoming', tasks: visible.value.filter(t => nativeDateDay(t.exp_end_date) > today) }, { title: 'No due date', tasks: visible.value.filter(t => !nativeDateDay(t.exp_end_date)) }].filter(g => g.tasks.length)
 })
-function formatDate(date) { return new Date(`${date}T12:00:00`).toLocaleDateString(undefined, { month: 'short', day: 'numeric' }) }
 let requestId = 0
 async function reload() {
   const request = ++requestId
