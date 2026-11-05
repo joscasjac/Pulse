@@ -5,7 +5,8 @@ from urllib.parse import quote
 
 import frappe
 from frappe.utils import today, get_url
-from pulse.scheduled.reminder_email import queue_reminder_email, can_read_title_due
+from pulse.scheduled.reminder_email import can_read_title_due
+from pulse.scheduled.overdue_digest import queue_overdue_digest
 
 
 def flag_overdue_tasks():
@@ -21,6 +22,7 @@ def flag_overdue_tasks():
         },
         fields=["name", "subject", "_assign", "exp_end_date"],
     )
+    recipients = {}
     for task in tasks:
         try:
             assignees = frappe.parse_json(task._assign or "[]")
@@ -58,4 +60,6 @@ def flag_overdue_tasks():
                     }).insert(ignore_permissions=True, set_name=name)
                 except frappe.DuplicateEntryError:
                     pass
-            queue_reminder_email(name, task.exp_end_date)
+            recipients.setdefault(user, []).append(task.name)
+    for user in sorted(recipients):
+        queue_overdue_digest(user, recipients[user], reminder_date)

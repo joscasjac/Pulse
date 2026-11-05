@@ -1,5 +1,6 @@
 """Real reminder inboxes and Email Queue rows; SMTP is never contacted."""
 import json
+from email import message_from_string
 import frappe
 from unittest.mock import patch
 from frappe.tests import IntegrationTestCase
@@ -136,13 +137,26 @@ class TestScheduledIntegration(IntegrationTestCase):
         self.assertEqual(len(self.queues()), 0)
         self.assertTrue(queue_reminder_email(notice.name, due)); self.assertEqual(len(self.queues()), 1)
 
+    def digest_queues(self):
+        notices = frappe.get_all('Pulse Notification', filters={'recipient': self.user,
+            'name': ['like', 'pulse-overdue-digest-%']}, pluck='name')
+        return frappe.get_all('Email Queue', filters={'reference_doctype': 'Pulse Notification',
+            'reference_name': ['in', notices]}, fields=['name', 'message']) if notices else []
+
     def test_overdue_retries_are_once_per_day_and_exclude_archived(self):
         from pulse.scheduled.overdue import flag_overdue_tasks
         overdue = self.make_task(add_days(today(), -3))
+        second = self.make_task(add_days(today(), -2))
         archived = self.make_task(add_days(today(), -3), archived=1)
         before_status = frappe.db.get_value('Task', overdue.name, 'status')
         flag_overdue_tasks(); flag_overdue_tasks()
-        self.assertEqual(len(self.queues(overdue)), 1)
+        self.assertEqual(len(self.digest_queues()), 1)
+        email = message_from_string(self.digest_queues()[0].message)
+        html = next(part.get_payload(decode=True).decode('utf-8') for part in email.walk()
+                    if part.get_content_type() == 'text/html')
+        self.assertIn(overdue.name, html)
+        self.assertIn(second.name, html)
+        self.assertNotIn(archived.name, html)
         self.assertEqual(len(self.queues(archived)), 0)
         self.assertEqual(frappe.db.count('Pulse Notification', {'reference_name': overdue.name}), 1)
         frappe.set_user(self.user)
@@ -152,8 +166,52 @@ class TestScheduledIntegration(IntegrationTestCase):
         self.assertEqual(self.notice(overdue).is_read, 1)
         with patch('pulse.scheduled.overdue.today', return_value=add_days(today(), 1)):
             flag_overdue_tasks()
-        self.assertEqual(len(self.queues(overdue)), 2)
+        self.assertEqual(len(self.digest_queues()), 2)
         self.assertEqual(frappe.db.get_value('Task', overdue.name, 'status'), before_status)
+
+    def test_overdue_empty_and_all_completed_send_no_email(self):
+        from pulse.scheduled.overdue import flag_overdue_tasks
+        flag_overdue_tasks()
+        self.assertEqual(self.digest_queues(), [])
+        overdue = self.make_task(add_days(today(), -3))
+        frappe.db.set_value('Task', overdue.name, 'status', 'Completed')
+        flag_overdue_tasks()
+        self.assertEqual(self.digest_queues(), [])
+
+    def test_overdue_queue_failure_rolls_back_daily_marker_and_retries(self):
+        from pulse.scheduled.overdue import flag_overdue_tasks
+        from pulse.scheduled.overdue_digest import digest_name
+        self.make_task(add_days(today(), -3))
+        original_send = frappe.sendmail
+        def fail_after_queue(**values):
+            original_send(**values)
+            raise frappe.OutgoingEmailError('Injected failure after queue creation')
+        with patch.object(frappe, 'sendmail', side_effect=fail_after_queue), patch.object(frappe, 'log_error'):
+            flag_overdue_tasks()
+        self.assertFalse(frappe.db.exists('Pulse Notification', digest_name(self.user, today())))
+        self.assertEqual(self.digest_queues(), [])
+        flag_overdue_tasks(); flag_overdue_tasks()
+        self.assertEqual(len(self.digest_queues()), 1)
+
+    def test_overdue_identity_collision_cannot_queue_or_leave_renamed_marker(self):
+        from pulse.scheduled.overdue import flag_overdue_tasks
+        from pulse.scheduled.overdue_digest import digest_name, queue_overdue_digest
+        overdue = self.make_task(add_days(today(), -3))
+        flag_overdue_tasks()
+        name = digest_name(self.user, today())
+        before = frappe.db.count('Pulse Notification', {'recipient': self.user})
+        get_value = frappe.db.get_value
+        def stale_identity(dt, dn=None, fieldname='name', *args, **kwargs):
+            if dt == 'Pulse Notification' and dn == name and kwargs.get('for_update'):
+                return None
+            return get_value(dt, dn, fieldname, *args, **kwargs)
+        # Force the overlap's stale-read path through a real unique-key collision.
+        # Frappe hash naming may insert a random fallback; the savepoint must undo it.
+        with patch.object(frappe.db, 'get_value', side_effect=stale_identity), patch.object(frappe, 'sendmail') as send:
+            self.assertFalse(queue_overdue_digest(self.user, [overdue.name], today()))
+            send.assert_not_called()
+        self.assertEqual(len(self.digest_queues()), 1)
+        self.assertEqual(frappe.db.count('Pulse Notification', {'recipient': self.user}), before)
 
     def test_restricted_or_masked_title_due_are_not_written_to_any_inbox(self):
         from pulse.scheduled import reminders

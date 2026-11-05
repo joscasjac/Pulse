@@ -29,7 +29,9 @@ class ScheduledTests(unittest.TestCase):
         helper = types.ModuleType("pulse.scheduled.reminder_email")
         helper.queue_reminder_email = MagicMock()
         helper.can_read_title_due = MagicMock(return_value=True)
-        with patch.dict(sys.modules, {"frappe": frappe, "frappe.utils": utils, "pulse.scheduled.reminder_email": helper}):
+        digest = types.ModuleType("pulse.scheduled.overdue_digest")
+        digest.queue_overdue_digest = MagicMock()
+        with patch.dict(sys.modules, {"pulse.scheduled.overdue_digest": digest, "frappe": frappe, "frappe.utils": utils, "pulse.scheduled.reminder_email": helper}):
             spec.loader.exec_module(module)
         return module, frappe
 
@@ -53,6 +55,7 @@ class ScheduledTests(unittest.TestCase):
         self.assertEqual(names[0], names[1])
         self.assertTrue(names[0].startswith("pulse-overdue-"))
         frappe.db.bulk_insert.assert_not_called()
+        job.queue_overdue_digest.assert_called_once_with("member", ["TASK-1"], "2026-09-16")
 
     def test_bad_assignment_metadata_does_not_abort_other_tasks(self):
         job, frappe = self.load_job("overdue")
@@ -60,6 +63,23 @@ class ScheduledTests(unittest.TestCase):
                                       for value in ('{"user":"member"}', 'invalid', 'null', '[]')]
         job.flag_overdue_tasks()
         frappe.get_doc.assert_not_called()
+
+    def test_overdue_groups_all_candidates_by_recipient_before_queueing(self):
+        job, frappe = self.load_job("overdue")
+        frappe.get_all.return_value = [types.SimpleNamespace(name=f"TASK-{i}", subject=f"Task {i}",
+            exp_end_date="2026-09-15", _assign=json.dumps(["first" if i < 59 else "second"]))
+            for i in range(81)]
+        frappe.db.get_value.return_value = True
+        frappe.has_permission.return_value = True
+        job.flag_overdue_tasks()
+        calls = job.queue_overdue_digest.call_args_list
+        self.assertEqual(len(calls), 2)
+        self.assertEqual(calls[0].args, ("first", [f"TASK-{i}" for i in range(59)], "2026-09-16"))
+        self.assertEqual(calls[1].args, ("second", [f"TASK-{i}" for i in range(59, 81)], "2026-09-16"))
+        frappe.get_all.return_value = []
+        job.queue_overdue_digest.reset_mock()
+        job.flag_overdue_tasks()
+        job.queue_overdue_digest.assert_not_called()
 
     def test_metrics_exclude_archived_and_use_native_completion(self):
         job, frappe = self.load_job("metrics")

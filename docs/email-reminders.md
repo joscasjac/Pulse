@@ -27,14 +27,26 @@ The native notification-type allow-list is not the reminder-email switch.
 Advance and overdue reminders write both Pulse Due Reminder inbox notifications and
 native Notification Log Alerts. **Frappe Alert logs do not send reminder email by
 themselves.** Pulse therefore queues reminder email explicitly through
-`pulse.scheduled.reminder_email.queue_reminder_email`.
+`pulse.scheduled.reminder_email.queue_reminder_email` for advance reminders and
+`pulse.scheduled.overdue_digest.queue_overdue_digest` for overdue summaries.
 
 Advance identities are stable per task, recipient, due date and configured threshold.
 Overdue identities are stable per task, recipient, due date and site-local reminder
 day. Retries do not duplicate inbox notices or reset their read state. Rescheduling
 permits a notice for the new due date; another overdue day permits its daily notice.
 
-Before queueing, Pulse locks and re-reads the User, Task and notification. It verifies
+Overdue **email** is one summary per recipient per site-local day, containing all
+currently eligible overdue tasks, ordered by due date then task ID. Every task has
+its own Pulse link and due date. Users with zero eligible overdue tasks receive no
+email and no summary marker, including when all previously overdue work is completed.
+Per-task inbox notices remain available and retain their read state. A separate daily
+Pulse Due Reminder summary notice (`pulse-overdue-digest-<hash>`, linked to `/pulse`)
+serves as the queue marker and Email Queue reference. Its identity depends only on
+recipient and day: reassignment, a changed due date, or newly overdue work does not
+send a second email that day. Advance-reminder behavior and the daily schedule are
+unchanged.
+
+Before queueing advance reminders, Pulse locks and re-reads the User, Task and notification. It verifies
 current assignment, enabled account/email, current due date, task lifecycle, row access,
 readable/unmasked subject and due-date fields, and email preferences. Title/due fields
 which the recipient may not read are also excluded from inbox creation.
@@ -45,6 +57,41 @@ back that attempt, keeps the inbox/read state and remains eligible for a schedul
 retry; Error Log records **Pulse reminder email queue failed**. Once queued, subsequent
 SMTP failure/retry belongs to the existing native queue entry. Queueing is not SMTP
 acceptance, and SMTP Sent is not confirmed inbox receipt.
+
+For overdue summaries, the User lock serializes attempts for one recipient. Tasks
+are re-read under locks in stable ID order and checked against current assignment,
+lifecycle, strictly overdue due date, permissions, field visibility, and preferences.
+The daily summary's unique name also prevents duplicates from overlapping stale
+snapshots. Queueing also rejects any silent hash-autoname collision rename from
+Frappe and rolls it back before creating email. The summary record, Email Queue row and `email_queued` flag are one atomic
+savepoint; errors roll back all three and remain retryable. No summary record is
+created for an empty result. Native queue retries reuse the existing email. Failed
+attempts log **Pulse overdue digest queue failed**. The per-task overdue notices no
+longer carry email queue markers; only the daily summary does.
+
+## Local digest validation — 2026-11-05
+
+The focused database-free suite passes 20 tests across `test_overdue_digest_unit`,
+`test_scheduled_unit`, and `test_reminder_email_unit`. Coverage includes 81 tasks split
+59/22 across two users producing two emails, same-day and next-day identities,
+current access/lifecycle/preferences, empty and all-completed results, escaped text,
+failed queue rollback/retry, and a simulated stale concurrent identity collision.
+The unit email calls are mocked. The existing isolated QA MariaDB/Redis services
+were then started on loopback ports 13316/16316 and all 10 database-backed integration
+tests passed, using this checkout with SMTP and EmailQueue.send blocked. These cover
+real queue rows, daily grouping, empty/completed results, failure-after-queue rollback,
+and an actual duplicate-key collision that exercises Frappe's hash-name fallback and
+rolls back the renamed record before email. The collision test injects a stale identity
+read; it is not a simultaneous multi-worker load test. An initial integration run
+failed only because its test searched encoded MIME without decoding it; the corrected
+suite passes. Test fixtures roll back, and the services started for this run are stopped.
+Evidence is retained in `../pulse-digest-integration-results.txt` and the reproducible
+SMTP-blocked wrapper `../run-pulse-digest-integration.py`.
+
+Deployment requires the normal reviewed and authorized Pulse release. No schema migration is required by this change. Avoid manually rerunning the
+job on a rollout day after the old per-task emails have already gone out: legacy
+per-task markers do not count as the new daily digest marker. This change neither
+retracts old emails nor modifies already queued messages or task records.
 
 ## Local validation — 2026-11-03
 
