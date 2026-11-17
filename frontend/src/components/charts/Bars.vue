@@ -10,6 +10,7 @@
 
 <script setup>
 import { computed } from 'vue'
+import { __ } from '@/translation'
 
 const props = defineProps({
   data: { type: Array, default: () => [] },
@@ -37,7 +38,7 @@ const bars = computed(() => {
       y: chartH - bh + 6,
       h: bh,
       value: d.value,
-      short: String(d.label).slice(0, 6),
+      short: String(__(d.label)).slice(0, 6),
       color: d.color || props.color,
     }
   })

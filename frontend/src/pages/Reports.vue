@@ -1,27 +1,27 @@
 <template>
   <div class="p-6">
     <div class="flex items-center justify-between mb-1 gap-3 flex-wrap">
-      <h1 class="text-2xl font-bold">Reports</h1>
+      <h1 class="text-2xl font-bold">{{ __('Reports') }}</h1>
       <div class="flex items-center gap-2">
         <select v-model="reportKey" @change="load" class="ctl">
-          <option v-for="r in reports" :key="r.key" :value="r.key">{{ r.label }}</option>
+          <option v-for="r in reports" :key="r.key" :value="r.key">{{ __(r.label) }}</option>
         </select>
         <select v-model="project" @change="onProject" class="ctl">
-          <option :value="null">All projects</option>
+          <option :value="null">{{ __('All projects') }}</option>
           <option v-for="p in projects" :key="p.name" :value="p.name">{{ p.project_name || p.name }}</option>
         </select>
         <select v-if="current?.needs_sprint" v-model="sprint" @change="load" class="ctl">
-          <option :value="null">Active sprint</option>
-          <option v-for="s in sprints" :key="s.name" :value="s.name">{{ s.sprint_name || s.name }} ({{ s.status }})</option>
+          <option :value="null">{{ __('Active sprint') }}</option>
+          <option v-for="s in sprints" :key="s.name" :value="s.name">{{ s.sprint_name || s.name }} ({{ __(s.status) }})</option>
         </select>
       </div>
     </div>
-    <p class="text-xs text-faint mb-4">Measured in task count — Pulse doesn't use story points.</p>
+    <p class="text-xs text-faint mb-4">{{ __('Measured in task count — Pulse doesn\'t use story points.') }}</p>
 
-    <div v-if="loading" class="py-20 text-center text-muted">Loading report…</div>
+    <div v-if="loading" class="py-20 text-center text-muted">{{ __('Loading report…') }}</div>
     <div v-else-if="error" class="py-16 text-center text-faint">{{ error }}</div>
     <div v-else-if="!rows.length" class="py-16 text-center text-faint">
-      No data for this report yet. Sprint reports need a sprint with dates and tasks.
+      {{ __('No data for this report yet. Sprint reports need a sprint with dates and tasks.') }}
     </div>
 
     <div v-else>
@@ -37,7 +37,7 @@
         <div class="flex items-center gap-4 justify-center text-[11px] text-muted mt-1">
           <span v-for="(s, i) in seriesPaths" :key="s.key" class="inline-flex items-center gap-1.5">
             <span class="inline-block w-3 h-[2px]" :style="{ background: i === 0 ? 'var(--faint)' : 'var(--accent)' }" />
-            {{ s.label }}
+            {{ __(s.label) }}
           </span>
         </div>
       </div>
@@ -46,7 +46,7 @@
         <table class="data-table">
           <thead>
             <tr>
-              <th v-for="c in columns" :key="c.fieldname">{{ c.label }}</th>
+              <th v-for="c in columns" :key="c.fieldname">{{ __(c.label) }}</th>
             </tr>
           </thead>
           <tbody>
@@ -65,6 +65,7 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue'
 import { call } from 'frappe-ui'
+import { __ } from '@/translation'
 
 const W = 640, H = 200, pad = 28
 const reports = ref([])
@@ -122,7 +123,7 @@ async function load() {
     rows.value = r.data
     chart.value = r.chart
   } catch (e) {
-    error.value = e?.messages?.[0] || 'Could not generate this report.'
+    error.value = e?.messages?.[0] || __('Could not generate this report.')
     columns.value = []; rows.value = []
   }
   loading.value = false

@@ -2,31 +2,31 @@
 <template>
   <div class="home-page">
     <header class="home-header">
-      <div><p class="home-date">{{ dateStr }}</p><h1>{{ greeting }}, {{ firstName }}</h1><p class="home-subtitle">Pick up where you left off.</p></div>
+      <div><p class="home-date">{{ dateStr }}</p><h1>{{ greeting }}</h1><p class="home-subtitle">{{ __('Pick up where you left off.') }}</p></div>
     </header>
-    <router-link to="/getting-started" class="home-subtitle" style="display:inline-block;margin-bottom:20px;text-decoration:underline">Getting started · project setup, imports and team workflows →</router-link>
-    <div v-if="error" class="home-error" role="alert">{{ error }} <button class="btn-ghost" @click="reload">Try again</button></div>
-    <div v-if="loading" class="home-loading" role="status">Loading your workspace…</div>
+    <router-link to="/getting-started" class="home-subtitle" style="display:inline-block;margin-bottom:20px;text-decoration:underline">{{ __('Getting started · project setup, imports and team workflows →') }}</router-link>
+    <div v-if="error" class="home-error" role="alert">{{ error }} <button class="btn-ghost" @click="reload">{{ __('Try again') }}</button></div>
+    <div v-if="loading" class="home-loading" role="status">{{ __('Loading your workspace…') }}</div>
     <template v-else>
       <section class="home-section" aria-labelledby="assigned-heading">
-        <div class="section-heading"><h2 id="assigned-heading">Assigned to you <span class="count">{{ tasks.length }}</span></h2><router-link to="/my-work">View all →</router-link></div>
+        <div class="section-heading"><h2 id="assigned-heading">{{ __('Assigned to you') }} <span class="count">{{ tasks.length }}</span></h2><router-link to="/my-work">{{ __('View all →') }}</router-link></div>
         <div class="home-list">
           <button v-for="task in tasks.slice(0, 6)" :key="task.name" class="task-row" @click="openId = task.name">
             <span class="task-state" :class="{ working: task.status === 'Working' }" aria-hidden="true"></span>
             <span class="task-main"><span class="task-subject">{{ task.subject }}</span><span class="task-context">{{ task.issue_key || task.name }}<template v-if="task.project"> · {{ projectNames[task.project] || task.project }}</template></span></span>
-            <span class="task-status">{{ task.workflow_state || task.status }}</span><span v-if="task.exp_end_date" class="task-date" :class="{ overdue: nativeDateDay(task.exp_end_date) && nativeDateDay(task.exp_end_date) < today }">{{ formatDate(task.exp_end_date) }}</span>
+            <span class="task-status">{{ __(task.workflow_state || task.status) }}</span><span v-if="task.exp_end_date" class="task-date" :class="{ overdue: nativeDateDay(task.exp_end_date) && nativeDateDay(task.exp_end_date) < today }">{{ formatDate(task.exp_end_date) }}</span>
           </button>
-          <div v-if="!tasks.length" class="home-empty"><strong>No open tasks assigned to you</strong><p>Browse your projects to find work, or create a task to get started.</p><router-link to="/projects">Browse projects →</router-link></div>
+          <div v-if="!tasks.length" class="home-empty"><strong>{{ __('No open tasks assigned to you') }}</strong><p>{{ __('Browse your projects to find work, or create a task to get started.') }}</p><router-link to="/projects">{{ __('Browse projects →') }}</router-link></div>
         </div>
       </section>
       <div class="home-columns">
         <section class="home-section" aria-labelledby="projects-heading">
-          <div class="section-heading"><h2 id="projects-heading">Your projects</h2><router-link to="/projects">Browse all →</router-link></div>
-          <div class="home-list"><router-link v-for="project in projects.slice(0, 5)" :key="project.name" :to="{ path: '/board', query: { project: project.name } }" class="project-row"><span class="project-symbol" aria-hidden="true">{{ (project.project_name || project.name).slice(0, 1).toUpperCase() }}</span><span class="project-title">{{ project.project_name || project.name }}</span><span class="task-status">{{ project.status }}</span></router-link><div v-if="!projects.length" class="home-empty"><strong>No projects yet</strong><p>Projects you can access will appear here.</p><router-link to="/projects">Open projects →</router-link></div></div>
+          <div class="section-heading"><h2 id="projects-heading">{{ __('Your projects') }}</h2><router-link to="/projects">{{ __('Browse all →') }}</router-link></div>
+          <div class="home-list"><router-link v-for="project in projects.slice(0, 5)" :key="project.name" :to="{ path: '/board', query: { project: project.name } }" class="project-row"><span class="project-symbol" aria-hidden="true">{{ (project.project_name || project.name).slice(0, 1).toUpperCase() }}</span><span class="project-title">{{ project.project_name || project.name }}</span><span class="task-status">{{ __(project.status) }}</span></router-link><div v-if="!projects.length" class="home-empty"><strong>{{ __('No projects yet') }}</strong><p>{{ __('Projects you can access will appear here.') }}</p><router-link to="/projects">{{ __('Open projects →') }}</router-link></div></div>
         </section>
         <section class="home-section" aria-labelledby="recent-heading">
-          <div class="section-heading"><h2 id="recent-heading">Recently opened</h2></div>
-          <div class="home-list"><router-link v-for="item in recents.slice(0, 5)" :key="item.reference_doctype + item.reference_name" :to="item.url" class="recent-row"><span class="task-main"><span class="task-subject">{{ item.title || item.reference_name }}</span><span class="task-context">{{ item.reference_doctype === 'Pulse Document' ? 'Page' : item.reference_doctype }}</span></span><span aria-hidden="true" class="recent-arrow">↗</span></router-link><div v-if="!recents.length" class="home-empty"><strong>Your recent work, one click away</strong><p>Open a task, project, or page and you can return to it here.</p></div></div>
+          <div class="section-heading"><h2 id="recent-heading">{{ __('Recently opened') }}</h2></div>
+          <div class="home-list"><router-link v-for="item in recents.slice(0, 5)" :key="item.reference_doctype + item.reference_name" :to="item.url" class="recent-row"><span class="task-main"><span class="task-subject">{{ item.title || item.reference_name }}</span><span class="task-context">{{ item.reference_doctype === 'Pulse Document' ? __('Page') : __(item.reference_doctype) }}</span></span><span aria-hidden="true" class="recent-arrow">↗</span></router-link><div v-if="!recents.length" class="home-empty"><strong>{{ __('Your recent work, one click away') }}</strong><p>{{ __('Open a task, project, or page and you can return to it here.') }}</p></div></div>
         </section>
       </div>
     </template>
@@ -39,11 +39,17 @@ import { call } from 'frappe-ui'
 import { nativeDateDay, formatNativeDate as formatDate } from '@/utils/nativeDate'
 import TaskDrawer from '@/components/TaskDrawer.vue'
 import { createState } from '@/ui/create'
-const firstName = ref('there'), tasks = ref([]), projects = ref([]), recents = ref([]), openId = ref(null), loading = ref(true), error = ref('')
+import { __, lang } from '@/translation'
+const firstName = ref(''), tasks = ref([]), projects = ref([]), recents = ref([]), openId = ref(null), loading = ref(true), error = ref('')
 const now = new Date()
 const today = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`
-const greeting = computed(() => now.getHours() < 12 ? 'Good morning' : now.getHours() < 18 ? 'Good afternoon' : 'Good evening')
-const dateStr = now.toLocaleDateString(undefined, { weekday: 'long', month: 'long', day: 'numeric' })
+const greeting = computed(() => {
+  const name = firstName.value
+  if (now.getHours() < 12) return name ? __('Good morning, {0}', [name]) : __('Good morning')
+  if (now.getHours() < 18) return name ? __('Good afternoon, {0}', [name]) : __('Good afternoon')
+  return name ? __('Good evening, {0}', [name]) : __('Good evening')
+})
+const dateStr = now.toLocaleDateString(lang, { weekday: 'long', month: 'long', day: 'numeric' })
 const projectNames = computed(() => Object.fromEntries(projects.value.map(p => [p.name, p.project_name])))
 async function reload() {
   loading.value = true; error.value = ''
@@ -59,8 +65,8 @@ async function reload() {
     tasks.value = results[1].status === 'fulfilled' ? (results[1].value || []).filter(t => { try { return JSON.parse(t._assign || '[]').includes(me) } catch { return false } }) : []
     projects.value = results[2].status === 'fulfilled' ? results[2].value || [] : []
     recents.value = results[3].status === 'fulfilled' ? (results[3].value || []).filter(i => i.kind === 'Recent') : []
-    if (results.some(r => r.status === 'rejected')) error.value = 'Some workspace items could not be loaded. Try again to refresh them.'
-  } catch { error.value = 'Your workspace could not be loaded. Please try again.' }
+    if (results.some(r => r.status === 'rejected')) error.value = __('Some workspace items could not be loaded. Try again to refresh them.')
+  } catch { error.value = __('Your workspace could not be loaded. Please try again.') }
   finally { loading.value = false }
 }
 watch(() => createState.created, reload)

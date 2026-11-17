@@ -1,5 +1,5 @@
 <template>
-  <div class="mention-options" v-show="items.length" role="listbox" aria-label="People to mention">
+  <div class="mention-options" v-show="items.length" role="listbox" :aria-label="__('People to mention')">
     <button v-for="(item, index) in items" :key="item.id || item.value || index"
       type="button" role="option" :aria-selected="selected === index"
       :class="{ selected: selected === index }" @mousedown.prevent

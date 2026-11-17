@@ -1,20 +1,21 @@
 <template>
-  <section class="external-work"><header><h1>Shared work</h1><p class="text-muted">Tasks explicitly shared with your account.</p></header>
-    <p v-if="error" role="alert">{{ error }} <button class="btn-ghost" @click="load">Retry</button></p><p v-if="loading">Loading shared work…</p>
-    <p v-else-if="!tasks.length" class="text-muted">No tasks have been shared with you.</p>
-    <div class="shared-layout"><nav aria-label="Shared tasks"><button v-for="task in tasks" :key="task.name" :aria-current="selected?.name === task.name ? 'page' : undefined" @click="open(task)"><small>{{ task.issue_key || task.name }}</small><span>{{ task.subject }}</span><small>{{ task.status }}</small></button></nav>
-      <article v-if="selected"><p class="text-muted">{{ selected.issue_key || selected.name }}</p><h2>{{ selected.subject }}</h2><dl><dt>Status</dt><dd>{{ selected.status }}</dd><dt>Start</dt><dd>{{ selected.start_date || 'Not scheduled' }}</dd><dt>Due</dt><dd>{{ selected.due_date || 'Not scheduled' }}</dd></dl>
-        <h3>Shared discussion</h3><p class="text-muted">Comments here are visible to everyone this task is shared with.</p><ul><li v-for="comment in comments" :key="comment.name"><p>{{ comment.content }}</p><small class="text-muted">{{ comment.creation }}</small></li></ul>
-        <form @submit.prevent="send"><label>Your comment<textarea v-model="content" class="field" required maxlength="5000" rows="4" /></label><button class="btn-primary" :disabled="busy || !content.trim()">{{ busy ? 'Posting…' : 'Post comment' }}</button></form>
+  <section class="external-work"><header><h1>{{ __('Shared work') }}</h1><p class="text-muted">{{ __('Tasks explicitly shared with your account.') }}</p></header>
+    <p v-if="error" role="alert">{{ error }} <button class="btn-ghost" @click="load">{{ __('Retry') }}</button></p><p v-if="loading">{{ __('Loading shared work…') }}</p>
+    <p v-else-if="!tasks.length" class="text-muted">{{ __('No tasks have been shared with you.') }}</p>
+    <div class="shared-layout"><nav :aria-label="__('Shared tasks')"><button v-for="task in tasks" :key="task.name" :aria-current="selected?.name === task.name ? 'page' : undefined" @click="open(task)"><small>{{ task.issue_key || task.name }}</small><span>{{ task.subject }}</span><small>{{ __(task.status) }}</small></button></nav>
+      <article v-if="selected"><p class="text-muted">{{ selected.issue_key || selected.name }}</p><h2>{{ selected.subject }}</h2><dl><dt>{{ __('Status') }}</dt><dd>{{ __(selected.status) }}</dd><dt>{{ __('Start') }}</dt><dd>{{ selected.start_date || __('Not scheduled') }}</dd><dt>{{ __('Due') }}</dt><dd>{{ selected.due_date || __('Not scheduled') }}</dd></dl>
+        <h3>{{ __('Shared discussion') }}</h3><p class="text-muted">{{ __('Comments here are visible to everyone this task is shared with.') }}</p><ul><li v-for="comment in comments" :key="comment.name"><p>{{ comment.content }}</p><small class="text-muted">{{ comment.creation }}</small></li></ul>
+        <form @submit.prevent="send"><label>{{ __('Your comment') }}<textarea v-model="content" class="field" required maxlength="5000" rows="4" /></label><button class="btn-primary" :disabled="busy || !content.trim()">{{ busy ? __('Posting…') : __('Post comment') }}</button></form>
       </article></div>
   </section>
 </template>
 <script setup>
 import { ref, onMounted } from 'vue'
 import { call } from 'frappe-ui'
+import { __ } from '@/translation'
 const tasks=ref([]), selected=ref(null), comments=ref([]), content=ref(''), loading=ref(true), busy=ref(false), error=ref('')
 let version=0
-function message(e){return e.messages?.join(' ') || 'Unable to load shared work. Please retry.'}
+function message(e){return e.messages?.join(' ') || __('Unable to load shared work. Please retry.')}
 async function load(){loading.value=true;error.value='';try{tasks.value=await call('pulse.api.external.shared_tasks');if(selected.value&&!tasks.value.some(t=>t.name===selected.value.name)){selected.value=null;comments.value=[]}}catch(e){error.value=message(e);tasks.value=[];selected.value=null}finally{loading.value=false}}
 async function open(task){const token=++version;error.value='';selected.value=null;comments.value=[];content.value='';try{const data=await call('pulse.api.external.task',{task:task.name});if(token===version){selected.value=data.task;comments.value=data.comments}}catch(e){error.value=message(e)}}
 async function send(){const name=selected.value.name;busy.value=true;error.value='';try{await call('pulse.api.external.comment',{task:name,content:content.value});if(selected.value?.name===name)await open(selected.value)}catch(e){error.value=message(e)}finally{busy.value=false}}

@@ -1,83 +1,83 @@
 <template>
   <div class="intake-page">
     <header class="intake-header">
-      <div><h1>Intake</h1><p class="text-muted">Review requests before adding them to your project.</p></div>
-      <button class="btn-primary" :aria-expanded="creating" aria-controls="new-request-form" @click="toggleCreate">{{ creating ? 'Close form' : '+ New request' }}</button>
+      <div><h1>{{ __('Intake') }}</h1><p class="text-muted">{{ __('Review requests before adding them to your project.') }}</p></div>
+      <button class="btn-primary" :aria-expanded="creating" aria-controls="new-request-form" @click="toggleCreate">{{ creating ? __('Close form') : __('+ New request') }}</button>
     </header>
 
     <form v-if="creating" id="new-request-form" class="request-form create-form" @submit.prevent="create">
-      <h2>New request</h2>
+      <h2>{{ __('New request') }}</h2>
       <div class="property-grid">
-        <label>Project<select v-model="draft.project" required class="intake-input"><option value="" disabled>Select a project</option><option v-for="p in projects" :key="p.name" :value="p.name">{{ p.project_name || p.name }}</option></select></label>
-        <label>Reviewer <span class="text-muted">(optional)</span><select v-model="draft.reviewer" class="intake-input" :disabled="!draft.project"><option value="">Unassigned</option><option v-for="user in draftReviewers" :key="user.name" :value="user.name">{{ user.full_name }} · {{ user.name }}</option></select></label>
+        <label>{{ __('Project') }}<select v-model="draft.project" required class="intake-input"><option value="" disabled>{{ __('Select a project') }}</option><option v-for="p in projects" :key="p.name" :value="p.name">{{ p.project_name || p.name }}</option></select></label>
+        <label>{{ __('Reviewer') }} <span class="text-muted">{{ __('(optional)') }}</span><select v-model="draft.reviewer" class="intake-input" :disabled="!draft.project"><option value="">{{ __('Unassigned') }}</option><option v-for="user in draftReviewers" :key="user.name" :value="user.name">{{ user.full_name }} · {{ user.name }}</option></select></label>
       </div>
-      <label>Title<input v-model.trim="draft.title" required maxlength="140" class="intake-input" placeholder="What needs to be done?" /></label>
-      <label>Description<textarea v-model="draft.description" rows="3" maxlength="20000" class="intake-input" placeholder="Describe the request and the outcome you need." /></label>
+      <label>{{ __('Title') }}<input v-model.trim="draft.title" required maxlength="140" class="intake-input" :placeholder="__('What needs to be done?')" /></label>
+      <label>{{ __('Description') }}<textarea v-model="draft.description" rows="3" maxlength="20000" class="intake-input" :placeholder="__('Describe the request and the outcome you need.')" /></label>
       <p v-if="createError" role="alert" class="form-error">{{ createError }}</p>
-      <div class="form-actions"><button class="btn-primary" :disabled="busy">{{ busy ? 'Submitting…' : 'Submit request' }}</button><button type="button" class="btn-ghost" @click="creating = false">Cancel</button></div>
+      <div class="form-actions"><button class="btn-primary" :disabled="busy">{{ busy ? __('Submitting…') : __('Submit request') }}</button><button type="button" class="btn-ghost" @click="creating = false">{{ __('Cancel') }}</button></div>
     </form>
 
     <div class="intake-toolbar">
-      <nav class="status-tabs" aria-label="Filter requests by status">
-        <button v-for="state in statuses" :key="state" :aria-pressed="status === state" @click="status = state">{{ state }}</button>
-        <button :aria-pressed="status === ''" @click="status = ''">All</button>
+      <nav class="status-tabs" :aria-label="__('Filter requests by status')">
+        <button v-for="state in statuses" :key="state" :aria-pressed="status === state" @click="status = state">{{ __(state) }}</button>
+        <button :aria-pressed="status === ''" @click="status = ''">{{ __('All') }}</button>
       </nav>
-      <label class="project-filter"><span class="sr-only">Project</span><select v-model="project" class="intake-input"><option value="">All projects</option><option v-for="p in projects" :key="p.name" :value="p.name">{{ p.project_name || p.name }}</option></select></label>
+      <label class="project-filter"><span class="sr-only">{{ __('Project') }}</span><select v-model="project" class="intake-input"><option value="">{{ __('All projects') }}</option><option v-for="p in projects" :key="p.name" :value="p.name">{{ p.project_name || p.name }}</option></select></label>
     </div>
 
     <details v-if="canManage && project" class="public-settings">
-      <summary>Public request form <span class="text-muted">{{ publicForm?.enabled ? 'Enabled' : 'Settings' }}</span></summary>
+      <summary>{{ __('Public request form') }} <span class="text-muted">{{ publicForm?.enabled ? __('Enabled') : __('Settings') }}</span></summary>
       <div class="settings-content">
-        <p class="text-muted">Anyone with the enabled link can submit a request. Only the title and instructions below appear publicly.</p>
-        <p v-if="formLoading" role="status">Loading form settings…</p>
+        <p class="text-muted">{{ __('Anyone with the enabled link can submit a request. Only the title and instructions below appear publicly.') }}</p>
+        <p v-if="formLoading" role="status">{{ __('Loading form settings…') }}</p>
         <form v-else-if="publicForm" class="request-form" @submit.prevent="savePublicForm">
-          <label>Public title<input v-model.trim="publicForm.public_title" required maxlength="140" class="intake-input" /></label>
-          <label>Public instructions<textarea v-model="publicForm.public_description" maxlength="2000" rows="2" class="intake-input" /></label>
-          <label class="checkbox-label"><input v-model="publicForm.enabled" type="checkbox" /> Enable submissions</label>
-          <div><button class="btn-ghost" :disabled="formBusy">{{ formBusy ? 'Saving…' : 'Save public form' }}</button></div>
-          <p v-if="publicForm.url" class="share-link">Share this link: <a class="task-link" :href="publicForm.url" target="_blank" rel="noopener noreferrer">{{ publicForm.url }}</a></p>
-          <p class="text-muted">Disabling stops new submissions. Enabling again creates a new link.</p>
+          <label>{{ __('Public title') }}<input v-model.trim="publicForm.public_title" required maxlength="140" class="intake-input" /></label>
+          <label>{{ __('Public instructions') }}<textarea v-model="publicForm.public_description" maxlength="2000" rows="2" class="intake-input" /></label>
+          <label class="checkbox-label"><input v-model="publicForm.enabled" type="checkbox" /> {{ __('Enable submissions') }}</label>
+          <div><button class="btn-ghost" :disabled="formBusy">{{ formBusy ? __('Saving…') : __('Save public form') }}</button></div>
+          <p v-if="publicForm.url" class="share-link">{{ __('Share this link:') }} <a class="task-link" :href="publicForm.url" target="_blank" rel="noopener noreferrer">{{ publicForm.url }}</a></p>
+          <p class="text-muted">{{ __('Disabling stops new submissions. Enabling again creates a new link.') }}</p>
         </form>
-        <p v-if="formError" role="alert" class="form-error">{{ formError }} <button class="btn-ghost" @click="loadPublicForm">Retry</button></p>
+        <p v-if="formError" role="alert" class="form-error">{{ formError }} <button class="btn-ghost" @click="loadPublicForm">{{ __('Retry') }}</button></p>
       </div>
     </details>
 
     <p v-if="reviewerError" role="alert" class="page-message form-error">{{ reviewerError }}</p>
-    <p v-if="projectError" role="alert" class="page-message form-error">{{ projectError }} <button class="btn-ghost" @click="loadProjects">Retry projects</button></p>
-    <p v-if="error" role="alert" class="page-message form-error">{{ error }} <button class="btn-ghost" @click="load">Retry</button></p>
-    <p v-if="loading" role="status" class="page-message text-muted">Loading requests…</p>
+    <p v-if="projectError" role="alert" class="page-message form-error">{{ projectError }} <button class="btn-ghost" @click="loadProjects">{{ __('Retry projects') }}</button></p>
+    <p v-if="error" role="alert" class="page-message form-error">{{ error }} <button class="btn-ghost" @click="load">{{ __('Retry') }}</button></p>
+    <p v-if="loading" role="status" class="page-message text-muted">{{ __('Loading requests…') }}</p>
     <div v-else class="intake-layout">
-      <section aria-label="Request queue" class="request-queue">
-        <div class="queue-heading"><h2>{{ status || 'All requests' }}</h2><span class="text-muted">{{ requests.length }}</span></div>
+      <section :aria-label="__('Request queue')" class="request-queue">
+        <div class="queue-heading"><h2>{{ status ? __(status) : __('All requests') }}</h2><span class="text-muted">{{ requests.length }}</span></div>
         <button v-for="r in requests" :key="r.name" class="request-choice" :aria-current="selected === r.name ? 'true' : undefined" :disabled="busy" @click="selected = r.name">
           <span class="request-title">{{ r.title }}</span>
-          <span class="request-meta"><span class="status-marker" :data-status="r.status" />{{ r.status }}<span v-if="!project"> · {{ projectName(r.project) }}</span></span>
+          <span class="request-meta"><span class="status-marker" :data-status="r.status" />{{ __(r.status) }}<span v-if="!project"> · {{ projectName(r.project) }}</span></span>
           <span v-if="r.reviewer" class="request-reviewer text-muted">{{ r.reviewer }}</span>
         </button>
-        <div v-if="!requests.length" class="queue-empty"><h3>No {{ status ? status.toLowerCase() : '' }} requests</h3><p class="text-muted">New requests will appear here for review.</p><button class="btn-ghost" @click="toggleCreate">Create a request</button></div>
+        <div v-if="!requests.length" class="queue-empty"><h3>{{ status ? __('No {0} requests', [__(status).toLowerCase()]) : __('No requests') }}</h3><p class="text-muted">{{ __('New requests will appear here for review.') }}</p><button class="btn-ghost" @click="toggleCreate">{{ __('Create a request') }}</button></div>
       </section>
-      <section class="request-detail" aria-label="Request details">
-        <p v-if="detailLoading" role="status" class="text-muted">Loading request…</p>
-        <p v-if="detailError" role="alert" class="form-error">{{ detailError }} <button class="btn-ghost" @click="loadDetail">Retry details</button></p>
+      <section class="request-detail" :aria-label="__('Request details')">
+        <p v-if="detailLoading" role="status" class="text-muted">{{ __('Loading request…') }}</p>
+        <p v-if="detailError" role="alert" class="form-error">{{ detailError }} <button class="btn-ghost" @click="loadDetail">{{ __('Retry details') }}</button></p>
         <template v-if="detail && !detailLoading">
-          <header class="detail-header"><p class="detail-context text-muted">{{ projectName(detail.project) }} <span> / </span> {{ detail.name }}</p><h2>{{ detail.title }}</h2><p class="request-meta"><span class="status-marker" :data-status="detail.status" />{{ detail.status }}</p></header>
+          <header class="detail-header"><p class="detail-context text-muted">{{ projectName(detail.project) }} <span> / </span> {{ detail.name }}</p><h2>{{ detail.title }}</h2><p class="request-meta"><span class="status-marker" :data-status="detail.status" />{{ __(detail.status) }}</p></header>
           <p class="description">{{ descriptionText(detail.description) }}</p>
-          <div v-if="detail.accepted_task" class="accepted-notice"><p>This request has been accepted.</p><RouterLink class="task-link" :to="{ path: '/board', query: { project: detail.project, task: detail.accepted_task } }">Open task {{ detail.accepted_task }} →</RouterLink></div>
+          <div v-if="detail.accepted_task" class="accepted-notice"><p>{{ __('This request has been accepted.') }}</p><RouterLink class="task-link" :to="{ path: '/board', query: { project: detail.project, task: detail.accepted_task } }">{{ __('Open task {0} →', [detail.accepted_task]) }}</RouterLink></div>
           <form v-else-if="detail.can_review" class="request-form review-form" @submit.prevent="review">
-            <h3>Review</h3>
+            <h3>{{ __('Review') }}</h3>
             <div class="property-grid">
-              <label>Reviewer<select v-model="reviewer" class="intake-input"><option value="">Unassigned</option><option v-for="user in reviewers" :key="user.name" :value="user.name">{{ user.full_name }} · {{ user.name }}</option></select></label>
-              <label>Decision<select v-model="decision" class="intake-input"><option>Incoming</option><option>Deferred</option><option>Rejected</option><option>Duplicate</option></select></label>
+              <label>{{ __('Reviewer') }}<select v-model="reviewer" class="intake-input"><option value="">{{ __('Unassigned') }}</option><option v-for="user in reviewers" :key="user.name" :value="user.name">{{ user.full_name }} · {{ user.name }}</option></select></label>
+              <label>{{ __('Decision') }}<select v-model="decision" class="intake-input"><option value="Incoming">{{ __('Incoming') }}</option><option value="Deferred">{{ __('Deferred') }}</option><option value="Rejected">{{ __('Rejected') }}</option><option value="Duplicate">{{ __('Duplicate') }}</option></select></label>
             </div>
-            <label v-if="decision === 'Duplicate'">Original request ID<input v-model.trim="duplicate" required class="intake-input" placeholder="Request ID" /></label>
-            <label>Review note<textarea v-model="note" rows="2" class="intake-input" placeholder="Add context for your decision…" /></label>
+            <label v-if="decision === 'Duplicate'">{{ __('Original request ID') }}<input v-model.trim="duplicate" required class="intake-input" :placeholder="__('Request ID')" /></label>
+            <label>{{ __('Review note') }}<textarea v-model="note" rows="2" class="intake-input" :placeholder="__('Add context for your decision…')" /></label>
             <p v-if="actionError" role="alert" class="form-error">{{ actionError }}</p>
-            <div class="form-actions"><button v-if="['Incoming', 'Deferred'].includes(detail.status) && ['Incoming', 'Deferred'].includes(decision)" type="button" class="btn-primary" :disabled="busy" @click="accept">{{ busy ? 'Saving…' : 'Accept and create task' }}</button><button :class="['Incoming', 'Deferred'].includes(detail.status) && ['Incoming', 'Deferred'].includes(decision) ? 'btn-ghost' : 'btn-primary'" :disabled="busy">Save review</button></div>
+            <div class="form-actions"><button v-if="['Incoming', 'Deferred'].includes(detail.status) && ['Incoming', 'Deferred'].includes(decision)" type="button" class="btn-primary" :disabled="busy" @click="accept">{{ busy ? __('Saving…') : __('Accept and create task') }}</button><button :class="['Incoming', 'Deferred'].includes(detail.status) && ['Incoming', 'Deferred'].includes(decision) ? 'btn-ghost' : 'btn-primary'" :disabled="busy">{{ __('Save review') }}</button></div>
           </form>
-          <p v-else class="text-muted review-access">The assigned reviewer or a project lead can review this request.</p>
-          <section class="request-history"><h3>Activity</h3><ol><li v-for="(event, index) in detail.activity || []" :key="event.name || index" class="history-entry"><p><span class="history-action">{{ event.action || 'Updated' }}</span> · {{ event.status }}<span v-if="event.note"> — {{ event.note }}</span></p><p class="history-meta text-muted">{{ event.by || 'Unknown user' }} · {{ formatDate(event.at) }}</p><p v-if="event.reviewer || event.duplicate_of" class="history-meta text-muted"><span v-if="event.reviewer">Reviewer: {{ event.reviewer }}</span><span v-if="event.duplicate_of"> · Duplicate of {{ event.duplicate_of }}</span></p></li></ol><p v-if="!detail.activity?.length" class="text-muted">No recorded activity yet.</p></section>
+          <p v-else class="text-muted review-access">{{ __('The assigned reviewer or a project lead can review this request.') }}</p>
+          <section class="request-history"><h3>{{ __('Activity') }}</h3><ol><li v-for="(event, index) in detail.activity || []" :key="event.name || index" class="history-entry"><p><span class="history-action">{{ __(event.action || 'Updated') }}</span> · {{ __(event.status) }}<span v-if="event.note"> — {{ event.note }}</span></p><p class="history-meta text-muted">{{ event.by || __('Unknown user') }} · {{ formatDate(event.at) }}</p><p v-if="event.reviewer || event.duplicate_of" class="history-meta text-muted"><span v-if="event.reviewer">{{ __('Reviewer: {0}', [event.reviewer]) }}</span><span v-if="event.duplicate_of"> · {{ __('Duplicate of {0}', [event.duplicate_of]) }}</span></p></li></ol><p v-if="!detail.activity?.length" class="text-muted">{{ __('No recorded activity yet.') }}</p></section>
         </template>
-        <div v-else-if="!detailLoading && !detailError" class="detail-empty text-muted">Select a request to review its details and activity.</div>
+        <div v-else-if="!detailLoading && !detailError" class="detail-empty text-muted">{{ __('Select a request to review its details and activity.') }}</div>
       </section>
     </div>
     <p v-if="notice" role="status" class="page-message text-muted">{{ notice }}</p>
@@ -87,6 +87,7 @@
 import { onMounted, ref, watch } from 'vue'
 import { call } from 'frappe-ui'
 import { useRoute, useRouter } from 'vue-router'
+import { __, lang } from '@/translation'
 const route = useRoute(), router = useRouter()
 const queryProject = () => typeof route.query.project === 'string' ? route.query.project : ''
 function toggleCreate() {
@@ -95,8 +96,8 @@ function toggleCreate() {
 }
 function projectName(name) { return projects.value.find(item => item.name === name)?.project_name || name }
 function descriptionText(value) {
-  if (!value) return 'No description provided.'
-  return new DOMParser().parseFromString(value.replace(/<\/p>|<br\s*\/?>/gi, '\n'), 'text/html').body.textContent || 'No description provided.'
+  if (!value) return __('No description provided.')
+  return new DOMParser().parseFromString(value.replace(/<\/p>|<br\s*\/?>/gi, '\n'), 'text/html').body.textContent || __('No description provided.')
 }
 const statuses = ['Incoming', 'Deferred', 'Rejected', 'Duplicate', 'Accepted']
 const projects = ref([]), requests = ref([]), project = ref(queryProject()), status = ref('Incoming'), selected = ref(''), detail = ref(null)
@@ -110,41 +111,41 @@ let listVersion = 0, detailVersion = 0
 async function load() {
   const version = ++listVersion; loading.value = true; error.value = ''
   try { const rows = await call('pulse.api.intake.list_requests', { project: project.value || null, status: status.value || null }); if (version === listVersion) { requests.value = rows; if (!rows.some(r => r.name === selected.value)) selected.value = rows[0]?.name || '' } }
-  catch (e) { if (version === listVersion) error.value = e.message || 'Requests could not be loaded.' }
+  catch (e) { if (version === listVersion) error.value = e.message || __('Requests could not be loaded.') }
   finally { if (version === listVersion) loading.value = false }
 }
 async function loadDetail() {
   const name = selected.value, version = ++detailVersion; detail.value = null; detailError.value = ''; actionError.value = ''; detailLoading.value = Boolean(name)
   if (!name) return
   try { const row = await call('pulse.api.intake.get_request', { name }); if (version === detailVersion) { detail.value = row; reviewer.value = row.reviewer || ''; decision.value = row.status; duplicate.value = row.duplicate_of || ''; note.value = ''; loadReviewers(row.project) } }
-  catch (e) { if (version === detailVersion) detailError.value = e.message || 'Request details could not be loaded.' }
+  catch (e) { if (version === detailVersion) detailError.value = e.message || __('Request details could not be loaded.') }
   finally { if (version === detailVersion) detailLoading.value = false }
 }
 async function create() {
   if (busy.value) return
   busy.value = true; createError.value = ''; notice.value = ''
-  try { const result = await call('pulse.api.intake.create_request', { ...draft.value }); project.value = draft.value.project; draft.value = { project: draft.value.project, title: '', description: '', reviewer: '' }; creating.value = false; status.value = 'Incoming'; await load(); selected.value = result.name || selected.value; notice.value = 'Request submitted for review.' }
-  catch (e) { createError.value = e.message || 'Your request could not be submitted. Your text has been kept.' }
+  try { const result = await call('pulse.api.intake.create_request', { ...draft.value }); project.value = draft.value.project; draft.value = { project: draft.value.project, title: '', description: '', reviewer: '' }; creating.value = false; status.value = 'Incoming'; await load(); selected.value = result.name || selected.value; notice.value = __('Request submitted for review.') }
+  catch (e) { createError.value = e.message || __('Your request could not be submitted. Your text has been kept.') }
   finally { busy.value = false }
 }
 async function review() {
   if (busy.value || !detail.value) return
   busy.value = true; actionError.value = ''; notice.value = ''
-  try { await call('pulse.api.intake.review_request', { name: selected.value, status: decision.value, reviewer: reviewer.value, duplicate_of: decision.value === 'Duplicate' ? duplicate.value : null, note: note.value }); await load(); await loadDetail(); notice.value = 'Review saved.' }
-  catch (e) { actionError.value = e.message || 'The review could not be saved.' }
+  try { await call('pulse.api.intake.review_request', { name: selected.value, status: decision.value, reviewer: reviewer.value, duplicate_of: decision.value === 'Duplicate' ? duplicate.value : null, note: note.value }); await load(); await loadDetail(); notice.value = __('Review saved.') }
+  catch (e) { actionError.value = e.message || __('The review could not be saved.') }
   finally { busy.value = false }
 }
 async function accept() {
   if (busy.value || !detail.value) return
   busy.value = true; actionError.value = ''; notice.value = ''
-  try { const result = await call('pulse.api.intake.accept_request', { name: selected.value, reviewer: reviewer.value, note: note.value }); status.value = 'Accepted'; await load(); await loadDetail(); notice.value = `Request accepted. Task ${result.task} created.` }
-  catch (e) { actionError.value = e.message || 'The request could not be accepted.' }
+  try { const result = await call('pulse.api.intake.accept_request', { name: selected.value, reviewer: reviewer.value, note: note.value }); status.value = 'Accepted'; await load(); await loadDetail(); notice.value = __('Request accepted. Task {0} created.', [result.task]) }
+  catch (e) { actionError.value = e.message || __('The request could not be accepted.') }
   finally { busy.value = false }
 }
 function formatDate(value) {
-  if (!value) return 'Time unavailable'
+  if (!value) return __('Time unavailable')
   const date = new Date(value.replace(' ', 'T'))
-  return Number.isNaN(date.getTime()) ? value : new Intl.DateTimeFormat(undefined, { dateStyle: 'medium', timeStyle: 'short' }).format(date)
+  return Number.isNaN(date.getTime()) ? value : new Intl.DateTimeFormat(lang, { dateStyle: 'medium', timeStyle: 'short' }).format(date)
 }
 async function loadReviewers(projectName, draftMode = false) {
   const version = draftMode ? ++draftReviewerVersion : ++reviewerVersion
@@ -152,22 +153,22 @@ async function loadReviewers(projectName, draftMode = false) {
   target.value = []; reviewerError.value = ''
   if (!projectName) return
   try { const rows = await call('pulse.api.intake.reviewer_options', { project: projectName }); if (version === (draftMode ? draftReviewerVersion : reviewerVersion)) target.value = rows }
-  catch (e) { reviewerError.value = e.message || 'Reviewer choices could not be loaded. Re-select the project to retry.' }
+  catch (e) { reviewerError.value = e.message || __('Reviewer choices could not be loaded. Re-select the project to retry.') }
 }
 async function loadPublicForm() {
   const version = ++formVersion; publicForm.value = null; formError.value = ''
   if (!canManage.value || !project.value) return
   formLoading.value = true
   try { const result = await call('pulse.api.public_intake.get_settings', { project: project.value }); if (version === formVersion) publicForm.value = result }
-  catch (e) { if (version === formVersion) formError.value = e.message || 'Public form settings could not be loaded.' }
+  catch (e) { if (version === formVersion) formError.value = e.message || __('Public form settings could not be loaded.') }
   finally { if (version === formVersion) formLoading.value = false }
 }
 async function savePublicForm() {
   if (formBusy.value || !publicForm.value) return
   const name = project.value
   formBusy.value = true; formError.value = ''
-  try { const result = await call('pulse.api.public_intake.save_settings', { project: name, enabled: publicForm.value.enabled ? 1 : 0, public_title: publicForm.value.public_title, public_description: publicForm.value.public_description }); if (project.value === name) publicForm.value = result; notice.value = 'Public form settings saved.' }
-  catch (e) { formError.value = e.message || 'Public form settings could not be saved.' }
+  try { const result = await call('pulse.api.public_intake.save_settings', { project: name, enabled: publicForm.value.enabled ? 1 : 0, public_title: publicForm.value.public_title, public_description: publicForm.value.public_description }); if (project.value === name) publicForm.value = result; notice.value = __('Public form settings saved.') }
+  catch (e) { formError.value = e.message || __('Public form settings could not be saved.') }
   finally { formBusy.value = false }
 }
 watch(() => draft.value.project, value => { draft.value.reviewer = ''; loadReviewers(value, true) })
@@ -175,7 +176,7 @@ watch(() => route.query.project, () => { project.value = queryProject() })
 watch(project, value => { loadPublicForm(); if (value !== queryProject()) router.replace({ query: { ...route.query, project: value || undefined } }) })
 watch([project, status], load)
 watch(selected, loadDetail)
-async function loadProjects() { projectError.value = ''; try { projects.value = await call('frappe.client.get_list', { doctype: 'Project', fields: ['name', 'project_name'], limit_page_length: 0 }) } catch (e) { projectError.value = e.message || 'Projects could not be loaded.' } }
+async function loadProjects() { projectError.value = ''; try { projects.value = await call('frappe.client.get_list', { doctype: 'Project', fields: ['name', 'project_name'], limit_page_length: 0 }) } catch (e) { projectError.value = e.message || __('Projects could not be loaded.') } }
 onMounted(async () => { loadProjects(); load(); try { canManage.value = await call('pulse.api.public_intake.can_manage'); loadPublicForm() } catch { canManage.value = false } })
 </script>
 <style scoped>

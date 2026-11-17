@@ -3,52 +3,52 @@
     <div v-if="entityState.open" class="ovl" @click.self="close">
       <div class="modal" role="dialog" aria-modal="true" aria-labelledby="entity-form-title">
         <div class="head">
-          <span id="entity-form-title" class="font-semibold">{{ entityState.name ? 'Edit' : 'New' }} {{ singular }}</span>
-          <button class="p-1 rounded hover-app text-muted" aria-label="Close form" @click="close"><X class="w-4 h-4" /></button>
+          <span id="entity-form-title" class="font-semibold">{{ entityState.name ? __('Edit {0}', [__(singular)]) : __('New {0}', [__(singular)]) }}</span>
+          <button class="p-1 rounded hover-app text-muted" :aria-label="__('Close form')" @click="close"><X class="w-4 h-4" /></button>
         </div>
 
-        <div v-if="loadingMeta" class="body"><div class="text-sm text-muted py-6 text-center">Loading form…</div></div>
+        <div v-if="loadingMeta" class="body"><div class="text-sm text-muted py-6 text-center">{{ __('Loading form…') }}</div></div>
 
         <div v-else class="body">
           <div v-for="f in fields" :key="f.fieldname" class="fld">
-            <label :for="`entity-${f.fieldname}`" class="lbl">{{ f.label }}<b v-if="f.reqd" style="color:var(--accent)"> *</b></label>
+            <label :for="`entity-${f.fieldname}`" class="lbl">{{ __(f.label) }}<b v-if="f.reqd" style="color:var(--accent)"> *</b></label>
 
-            <textarea v-if="isText(f)" :id="`entity-${f.fieldname}`" v-model="model[f.fieldname]" rows="3" class="in" :placeholder="f.description || ''" />
+            <textarea v-if="isText(f)" :id="`entity-${f.fieldname}`" v-model="model[f.fieldname]" rows="3" class="in" :placeholder="__(f.description) || ''" />
 
             <select v-else-if="f.fieldtype === 'Select'" :id="`entity-${f.fieldname}`" v-model="model[f.fieldname]" class="in">
-              <option v-for="o in selOpts(f)" :key="o" :value="o">{{ o || '—' }}</option>
+              <option v-for="o in selOpts(f)" :key="o" :value="o">{{ __(o) || '—' }}</option>
             </select>
 
             <div v-else-if="f.fieldtype === 'Link'" class="link-picker">
-              <input type="search" class="in" :aria-label="`Search ${f.label}`" :value="linkSearch[f.fieldname] || ''" placeholder="Search by name…" @input="searchLinks(f, $event.target.value)" />
+              <input type="search" class="in" :aria-label="__('Search {0}', [__(f.label)])" :value="linkSearch[f.fieldname] || ''" :placeholder="__('Search by name…')" @input="searchLinks(f, $event.target.value)" />
               <select :id="`entity-${f.fieldname}`" v-model="model[f.fieldname]" class="in" :aria-busy="!!linkBusy[f.fieldname]">
-                <option :value="null">— none —</option>
+                <option :value="null">{{ __('— none —') }}</option>
                 <option v-for="o in (linkCache[f.fieldname] || [])" :key="o.value" :value="o.value">{{ o.label }}</option>
               </select>
-              <span v-if="linkBusy[f.fieldname]" class="text-xs text-muted" role="status">Loading options…</span>
-              <span v-if="linkErrors[f.fieldname]" class="text-xs" role="alert">Options couldn't load. <button class="underline" @click="fetchLink(f)">Retry</button></span>
-              <div class="flex justify-between gap-2 text-xs"><button v-if="linkOffset[f.fieldname]" @click="pageLinks(f, -1)">Previous options</button><button v-if="linkMore[f.fieldname]" @click="pageLinks(f, 1)">More options</button></div>
+              <span v-if="linkBusy[f.fieldname]" class="text-xs text-muted" role="status">{{ __('Loading options…') }}</span>
+              <span v-if="linkErrors[f.fieldname]" class="text-xs" role="alert">{{ __("Options couldn't load.") }} <button class="underline" @click="fetchLink(f)">{{ __('Retry') }}</button></span>
+              <div class="flex justify-between gap-2 text-xs"><button v-if="linkOffset[f.fieldname]" @click="pageLinks(f, -1)">{{ __('Previous options') }}</button><button v-if="linkMore[f.fieldname]" @click="pageLinks(f, 1)">{{ __('More options') }}</button></div>
             </div>
 
             <label v-else-if="f.fieldtype === 'Check'" class="chk">
               <input :id="`entity-${f.fieldname}`" type="checkbox" :checked="!!model[f.fieldname]" @change="model[f.fieldname] = $event.target.checked ? 1 : 0" />
-              <span class="text-xs text-muted">{{ f.description || 'Yes' }}</span>
+              <span class="text-xs text-muted">{{ __(f.description) || __('Yes') }}</span>
             </label>
 
             <input v-else-if="f.fieldtype === 'Date'" type="date" :id="`entity-${f.fieldname}`" v-model="model[f.fieldname]" class="in" />
             <input v-else-if="f.fieldtype === 'Datetime'" type="datetime-local" :id="`entity-${f.fieldname}`" v-model="model[f.fieldname]" class="in" />
             <input v-else-if="isNumber(f)" type="number" :id="`entity-${f.fieldname}`" v-model="model[f.fieldname]" class="in" />
-            <input v-else :id="`entity-${f.fieldname}`" v-model="model[f.fieldname]" class="in" :placeholder="f.description || ''" />
+            <input v-else :id="`entity-${f.fieldname}`" v-model="model[f.fieldname]" class="in" :placeholder="__(f.description) || ''" />
           </div>
-          <div v-if="!fields.length" class="text-sm text-muted py-4 text-center">Nothing to edit.</div>
+          <div v-if="!fields.length" class="text-sm text-muted py-4 text-center">{{ __('Nothing to edit.') }}</div>
         </div>
 
         <div class="foot">
-          <button v-if="entityState.name" class="btn danger" @click="remove" :disabled="busy">Delete</button>
+          <button v-if="entityState.name" class="btn danger" @click="remove" :disabled="busy">{{ __('Delete') }}</button>
           <span v-else />
           <div class="flex gap-2">
-            <button class="btn ghost" @click="close">Cancel</button>
-            <button class="btn primary" :disabled="!valid || busy" @click="save">{{ busy ? 'Saving…' : 'Save' }}</button>
+            <button class="btn ghost" @click="close">{{ __('Cancel') }}</button>
+            <button class="btn primary" :disabled="!valid || busy" @click="save">{{ busy ? __('Saving…') : __('Save') }}</button>
           </div>
         </div>
       </div>
@@ -61,6 +61,7 @@ import { ref, reactive, computed, watch, onBeforeUnmount } from 'vue'
 import { call } from 'frappe-ui'
 import { entityState, closeEntity, markSaved } from '@/ui/entity'
 import { toast } from '@/ui/toast'
+import { __ } from '@/translation'
 import X from '~icons/lucide/x'
 
 const loadingMeta = ref(false)
@@ -127,7 +128,7 @@ watch(() => entityState.open, async (open) => {
     await fetchLinks(meta.fields)
   } catch (e) {
     // never leave the dialog stuck on "Loading form…" — surface and close
-    toast.error(e?.messages?.[0] || e?.message || 'Could not load form')
+    toast.error(e?.messages?.[0] || e?.message || __('Could not load form'))
     closeEntity()
   } finally {
     loadingMeta.value = false
@@ -143,24 +144,24 @@ async function save() {
   if (entityState.name) doc.name = entityState.name
   try {
     await call('pulse.api.spa.save_entity', { doc: JSON.stringify(doc) })
-    toast.success(`${singular.value} saved`)
+    toast.success(__('{0} saved', [__(singular.value)]))
     markSaved()
     closeEntity()
   } catch (e) {
-    toast.error(e?.messages?.[0] || e?.message || 'Could not save')
+    toast.error(e?.messages?.[0] || e?.message || __('Could not save'))
   } finally { busy.value = false }
 }
 
 async function remove() {
-  if (!confirm(`Delete this ${singular.value.toLowerCase()}?`)) return
+  if (!confirm(__('Delete this {0}?', [__(singular.value).toLowerCase()]))) return
   busy.value = true
   try {
     await call('pulse.api.spa.delete_entity', { doctype: entityState.doctype, name: entityState.name })
-    toast.success(`${singular.value} deleted`)
+    toast.success(__('{0} deleted', [__(singular.value)]))
     markSaved()
     closeEntity()
   } catch (e) {
-    toast.error(e?.messages?.[0] || 'Could not delete')
+    toast.error(e?.messages?.[0] || __('Could not delete'))
   } finally { busy.value = false }
 }
 </script>

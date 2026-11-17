@@ -1,71 +1,71 @@
 <template>
   <div class="sprints-page">
     <header class="planning-page-header">
-      <div><h1 class="page-title">Sprints</h1><p class="text-sm text-muted">Plan a cycle and track its progress.</p></div>
-      <button @click="openEntity('Pulse Sprint', null, project ? { project } : {})" class="btn-primary"><Plus class="w-3.5 h-3.5" /> New sprint</button>
+      <div><h1 class="page-title">{{ __('Sprints') }}</h1><p class="text-sm text-muted">{{ __('Plan a cycle and track its progress.') }}</p></div>
+      <button @click="openEntity('Pulse Sprint', null, project ? { project } : {})" class="btn-primary"><Plus class="w-3.5 h-3.5" /> {{ __('New sprint') }}</button>
     </header>
-    <nav class="planning-tabs" aria-label="Planning views"><RouterLink :to="{ name: 'Sprints', query: route.query }" aria-current="page">Sprints</RouterLink><RouterLink :to="{ name: 'Backlog', query: route.query }">Backlog</RouterLink></nav>
-    <p v-if="error" role="alert" class="px-7 py-4 text-sm">{{ error }} <button class="btn-ghost" @click="reload">Retry</button></p>
-    <p v-if="loading" role="status" class="text-muted px-7 py-6">Loading sprints…</p>
+    <nav class="planning-tabs" :aria-label="__('Planning views')"><RouterLink :to="{ name: 'Sprints', query: route.query }" aria-current="page">{{ __('Sprints') }}</RouterLink><RouterLink :to="{ name: 'Backlog', query: route.query }">{{ __('Backlog') }}</RouterLink></nav>
+    <p v-if="error" role="alert" class="px-7 py-4 text-sm">{{ error }} <button class="btn-ghost" @click="reload">{{ __('Retry') }}</button></p>
+    <p v-if="loading" role="status" class="text-muted px-7 py-6">{{ __('Loading sprints…') }}</p>
     <div v-else class="sprint-layout">
-      <nav aria-label="Sprints" class="sprint-list">
-        <div class="sprint-list-heading"><span>All sprints</span><span>{{ sprints.length }}</span></div>
+      <nav :aria-label="__('Sprints')" class="sprint-list">
+        <div class="sprint-list-heading"><span>{{ __('All sprints') }}</span><span>{{ sprints.length }}</span></div>
         <button v-for="s in sprints" :key="s.name" @click="selected = s.name" :aria-current="selected === s.name ? 'true' : undefined" class="sprint-choice">
           <span class="font-medium break-words">{{ s.sprint_name || s.name }}</span><StatusPill :value="s.status" />
-          <span class="text-xs text-muted block mt-2">{{ s.project }} · {{ s.start_date || 'No start date' }} → {{ s.end_date || 'No end date' }}</span>
+          <span class="text-xs text-muted block mt-2">{{ s.project }} · {{ s.start_date || __('No start date') }} → {{ s.end_date || __('No end date') }}</span>
         </button>
-        <p v-if="!sprints.length" class="text-muted py-8">No sprints yet. Create a sprint to plan your first cycle.</p>
+        <p v-if="!sprints.length" class="text-muted py-8">{{ __('No sprints yet. Create a sprint to plan your first cycle.') }}</p>
       </nav>
       <section v-if="current" class="sprint-detail min-w-0 space-y-6" :aria-label="current.sprint_name">
-        <div class="flex flex-wrap justify-between items-center gap-3"><h2 class="text-lg font-semibold break-words">{{ current.sprint_name }}</h2><button v-if="current.status !== 'Completed'" class="btn-ghost" @click="openEntity('Pulse Sprint', current.name)">Edit dates and details</button></div>
-        <p v-if="detailError" role="alert">{{ detailError }} <button class="btn-ghost" @click="loadDetails">Retry details</button></p>
+        <div class="flex flex-wrap justify-between items-center gap-3"><h2 class="text-lg font-semibold break-words">{{ current.sprint_name }}</h2><button v-if="current.status !== 'Completed'" class="btn-ghost" @click="openEntity('Pulse Sprint', current.name)">{{ __('Edit dates and details') }}</button></div>
+        <p v-if="detailError" role="alert">{{ detailError }} <button class="btn-ghost" @click="loadDetails">{{ __('Retry details') }}</button></p>
         <form v-if="current.status !== 'Completed'" class="sprint-settings space-y-3" @submit.prevent="save(false)">
-          <label class="block text-sm">Sprint goal<textarea v-model="goal" rows="2" class="sprint-input" placeholder="What should this sprint accomplish?" /></label>
+          <label class="block text-sm">{{ __('Sprint goal') }}<textarea v-model="goal" rows="2" class="sprint-input" :placeholder="__('What should this sprint accomplish?')" /></label>
           <div class="flex flex-wrap items-end gap-3">
-            <label class="text-sm">Measure progress by<select v-model="measure" class="sprint-input"><option>Tasks</option><option>Hours</option><option>Points</option></select></label>
-            <button class="btn-ghost" :disabled="busy" type="submit">Save planning settings</button>
-            <button v-if="current.status === 'Planned'" class="btn-primary" :disabled="busy" type="button" @click="save(true)">Start sprint</button>
-            <button v-if="current.status === 'Active'" class="btn-ghost" :disabled="busy" type="button" @click="openClose">Close sprint</button>
+            <label class="text-sm">{{ __('Measure progress by') }}<select v-model="measure" class="sprint-input"><option value="Tasks">{{ __('Tasks') }}</option><option value="Hours">{{ __('Hours') }}</option><option value="Points">{{ __('Points') }}</option></select></label>
+            <button class="btn-ghost" :disabled="busy" type="submit">{{ __('Save planning settings') }}</button>
+            <button v-if="current.status === 'Planned'" class="btn-primary" :disabled="busy" type="button" @click="save(true)">{{ __('Start sprint') }}</button>
+            <button v-if="current.status === 'Active'" class="btn-ghost" :disabled="busy" type="button" @click="openClose">{{ __('Close sprint') }}</button>
           </div>
         </form>
         <div v-if="progress" class="space-y-2">
           <p v-if="current.status === 'Completed' && progress.goal" class="text-sm">{{ progress.goal }}</p>
-          <p class="text-sm">{{ progress.completed }} of {{ progress.planned }} {{ progress.measure?.toLowerCase() }} completed · {{ progress.percent }}%</p>
-          <progress class="sprint-progress" :max="Math.max(progress.planned, 1)" :value="progress.completed" :aria-label="`${progress.percent}% completed`" />
-          <p class="text-sm text-muted">Estimated workload: {{ progress.estimated_hours }} hours · {{ progress.estimated_points }} points · {{ progress.tasks }} tasks</p>
+          <p class="text-sm">{{ progressLine(progress) }}</p>
+          <progress class="sprint-progress" :max="Math.max(progress.planned, 1)" :value="progress.completed" :aria-label="__('{0}% completed', [progress.percent])" />
+          <p class="text-sm text-muted">{{ __('Estimated workload: {0} hours · {1} points · {2} tasks', [progress.estimated_hours, progress.estimated_points, progress.tasks]) }}</p>
         </div>
         <SprintPlanner v-if="current.status !== 'Completed'" :project="current.project" :sprint="current.name" @changed="loadDetails" />
         <section v-if="current.status !== 'Planned'" class="space-y-3">
-          <h3 class="font-semibold">Burndown</h3>
+          <h3 class="font-semibold">{{ __('Burndown') }}</h3>
           <p v-if="chartError" class="text-sm text-muted">{{ chartError }}</p>
           <template v-if="chart.length">
-            <p class="text-xs text-muted">{{ progress?.measure || measure }} remaining · solid: recorded work · dashed: ideal</p>
-            <svg viewBox="0 0 640 190" role="img" aria-label="Sprint burndown: recorded remaining work and ideal remaining work" class="burndown-chart">
+            <p class="text-xs text-muted">{{ __('{0} remaining · solid: recorded work · dashed: ideal', [__(progress?.measure || measure)]) }}</p>
+            <svg viewBox="0 0 640 190" role="img" :aria-label="__('Sprint burndown: recorded remaining work and ideal remaining work')" class="burndown-chart">
               <line x1="35" y1="160" x2="625" y2="160" stroke="currentColor" opacity=".25" />
               <polyline :points="chartPoints('ideal_remaining')" fill="none" stroke="currentColor" stroke-dasharray="6 5" stroke-width="2" />
               <polyline :points="chartPoints('actual_remaining')" fill="none" stroke="var(--accent)" stroke-width="3" />
               <text x="5" y="20" fill="currentColor" font-size="12">{{ chartMax }}</text><text x="15" y="160" fill="currentColor" font-size="12">0</text>
               <text x="35" y="185" fill="currentColor" font-size="12">{{ chart[0].date }}</text><text x="625" y="185" text-anchor="end" fill="currentColor" font-size="12">{{ chart.at(-1).date }}</text>
             </svg>
-            <details><summary class="cursor-pointer text-sm">View daily values</summary><div class="overflow-x-auto"><table class="w-full text-sm mt-3"><thead><tr><th>Date</th><th>Scope</th><th>Completed</th><th>Remaining</th><th>Ideal</th></tr></thead><tbody><tr v-for="row in chart" :key="row.date"><td>{{ row.date }}</td><td>{{ row.scope ?? '—' }}</td><td>{{ row.completed ?? '—' }}</td><td>{{ row.actual_remaining ?? '—' }}</td><td>{{ row.ideal_remaining }}</td></tr></tbody></table></div></details>
+            <details><summary class="cursor-pointer text-sm">{{ __('View daily values') }}</summary><div class="overflow-x-auto"><table class="w-full text-sm mt-3"><thead><tr><th>{{ __('Date') }}</th><th>{{ __('Scope') }}</th><th>{{ __('Completed') }}</th><th>{{ __('Remaining') }}</th><th>{{ __('Ideal') }}</th></tr></thead><tbody><tr v-for="row in chart" :key="row.date"><td>{{ row.date }}</td><td>{{ row.scope ?? '—' }}</td><td>{{ row.completed ?? '—' }}</td><td>{{ row.actual_remaining ?? '—' }}</td><td>{{ row.ideal_remaining }}</td></tr></tbody></table></div></details>
           </template>
         </section>
         <section v-if="current.status === 'Completed' && progress" class="space-y-3">
-          <h3 class="font-semibold">Sprint summary</h3>
-          <p class="text-sm">{{ progress.completed_tasks }} tasks completed. Unfinished work: {{ dispositionLabel(progress.unfinished_disposition) }}.</p>
-          <div v-for="[key, label] in summarySections" :key="key"><h4 class="text-sm font-medium">{{ label }}</h4><p class="text-sm text-muted break-words">{{ progress[key]?.join(', ') || 'None' }}</p></div>
+          <h3 class="font-semibold">{{ __('Sprint summary') }}</h3>
+          <p class="text-sm">{{ __('{0} tasks completed. Unfinished work: {1}.', [progress.completed_tasks, dispositionLabel(progress.unfinished_disposition)]) }}</p>
+          <div v-for="[key, label] in summarySections" :key="key"><h4 class="text-sm font-medium">{{ label }}</h4><p class="text-sm text-muted break-words">{{ progress[key]?.join(', ') || __('None') }}</p></div>
         </section>
         <p role="status" class="text-sm text-muted">{{ notice }}</p>
       </section>
     </div>
     <dialog ref="closeDialog" class="close-dialog" @cancel="cancelClose">
       <form @submit.prevent="finish" class="space-y-4">
-        <h2 class="text-xl font-semibold">Close {{ current?.sprint_name }}</h2>
-        <p class="text-sm text-muted">{{ progress?.unfinished_task_ids?.length || 0 }} unfinished tasks remain. Choose where this work belongs before freezing the sprint summary.</p>
-        <label class="block text-sm">Unfinished work<select v-model="disposition" class="sprint-input"><option value="backlog">Return to backlog</option><option value="next">Move to another sprint</option><option value="retain">Keep in this completed sprint</option></select></label>
-        <label v-if="disposition === 'next'" class="block text-sm">Destination sprint<select v-model="destination" required class="sprint-input"><option value="" disabled>Select a sprint</option><option v-for="s in destinations" :key="s.name" :value="s.name">{{ s.sprint_name }}</option></select></label>
+        <h2 class="text-xl font-semibold">{{ __('Close {0}', [current?.sprint_name]) }}</h2>
+        <p class="text-sm text-muted">{{ __('{0} unfinished tasks remain. Choose where this work belongs before freezing the sprint summary.', [progress?.unfinished_task_ids?.length || 0]) }}</p>
+        <label class="block text-sm">{{ __('Unfinished work') }}<select v-model="disposition" class="sprint-input"><option value="backlog">{{ __('Return to backlog') }}</option><option value="next">{{ __('Move to another sprint') }}</option><option value="retain">{{ __('Keep in this completed sprint') }}</option></select></label>
+        <label v-if="disposition === 'next'" class="block text-sm">{{ __('Destination sprint') }}<select v-model="destination" required class="sprint-input"><option value="" disabled>{{ __('Select a sprint') }}</option><option v-for="s in destinations" :key="s.name" :value="s.name">{{ s.sprint_name }}</option></select></label>
         <p v-if="closeError" role="alert" class="text-sm">{{ closeError }}</p>
-        <div class="flex flex-wrap justify-end gap-3"><button type="button" class="btn-ghost" :disabled="busy" @click="closeDialog.close()">Cancel</button><button class="btn-primary" :disabled="busy || (disposition === 'next' && !destination)">{{ busy ? 'Closing…' : 'Close sprint' }}</button></div>
+        <div class="flex flex-wrap justify-end gap-3"><button type="button" class="btn-ghost" :disabled="busy" @click="closeDialog.close()">{{ __('Cancel') }}</button><button class="btn-primary" :disabled="busy || (disposition === 'next' && !destination)">{{ busy ? __('Closing…') : __('Close sprint') }}</button></div>
       </form>
     </dialog>
   </div>
@@ -78,6 +78,7 @@ import StatusPill from '@/ui/StatusPill.vue'
 import { openEntity, entityState } from '@/ui/entity'
 import SprintPlanner from '@/components/sprints/SprintPlanner.vue'
 import Plus from '~icons/lucide/plus'
+import { __ } from '@/translation'
 const route = useRoute()
 const project = computed(() => typeof route.query.project === 'string' ? route.query.project : '')
 const sprints = ref([]), selected = ref(''), loading = ref(true), error = ref(''), busy = ref(false), notice = ref('')
@@ -85,10 +86,16 @@ const goal = ref(''), measure = ref('Tasks'), progress = ref(null), chart = ref(
 const closeDialog = ref(null), disposition = ref('backlog'), destination = ref(''), closeError = ref('')
 const current = computed(() => sprints.value.find(s => s.name === selected.value))
 const destinations = computed(() => sprints.value.filter(s => s.project === current.value?.project && s.name !== selected.value && s.status !== 'Completed'))
-const summarySections = [['completed_task_ids', 'Completed work'], ['unfinished_task_ids', 'Unfinished work at close'], ['scope_added', 'Added during sprint'], ['scope_removed', 'Removed during sprint']]
+const summarySections = [['completed_task_ids', __('Completed work')], ['unfinished_task_ids', __('Unfinished work at close')], ['scope_added', __('Added during sprint')], ['scope_removed', __('Removed during sprint')]]
 const chartMax = computed(() => Math.max(1, ...chart.value.flatMap(r => [r.actual_remaining || 0, r.ideal_remaining || 0])))
 function chartPoints(key) { return chart.value.map((r, i) => r[key] == null ? null : `${35 + i / Math.max(chart.value.length - 1, 1) * 590},${160 - r[key] / chartMax.value * 140}`).filter(Boolean).join(' ') }
-function dispositionLabel(value) { return { backlog: 'returned to backlog', next: 'moved to another sprint', retain: 'kept in this sprint' }[value] || value }
+function dispositionLabel(value) { return { backlog: __('returned to backlog'), next: __('moved to another sprint'), retain: __('kept in this sprint') }[value] || value }
+function progressLine(p) {
+  const args = [p.completed, p.planned, p.percent]
+  if (p.measure === 'Hours') return __('{0} of {1} hours completed · {2}%', args)
+  if (p.measure === 'Points') return __('{0} of {1} points completed · {2}%', args)
+  return __('{0} of {1} tasks completed · {2}%', args)
+}
 let reloadVersion = 0
 async function reload() {
   const version = ++reloadVersion
@@ -99,7 +106,7 @@ async function reload() {
     sprints.value = rows
     if (!rows.some(s => s.name === selected.value)) selected.value = rows[0]?.name || ''
   }
-  catch (e) { if (version === reloadVersion) error.value = e.message || 'Sprints could not be loaded.' }
+  catch (e) { if (version === reloadVersion) error.value = e.message || __('Sprints could not be loaded.') }
   finally { if (version === reloadVersion) loading.value = false }
 }
 let detailVersion = 0
@@ -110,15 +117,15 @@ async function loadDetails() {
   const results = await Promise.allSettled([call('pulse.api.planning.sprint_progress', { sprint: name }), current.value?.status === 'Planned' ? Promise.resolve(null) : call('pulse.api.reports.run_report', { report: 'burndown', sprint: name })])
   if (version !== detailVersion) return
   if (results[0].status === 'fulfilled') progress.value = results[0].value
-  else detailError.value = results[0].reason.message || 'Sprint progress could not be loaded.'
+  else detailError.value = results[0].reason.message || __('Sprint progress could not be loaded.')
   if (results[1].status === 'fulfilled') chart.value = results[1].value?.data || []
-  else chartError.value = results[1].reason.message || 'Recorded history is unavailable for this sprint.'
+  else chartError.value = results[1].reason.message || __('Recorded history is unavailable for this sprint.')
 }
 async function save(start) {
   if (busy.value) return
   busy.value = true; detailError.value = ''; notice.value = ''
-  try { await call('pulse.api.planning.configure_sprint', { sprint: selected.value, goal: goal.value, progress_measure: measure.value, start: start ? 1 : 0 }); await reload(); await loadDetails(); notice.value = start ? 'Sprint started.' : 'Planning settings saved.' }
-  catch (e) { detailError.value = e.message || 'Sprint settings could not be saved.' }
+  try { await call('pulse.api.planning.configure_sprint', { sprint: selected.value, goal: goal.value, progress_measure: measure.value, start: start ? 1 : 0 }); await reload(); await loadDetails(); notice.value = start ? __('Sprint started.') : __('Planning settings saved.') }
+  catch (e) { detailError.value = e.message || __('Sprint settings could not be saved.') }
   finally { busy.value = false }
 }
 function cancelClose(event) { if (busy.value) event.preventDefault() }
@@ -126,8 +133,8 @@ function openClose() { disposition.value = 'backlog'; destination.value = ''; cl
 async function finish() {
   if (busy.value) return
   busy.value = true; closeError.value = ''
-  try { await call('pulse.api.planning.close_sprint', { sprint: selected.value, unfinished: disposition.value, next_sprint: destination.value || null }); closeDialog.value.close(); await reload(); await loadDetails(); notice.value = 'Sprint closed. The summary is now frozen.' }
-  catch (e) { closeError.value = e.message || 'The sprint could not be closed. Review the destination and retry.' }
+  try { await call('pulse.api.planning.close_sprint', { sprint: selected.value, unfinished: disposition.value, next_sprint: destination.value || null }); closeDialog.value.close(); await reload(); await loadDetails(); notice.value = __('Sprint closed. The summary is now frozen.') }
+  catch (e) { closeError.value = e.message || __('The sprint could not be closed. Review the destination and retry.') }
   finally { busy.value = false }
 }
 watch(current, s => { goal.value = s?.goal || ''; measure.value = s?.progress_measure || 'Tasks'; loadDetails() })

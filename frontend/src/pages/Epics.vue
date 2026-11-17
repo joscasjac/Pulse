@@ -1,18 +1,18 @@
 <template>
   <div class="p-6">
     <div class="flex items-center justify-between mb-1 gap-3">
-      <h1 class="text-2xl font-bold">Epics</h1>
+      <h1 class="text-2xl font-bold">{{ __('Epics') }}</h1>
       <div class="flex items-center gap-2">
         <select v-model="project" @change="reload" class="ctl">
-          <option :value="null">All projects</option>
+          <option :value="null">{{ __('All projects') }}</option>
           <option v-for="p in projects" :key="p.name" :value="p.name">{{ p.project_name || p.name }}</option>
         </select>
         <button @click="openCreate({ project, task_type: 'Epic' })" class="btn-primary">
-          <Plus class="w-3.5 h-3.5" /> New epic
+          <Plus class="w-3.5 h-3.5" /> {{ __('New epic') }}
         </button>
       </div>
     </div>
-    <p class="text-xs text-faint mb-4">An epic is a task of type <b>Epic</b>; link work to it from a task's Epic field. Progress is task count.</p>
+    <p class="text-xs text-faint mb-4"><template v-for="(part, i) in __('An epic is a task of type {0}; link work to it from a task\'s Epic field. Progress is task count.').split('{0}')" :key="i"><b v-if="i">{{ __('Epic') }}</b>{{ part }}</template></p>
 
     <div v-if="loading" class="space-y-2">
       <div v-for="n in 3" :key="n" class="card-surface p-4"><Skeleton width="40%" height="14px" /></div>
@@ -42,10 +42,10 @@
             <span v-if="t.pulse_release" class="mono text-[10px] text-accent shrink-0">{{ t.pulse_release }}</span>
             <StatusPill :value="t.status" />
           </div>
-          <div v-if="!children.length" class="text-xs text-faint py-3 text-center">No tasks linked to this epic yet.</div>
+          <div v-if="!children.length" class="text-xs text-faint py-3 text-center">{{ __('No tasks linked to this epic yet.') }}</div>
         </div>
       </div>
-      <div v-if="!epics.length" class="py-16 text-center text-faint">No epics yet. Create a task of type <b>Epic</b> to group work.</div>
+      <div v-if="!epics.length" class="py-16 text-center text-faint"><template v-for="(part, i) in __('No epics yet. Create a task of type {0} to group work.').split('{0}')" :key="i"><b v-if="i">{{ __('Epic') }}</b>{{ part }}</template></div>
     </div>
 
     <TaskDrawer :task-id="openId" @close="openId = null" @changed="reload" @open="openId = $event" />

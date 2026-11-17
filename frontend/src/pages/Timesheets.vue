@@ -1,37 +1,37 @@
 <template>
   <section class="timesheets-page">
     <header class="page-heading">
-      <div><h1>Timesheets</h1><p>Track your work and review time entries.</p></div>
-      <a class="time-control" href="/app/timesheet">Manage timesheets <span aria-hidden="true">↗</span></a>
+      <div><h1>{{ __('Timesheets') }}</h1><p>{{ __('Track your work and review time entries.') }}</p></div>
+      <a class="time-control" href="/app/timesheet">{{ __('Manage timesheets') }} <span aria-hidden="true">↗</span></a>
     </header>
     <div class="time-toolbar">
-      <label class="task-picker"><span>Record time</span>
-        <select v-model="taskId" class="time-input"><option value="">Select an assigned task</option><option v-for="task in tasks" :key="task.name" :value="task.name">{{ task.issue_key || task.name }} · {{ task.subject }}</option></select>
+      <label class="task-picker"><span>{{ __('Record time') }}</span>
+        <select v-model="taskId" class="time-input"><option value="">{{ __('Select an assigned task') }}</option><option v-for="task in tasks" :key="task.name" :value="task.name">{{ task.issue_key || task.name }} · {{ task.subject }}</option></select>
       </label>
-      <label class="date-filter"><span>From</span><input v-model="fromDate" class="time-input" type="date" @change="load"></label>
+      <label class="date-filter"><span>{{ __('From') }}</span><input v-model="fromDate" class="time-input" type="date" @change="load"></label>
     </div>
-    <div v-if="taskId" class="selected-task"><div class="selected-heading"><span>{{ taskId }}</span><button class="time-control" @click="taskId = ''">Close task</button></div><TaskTime :task-id="taskId" @changed="load" /></div>
+    <div v-if="taskId" class="selected-task"><div class="selected-heading"><span>{{ taskId }}</span><button class="time-control" @click="taskId = ''">{{ __('Close task') }}</button></div><TaskTime :task-id="taskId" @changed="load" /></div>
     <div v-else-if="timer" class="running-timer">
-      <p>{{ timer.restricted ? 'Your timer is on a task you can no longer access.' : 'A timer is running on ' + timer.task + '.' }}</p>
-      <button v-if="!timer.restricted" class="time-control" @click="taskId = timer.task">View timer</button>
-      <button v-else class="time-control" :disabled="busy" @click="discard">Discard timer</button>
+      <p>{{ timer.restricted ? __('Your timer is on a task you can no longer access.') : __('A timer is running on {0}.', [timer.task]) }}</p>
+      <button v-if="!timer.restricted" class="time-control" @click="taskId = timer.task">{{ __('View timer') }}</button>
+      <button v-else class="time-control" :disabled="busy" @click="discard">{{ __('Discard timer') }}</button>
     </div>
-    <div v-if="error" role="alert" class="time-message">{{ error }} <button class="text-action" @click="load">Retry</button></div>
-    <p v-if="loading" role="status" class="time-message">Loading your time…</p>
+    <div v-if="error" role="alert" class="time-message">{{ error }} <button class="text-action" @click="load">{{ __('Retry') }}</button></div>
+    <p v-if="loading" role="status" class="time-message">{{ __('Loading your time…') }}</p>
     <template v-else-if="data">
-      <div class="entries-heading"><h2>Your entries</h2><p><strong>{{ hours(data.total_hours) }} h</strong> visible <span>·</span> {{ hours(data.draft_hours) }} h draft <span>·</span> {{ hours(data.submitted_hours) }} h submitted</p></div>
-      <div v-if="!data.entries.length" class="time-empty"><h3>No time entries</h3><p>Select a task above to start recording time, or change the date range.</p><p>You can also record time from any task.</p></div>
-      <div v-else class="entries-scroll" tabindex="0" role="region" aria-label="Your time entries">
-        <table class="entries-table"><thead><tr><th scope="col">Date</th><th scope="col">Work</th><th scope="col" class="numeric">Hours</th><th scope="col">Billing</th><th scope="col">Timesheet</th></tr></thead>
+      <div class="entries-heading"><h2>{{ __('Your entries') }}</h2><p><strong>{{ __('{0} h', [hours(data.total_hours)]) }}</strong> {{ __('visible') }} <span>·</span> {{ __('{0} h draft', [hours(data.draft_hours)]) }} <span>·</span> {{ __('{0} h submitted', [hours(data.submitted_hours)]) }}</p></div>
+      <div v-if="!data.entries.length" class="time-empty"><h3>{{ __('No time entries') }}</h3><p>{{ __('Select a task above to start recording time, or change the date range.') }}</p><p>{{ __('You can also record time from any task.') }}</p></div>
+      <div v-else class="entries-scroll" tabindex="0" role="region" :aria-label="__('Your time entries')">
+        <table class="entries-table"><thead><tr><th scope="col">{{ __('Date') }}</th><th scope="col">{{ __('Work') }}</th><th scope="col" class="numeric">{{ __('Hours') }}</th><th scope="col">{{ __('Billing') }}</th><th scope="col">{{ __('Timesheet') }}</th></tr></thead>
           <tbody><tr v-for="entry in data.entries" :key="entry.name">
             <td class="entry-date">{{ entry.date }}</td>
-            <td class="entry-work"><button v-if="entry.task" class="text-action task-link" @click="taskId = entry.task">{{ entry.task }}</button><span v-else>{{ entry.project || 'General activity' }}</span><p v-if="entry.description">{{ entry.description }}</p></td>
-            <td class="numeric">{{ hours(entry.hours) }}</td><td>{{ entry.billable ? 'Billable' : 'Nonbillable' }}</td>
-            <td><a class="entry-status" :href="'/app/timesheet/' + encodeURIComponent(entry.timesheet)" :aria-label="(entry.docstatus === 0 ? 'Review draft ' : 'View submitted timesheet ') + entry.timesheet"><span class="status-dot" :class="{ submitted: entry.docstatus !== 0 }" aria-hidden="true"></span>{{ entry.docstatus === 0 ? 'Draft' : 'Submitted' }} <span aria-hidden="true">↗</span></a></td>
+            <td class="entry-work"><button v-if="entry.task" class="text-action task-link" @click="taskId = entry.task">{{ entry.task }}</button><span v-else>{{ entry.project || __('General activity') }}</span><p v-if="entry.description">{{ entry.description }}</p></td>
+            <td class="numeric">{{ hours(entry.hours) }}</td><td>{{ entry.billable ? __('Billable') : __('Nonbillable') }}</td>
+            <td><a class="entry-status" :href="'/app/timesheet/' + encodeURIComponent(entry.timesheet)" :aria-label="entry.docstatus === 0 ? __('Review draft {0}', [entry.timesheet]) : __('View submitted timesheet {0}', [entry.timesheet])"><span class="status-dot" :class="{ submitted: entry.docstatus !== 0 }" aria-hidden="true"></span>{{ entry.docstatus === 0 ? __('Draft') : __('Submitted') }} <span aria-hidden="true">↗</span></a></td>
           </tr></tbody>
         </table>
       </div>
-      <p class="scope-note">Totals include only timesheets you have permission to read. New entries are saved as drafts.</p>
+      <p class="scope-note">{{ __('Totals include only timesheets you have permission to read. New entries are saved as drafts.') }}</p>
     </template>
   </section>
 </template>
@@ -39,6 +39,7 @@
 import { ref, onMounted } from 'vue'
 import { call } from 'frappe-ui'
 import TaskTime from '@/components/TaskTime.vue'
+import { __ } from '@/translation'
 const data = ref(null), tasks = ref([]), timer = ref(null), taskId = ref(''), error = ref(''), loading = ref(false), busy = ref(false)
 const fromDate = ref(''), hours = value => Number(value || 0).toFixed(2)
 let request = 0
@@ -48,20 +49,20 @@ async function load() {
   try {
     const [entries, active] = await Promise.all([call('pulse.api.time.get_my_time', { from_date: fromDate.value || null }), call('pulse.api.time.get_timer')])
     if (seq === request) { data.value = entries; timer.value = active }
-  } catch (e) { if (seq === request) { data.value = null; error.value = e?.messages?.[0] || 'Could not load time entries. Check your access and retry.' } }
+  } catch (e) { if (seq === request) { data.value = null; error.value = e?.messages?.[0] || __('Could not load time entries. Check your access and retry.') } }
   finally { if (seq === request) loading.value = false }
 }
 async function discard() {
-  if (!window.confirm('Discard this timer without saving its elapsed time?')) return
+  if (!window.confirm(__('Discard this timer without saving its elapsed time?'))) return
   busy.value = true
   try { await call('pulse.api.time.discard_timer'); await load() }
-  catch { error.value = 'Could not discard your timer. Try again.' }
+  catch { error.value = __('Could not discard your timer. Try again.') }
   finally { busy.value = false }
 }
 onMounted(async () => {
   await load()
   try { tasks.value = await call('pulse.api.time.my_tasks') }
-  catch { error.value = 'Assigned tasks could not load. Open a task directly to record time.' }
+  catch { error.value = __('Assigned tasks could not load. Open a task directly to record time.') }
 })
 </script>
 <style scoped>

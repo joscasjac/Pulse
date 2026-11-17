@@ -1,13 +1,13 @@
 <template>
   <div class="p-6">
     <div class="flex items-center justify-between mb-1 gap-3">
-      <h1 class="text-2xl font-bold">Releases</h1>
+      <h1 class="text-2xl font-bold">{{ __('Releases') }}</h1>
       <select v-model="project" @change="reload" class="ctl">
-        <option :value="null">All projects</option>
+        <option :value="null">{{ __('All projects') }}</option>
         <option v-for="p in projects" :key="p.name" :value="p.name">{{ p.project_name || p.name }}</option>
       </select>
     </div>
-    <p class="text-xs text-faint mb-4">Tag a task with a release (e.g. <b>v1.2</b>) in its detail panel — they group here automatically.</p>
+    <p class="text-xs text-faint mb-4"><template v-for="(part, i) in __('Tag a task with a release (e.g. {0}) in its detail panel — they group here automatically.').split('{0}')" :key="i"><b v-if="i">v1.2</b>{{ part }}</template></p>
 
     <div v-if="loading" class="space-y-2">
       <div v-for="n in 3" :key="n" class="card-surface p-4"><Skeleton width="35%" height="14px" /></div>
@@ -20,7 +20,7 @@
             <ChevronRight class="w-4 h-4 text-faint transition-transform shrink-0" :class="{ 'rotate-90': open === r.release_name }" />
             <Tag class="w-3.5 h-3.5 shrink-0" style="color:var(--accent)" />
             <span class="font-medium text-app truncate flex-1">{{ r.release_name }}</span>
-            <span class="text-xs text-muted tnum shrink-0">{{ r.done }}/{{ r.total }} done</span>
+            <span class="text-xs text-muted tnum shrink-0">{{ __('{0}/{1} done', [r.done, r.total]) }}</span>
             <span class="text-xs tnum w-10 text-right" :style="{ color: r.pct === 100 ? 'var(--term-green)' : 'var(--muted)' }">{{ r.pct }}%</span>
           </div>
           <div class="h-1 bg-surface-2 mt-2.5 overflow-hidden">
@@ -35,10 +35,10 @@
             <span class="flex-1 truncate text-sm" :class="t.status === 'Completed' ? 'line-through text-muted' : ''">{{ t.subject }}</span>
             <StatusPill :value="t.status" />
           </div>
-          <div v-if="!tasks.length" class="text-xs text-faint py-3 text-center">No tasks in this release.</div>
+          <div v-if="!tasks.length" class="text-xs text-faint py-3 text-center">{{ __('No tasks in this release.') }}</div>
         </div>
       </div>
-      <div v-if="!releases.length" class="py-16 text-center text-faint">No releases yet. Set a release on a task to start grouping.</div>
+      <div v-if="!releases.length" class="py-16 text-center text-faint">{{ __('No releases yet. Set a release on a task to start grouping.') }}</div>
     </div>
 
     <TaskDrawer :task-id="openId" @close="openId = null" @changed="reload" @open="openId = $event" />

@@ -2,25 +2,25 @@
   <div class="p-6">
     <div class="flex items-center justify-between mb-4">
       <div>
-        <h1 class="text-2xl font-bold">Audit Logs</h1>
-        <p class="text-sm text-muted">Timestamped monitor log of activity across Pulse.</p>
+        <h1 class="text-2xl font-bold">{{ __('Audit Logs') }}</h1>
+        <p class="text-sm text-muted">{{ __('Timestamped monitor log of activity across Pulse.') }}</p>
       </div>
       <select v-model="project" @change="load" class="text-xs bg-surface border border-app rounded-md px-2 py-1.5">
-        <option :value="null">All projects</option>
+        <option :value="null">{{ __('All projects') }}</option>
         <option v-for="p in projects" :key="p.name" :value="p.name">{{ p.project_name || p.name }}</option>
       </select>
     </div>
 
-    <div v-if="loading" class="text-muted py-20 text-center">Loading...</div>
+    <div v-if="loading" class="text-muted py-20 text-center">{{ __('Loading...') }}</div>
     <div v-else class="card-surface overflow-x-auto">
       <table class="data-table">
         <thead>
           <tr>
-            <th class="w-44">Timestamp</th>
-            <th>User</th>
-            <th>Action</th>
-            <th>Reference</th>
-            <th>Detail</th>
+            <th class="w-44">{{ __('Timestamp') }}</th>
+            <th>{{ __('User') }}</th>
+            <th>{{ __('Action') }}</th>
+            <th>{{ __('Reference') }}</th>
+            <th>{{ __('Detail') }}</th>
           </tr>
         </thead>
         <tbody>
@@ -32,11 +32,11 @@
                 {{ (e.user || '').split('@')[0] }}
               </span>
             </td>
-            <td><span class="text-[10px] px-2 py-0.5 rounded-full" :class="actionClass(e.action)">{{ e.action }}</span></td>
+            <td><span class="text-[10px] px-2 py-0.5 rounded-full" :class="actionClass(e.action)">{{ __(e.action) }}</span></td>
             <td class="mono text-xs text-muted">{{ e.reference || '-' }}</td>
             <td class="text-muted truncate max-w-xs">{{ e.detail || '-' }}</td>
           </tr>
-          <tr v-if="!entries.length"><td colspan="5" class="py-10 text-center text-muted">No audit entries.</td></tr>
+          <tr v-if="!entries.length"><td colspan="5" class="py-10 text-center text-muted">{{ __('No audit entries.') }}</td></tr>
         </tbody>
       </table>
     </div>

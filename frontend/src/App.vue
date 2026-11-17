@@ -1,52 +1,52 @@
 <template>
   <main v-if="externalUser" class="external-shell bg-app text-app" id="main-content">
     <ExternalWork v-if="!pageError" />
-    <div v-else role="alert"><p>Shared work could not load.</p><button class="btn-ghost" @click="retryPage">Reload page</button></div>
+    <div v-else role="alert"><p>{{ __('Shared work could not load.') }}</p><button class="btn-ghost" @click="retryPage">{{ __('Reload page') }}</button></div>
   </main>
   <div v-else class="pulse-shell bg-app text-app">
-    <a href="#main-content" class="skip-link">Skip to content</a>
-    <button v-if="mobileOpen" class="nav-backdrop" aria-label="Close navigation" @click="mobileOpen = false" />
+    <a href="#main-content" class="skip-link">{{ __('Skip to content') }}</a>
+    <button v-if="mobileOpen" class="nav-backdrop" :aria-label="__('Close navigation')" @click="mobileOpen = false" />
     <aside ref="sidebar" id="primary-navigation" :inert="isMobile && !mobileOpen" :class="['pulse-sidebar', { 'is-open': mobileOpen }]">
-      <router-link to="/" class="workspace-brand"><span class="brand-mark">P</span><span>Pulse</span><span class="workspace-caption">Workspace</span></router-link>
-      <button class="search-trigger" @click="searchOpen = true"><Search class="nav-icon" /><span>Search anything</span><kbd>⌘ K</kbd></button>
-      <nav class="sidebar-scroll" aria-label="Main navigation">
+      <router-link to="/" class="workspace-brand"><span class="brand-mark">P</span><span>Pulse</span><span class="workspace-caption">{{ __('Workspace') }}</span></router-link>
+      <button class="search-trigger" @click="searchOpen = true"><Search class="nav-icon" /><span>{{ __('Search anything') }}</span><kbd>⌘ K</kbd></button>
+      <nav class="sidebar-scroll" :aria-label="__('Main navigation')">
         <div class="nav-group">
           <router-link v-for="item in personalNav" :key="item.to" :to="item.to" class="nav-item" :class="{ active: route.path === item.to }"><component :is="item.icon" class="nav-icon" /><span>{{ item.label }}</span></router-link>
         </div>
         <div class="nav-group">
-          <h2 class="nav-heading">Workspace</h2>
+          <h2 class="nav-heading">{{ __('Workspace') }}</h2>
           <router-link v-for="item in workspaceNav" :key="item.to" :to="item.to" class="nav-item" :class="{ active: !projectId && route.path === item.to }"><component :is="item.icon" class="nav-icon" /><span>{{ item.label }}</span></router-link>
         </div>
         <div class="nav-group">
-          <div class="nav-heading-row"><h2 class="nav-heading">Your projects</h2><router-link to="/projects" aria-label="Browse projects" class="icon-button"><Plus class="nav-icon" /></router-link></div>
-          <p v-if="projectsLoading" class="nav-message" role="status">Loading projects…</p>
-          <p v-else-if="projectsError" class="nav-message" role="alert">Projects couldn't load. <button class="retry-link" @click="loadProjects">Retry</button></p>
-          <p v-else-if="!projects.length" class="nav-message">Your projects will appear here.</p>
+          <div class="nav-heading-row"><h2 class="nav-heading">{{ __('Your projects') }}</h2><router-link to="/projects" :aria-label="__('Browse projects')" class="icon-button"><Plus class="nav-icon" /></router-link></div>
+          <p v-if="projectsLoading" class="nav-message" role="status">{{ __('Loading projects…') }}</p>
+          <p v-else-if="projectsError" class="nav-message" role="alert">{{ __("Projects couldn't load.") }} <button class="retry-link" @click="loadProjects">{{ __('Retry') }}</button></p>
+          <p v-else-if="!projects.length" class="nav-message">{{ __('Your projects will appear here.') }}</p>
           <template v-for="project in sidebarProjects" :key="project.name">
             <router-link :to="{ path: '/board', query: { project: project.name } }" class="nav-item project-link" :class="{ 'project-selected': projectId === project.name }"><span class="project-mark">{{ (project.pulse_project_key || project.project_name || 'P').slice(0, 2) }}</span><span class="truncate">{{ project.project_name || project.name }}</span><ChevronDown v-if="projectId === project.name" class="nav-icon project-chevron" /></router-link>
             <div v-if="projectId === project.name" class="project-navigation">
               <router-link v-for="item in projectNav" :key="item.to" :to="projectRoute(item.to)" class="nav-item" :class="{ active: route.path === item.to }"><component :is="item.icon" class="nav-icon" /><span>{{ item.label }}</span></router-link>
             </div>
           </template>
-          <router-link to="/projects" class="nav-item view-all-projects">View all projects</router-link>
+          <router-link to="/projects" class="nav-item view-all-projects">{{ __('View all projects') }}</router-link>
         </div>
         <details class="more-navigation" :open="isAdvanced">
-          <summary class="nav-item"><MoreHorizontal class="nav-icon" /><span>More</span><ChevronDown class="nav-icon project-chevron" /></summary>
+          <summary class="nav-item"><MoreHorizontal class="nav-icon" /><span>{{ __('More') }}</span><ChevronDown class="nav-icon project-chevron" /></summary>
           <div v-for="group in advancedNav" :key="group.label" class="advanced-group"><h2 class="nav-heading">{{ group.label }}</h2><router-link v-for="item in group.items" :key="item.to" :to="item.to" class="nav-item" :class="{ active: route.path === item.to }">{{ item.label }}</router-link></div>
         </details>
       </nav>
-      <footer class="sidebar-footer"><Avatar :name="user" :size="24" /><span class="user-name">{{ shortUser || 'Your workspace' }}</span><a href="/app/pulse-settings" aria-label="Workspace settings" title="Settings" class="icon-button"><Settings class="nav-icon" /></a><button @click="toggleTheme" class="icon-button" :aria-label="theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'"><Sun v-if="theme === 'dark'" class="nav-icon" /><Moon v-else class="nav-icon" /></button></footer>
+      <footer class="sidebar-footer"><Avatar :name="user" :size="24" /><span class="user-name">{{ shortUser || __('Your workspace') }}</span><a href="/app/pulse-settings" :aria-label="__('Workspace settings')" :title="__('Settings')" class="icon-button"><Settings class="nav-icon" /></a><button @click="toggleTheme" class="icon-button" :aria-label="theme === 'dark' ? __('Switch to light mode') : __('Switch to dark mode')"><Sun v-if="theme === 'dark'" class="nav-icon" /><Moon v-else class="nav-icon" /></button></footer>
     </aside>
     <div class="workspace-content" :inert="isMobile && mobileOpen">
       <header class="context-bar">
-        <button class="icon-button mobile-menu" aria-label="Open navigation" aria-controls="primary-navigation" :aria-expanded="mobileOpen" @click="mobileOpen = true"><Menu class="nav-icon" /></button>
+        <button class="icon-button mobile-menu" :aria-label="__('Open navigation')" aria-controls="primary-navigation" :aria-expanded="mobileOpen" @click="mobileOpen = true"><Menu class="nav-icon" /></button>
         <div v-if="route.path === '/board'" id="task-toolbar-host" class="task-toolbar-host" />
-        <nav v-else class="breadcrumbs" aria-label="Breadcrumb"><router-link :to="projectId ? '/projects' : '/'">{{ projectId ? 'Projects' : 'Workspace' }}</router-link><ChevronRight class="breadcrumb-separator" /><span v-if="projectId" class="breadcrumb-project">{{ projectName }}</span><ChevronRight v-if="projectId" class="breadcrumb-separator" /><span class="current-page">{{ pageTitle }}</span></nav>
-        <div v-if="route.path !== '/board'" class="context-actions"><button class="icon-button mobile-search" aria-label="Search workspace" @click="searchOpen = true"><Search class="nav-icon" /></button><button v-if="['/', '/my-work'].includes(route.path)" class="create-button" :class="{ secondary: !['/', '/board', '/my-work'].includes(route.path) }" @click="createTask"><Plus class="nav-icon" /><span>New task</span></button></div>
+        <nav v-else class="breadcrumbs" :aria-label="__('Breadcrumb')"><router-link :to="projectId ? '/projects' : '/'">{{ projectId ? __('Projects') : __('Workspace') }}</router-link><ChevronRight class="breadcrumb-separator" /><span v-if="projectId" class="breadcrumb-project">{{ projectName }}</span><ChevronRight v-if="projectId" class="breadcrumb-separator" /><span class="current-page">{{ pageTitle }}</span></nav>
+        <div v-if="route.path !== '/board'" class="context-actions"><button class="icon-button mobile-search" :aria-label="__('Search workspace')" @click="searchOpen = true"><Search class="nav-icon" /></button><button v-if="['/', '/my-work'].includes(route.path)" class="create-button" :class="{ secondary: !['/', '/board', '/my-work'].includes(route.path) }" @click="createTask"><Plus class="nav-icon" /><span>{{ __('New task') }}</span></button></div>
       </header>
-      <nav v-if="projectId && route.path !== '/board'" class="project-tabs" aria-label="Project navigation"><router-link v-for="item in projectNav" :key="item.to" :to="projectRoute(item.to)" :class="{ selected: route.path === item.to }">{{ item.label }}</router-link></nav>
+      <nav v-if="projectId && route.path !== '/board'" class="project-tabs" :aria-label="__('Project navigation')"><router-link v-for="item in projectNav" :key="item.to" :to="projectRoute(item.to)" :class="{ selected: route.path === item.to }">{{ item.label }}</router-link></nav>
       <main id="main-content" tabindex="-1" class="workspace-page" :class="{ 'pane-workspace': ['/board', '/views', '/sprints', '/sprint-planner', '/modules', '/intake', '/documents'].includes(route.path) }">
-        <div v-if="pageError" class="page-recovery" role="alert"><h1>This page couldn't load</h1><p>Reload the page to try again.</p><button class="btn" @click="retryPage">Reload page</button></div>
+        <div v-if="pageError" class="page-recovery" role="alert"><h1>{{ __("This page couldn't load") }}</h1><p>{{ __('Reload the page to try again.') }}</p><button class="btn" @click="retryPage">{{ __('Reload page') }}</button></div>
         <router-view v-else />
       </main>
     </div>
@@ -62,6 +62,7 @@ import { theme, toggleTheme } from './theme'
 import { openCreate, createState } from './ui/create'
 import { entityState } from './ui/entity'
 import { MODULES } from './modules'
+import { __ } from './translation'
 import ExternalWork from './pages/ExternalWork.vue'
 import Avatar from './ui/Avatar.vue'
 import Toaster from './ui/Toaster.vue'
@@ -108,16 +109,16 @@ watch(mobileOpen, async open => {
 })
 watch(() => entityState.saved, loadProjects)
 
-const personalNav = [{ to: '/', label: 'Home', icon: House }, { to: '/inbox', label: 'Inbox', icon: Inbox }, { to: '/my-work', label: 'My work', icon: SquareCheckBig }]
-const workspaceNav = [{ to: '/projects', label: 'Projects', icon: Folder }, { to: '/views', label: 'Views', icon: SquareKanban }, { to: '/documents', label: 'Pages', icon: FileText }]
-const projectNav = [{ to: '/board', label: 'Tasks', icon: SquareKanban }, { to: '/modules', label: 'Modules', icon: Folder }, { to: '/documents', label: 'Pages', icon: FileText }]
+const personalNav = [{ to: '/', label: __('Home'), icon: House }, { to: '/inbox', label: __('Inbox'), icon: Inbox }, { to: '/my-work', label: __('My work'), icon: SquareCheckBig }]
+const workspaceNav = [{ to: '/projects', label: __('Projects'), icon: Folder }, { to: '/views', label: __('Views'), icon: SquareKanban }, { to: '/documents', label: __('Pages'), icon: FileText }]
+const projectNav = [{ to: '/board', label: __('Tasks'), icon: SquareKanban }, { to: '/modules', label: __('Modules'), icon: Folder }, { to: '/documents', label: __('Pages'), icon: FileText }]
 const advancedNav = [
-  { label: 'Work & planning', items: [{ to: '/board', label: 'All tasks' }, { to: '/todo', label: 'To do' }, { to: '/backlog', label: 'Backlog' }, { to: '/modules', label: 'All modules' }, { to: '/recurring', label: 'Recurring tasks' }, { to: '/epics', label: 'Epics' }, { to: '/releases', label: 'Releases' }] },
-  { label: 'Insights', items: [{ to: '/dashboard', label: 'Dashboard' }, { to: '/dashboard/custom', label: 'Custom dashboards' }, { to: '/analytics', label: 'Analytics' }, { to: '/reports', label: 'Reports' }, { to: '/audit', label: 'Audit log' }] },
-  { label: 'Workspace tools', items: Object.entries(MODULES).filter(([key]) => key !== 'timesheets').map(([key, mod]) => ({ to: `/m/${key}`, label: mod.title })) },
+  { label: __('Work & planning'), items: [{ to: '/board', label: __('All tasks') }, { to: '/todo', label: __('To do') }, { to: '/backlog', label: __('Backlog') }, { to: '/modules', label: __('All modules') }, { to: '/recurring', label: __('Recurring tasks') }, { to: '/epics', label: __('Epics') }, { to: '/releases', label: __('Releases') }] },
+  { label: __('Insights'), items: [{ to: '/dashboard', label: __('Dashboard') }, { to: '/dashboard/custom', label: __('Custom dashboards') }, { to: '/analytics', label: __('Analytics') }, { to: '/reports', label: __('Reports') }, { to: '/audit', label: __('Audit log') }] },
+  { label: __('Workspace tools'), items: Object.entries(MODULES).filter(([key]) => key !== 'timesheets').map(([key, mod]) => ({ to: `/m/${key}`, label: mod.title })) },
 ]
 const allItems = [...personalNav, ...workspaceNav, ...projectNav, ...advancedNav.flatMap(group => group.items)]
-const pageTitle = computed(() => allItems.find(item => item.to === route.path)?.label || 'Workspace')
+const pageTitle = computed(() => allItems.find(item => item.to === route.path)?.label || __('Workspace'))
 const isAdvanced = computed(() => !projectId.value && advancedNav.some(group => group.items.some(item => item.to === route.path)))
 function projectRoute(path) { return { path, query: { project: projectId.value } } }
 function createTask() { mobileOpen.value = false; openCreate(projectId.value ? { project: projectId.value } : {}) }

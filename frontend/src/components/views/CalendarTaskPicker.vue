@@ -3,26 +3,26 @@
     <div v-if="open" class="calendar-picker-overlay" @click.self="requestClose">
       <section ref="dialog" class="calendar-picker" role="dialog" aria-modal="true" aria-labelledby="calendar-picker-title" aria-describedby="calendar-picker-description" tabindex="-1" @keydown="onKeydown">
         <header>
-          <div><h2 id="calendar-picker-title">Add tasks to {{ displayDate }}</h2><p id="calendar-picker-description">Choose existing tasks to schedule on this day.</p></div>
-          <button class="close-button" aria-label="Close task picker" :disabled="pending" @click="requestClose">×</button>
+          <div><h2 id="calendar-picker-title">{{ __('Add tasks to {0}', [displayDate]) }}</h2><p id="calendar-picker-description">{{ __('Choose existing tasks to schedule on this day.') }}</p></div>
+          <button class="close-button" :aria-label="__('Close task picker')" :disabled="pending" @click="requestClose">×</button>
         </header>
-        <div class="search-wrap"><Search aria-hidden="true" class="search-icon" /><input ref="searchInput" v-model="query" type="search" placeholder="Search tasks by title or ID" aria-label="Search tasks" :disabled="pending" /></div>
-        <div class="selection-summary"><span aria-live="polite">{{ selected.length }} selected</span><button :disabled="pending || !visibleTasks.length" @click="toggleAll">{{ allVisibleSelected ? 'Clear visible selection' : 'Select all' }}</button></div>
+        <div class="search-wrap"><Search aria-hidden="true" class="search-icon" /><input ref="searchInput" v-model="query" type="search" :placeholder="__('Search tasks by title or ID')" :aria-label="__('Search tasks')" :disabled="pending" /></div>
+        <div class="selection-summary"><span aria-live="polite">{{ __('{0} selected', [selected.length]) }}</span><button :disabled="pending || !visibleTasks.length" @click="toggleAll">{{ allVisibleSelected ? __('Clear visible selection') : __('Select all') }}</button></div>
         <p v-if="error" class="picker-error" role="alert">{{ error }}</p>
         <div class="task-list" :aria-busy="loading || pending">
-          <p v-if="loading" class="empty" role="status">Loading tasks…</p>
+          <p v-if="loading" class="empty" role="status">{{ __('Loading tasks…') }}</p>
           <template v-else>
             <label v-for="task in visibleTasks" :key="task.name" class="task-option" :class="{ selected: selected.includes(task.name) }">
-              <input type="checkbox" v-model="selected" :value="task.name" :disabled="pending" :aria-label="`Select ${task.issue_key || task.name}: ${task.subject}`" />
+              <input type="checkbox" v-model="selected" :value="task.name" :disabled="pending" :aria-label="__('Select {0}: {1}', [task.issue_key || task.name, task.subject])" />
               <span class="task-key">{{ task.issue_key || task.name }}</span>
-              <span class="status-dot" :style="{ background: task.status_color || statusColor(task.workflow_state || task.status) }" :title="task.workflow_state || task.status" aria-hidden="true" />
+              <span class="status-dot" :style="{ background: task.status_color || statusColor(task.workflow_state || task.status) }" :title="__(task.workflow_state || task.status)" aria-hidden="true" />
               <span class="task-subject">{{ task.subject }}</span>
-              <span class="task-state">{{ task.workflow_state || task.status }}</span>
+              <span class="task-state">{{ __(task.workflow_state || task.status) }}</span>
             </label>
-            <p v-if="!visibleTasks.length" class="empty">{{ query.trim() ? 'No tasks match your search.' : 'No editable tasks are available.' }}</p>
+            <p v-if="!visibleTasks.length" class="empty">{{ query.trim() ? __('No tasks match your search.') : __('No editable tasks are available.') }}</p>
           </template>
         </div>
-        <footer><button class="button" :disabled="pending" @click="requestClose">Cancel</button><button class="button primary" :disabled="pending || loading || !selected.length" @click="$emit('confirm', [...selected])">{{ pending ? 'Adding tasks…' : `Add selected tasks${selected.length ? ` (${selected.length})` : ''}` }}</button></footer>
+        <footer><button class="button" :disabled="pending" @click="requestClose">{{ __('Cancel') }}</button><button class="button primary" :disabled="pending || loading || !selected.length" @click="$emit('confirm', [...selected])">{{ pending ? __('Adding tasks…') : selected.length ? __('Add selected tasks ({0})', [selected.length]) : __('Add selected tasks') }}</button></footer>
       </section>
     </div>
   </Teleport>
@@ -30,6 +30,7 @@
 <script setup>
 import { computed, nextTick, onBeforeUnmount, ref, watch } from 'vue'
 import Search from '~icons/lucide/search'
+import { __, lang } from '@/translation'
 const props = defineProps({ tasks: { type: Array, default: () => [] }, open: Boolean, date: { type: String, default: '' }, pending: Boolean, loading: Boolean, error: { type: String, default: '' } })
 const emit = defineEmits(['close', 'confirm'])
 const query = ref(''), selected = ref([]), dialog = ref(null), searchInput = ref(null)
@@ -41,9 +42,9 @@ const visibleTasks = computed(() => {
 })
 const allVisibleSelected = computed(() => visibleTasks.value.length > 0 && visibleTasks.value.every(task => selected.value.includes(task.name)))
 const displayDate = computed(() => {
-  if (!props.date) return 'calendar'
+  if (!props.date) return __('calendar')
   const date = new Date(`${props.date.slice(0, 10)}T12:00:00`)
-  return Number.isNaN(date.getTime()) ? props.date : date.toLocaleDateString(undefined, { month: 'long', day: 'numeric', year: 'numeric' })
+  return Number.isNaN(date.getTime()) ? props.date : date.toLocaleDateString(lang, { month: 'long', day: 'numeric', year: 'numeric' })
 })
 function statusColor(status) { return ({ Backlog: '#64748b', 'To Do': '#3b82f6', 'In Progress': '#f59e0b', 'In Review': '#8b5cf6', Blocked: '#ef4444', Done: '#22c55e', Completed: '#22c55e', Cancelled: '#94a3b8' })[status] || 'var(--muted)' }
 function toggleAll() {

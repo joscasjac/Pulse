@@ -1,92 +1,92 @@
 <template>
   <main class="views" :class="{ embedded }">
     <header v-if="!embedded" class="view-header">
-      <div><h1>Views</h1><p>Work across your projects, organized your way.</p></div>
-      <button class="btn-primary" :aria-expanded="savePanel" aria-controls="save-view-panel" @click="savePanel = !savePanel">Save view</button>
+      <div><h1>{{ __('Views') }}</h1><p>{{ __('Work across your projects, organized your way.') }}</p></div>
+      <button class="btn-primary" :aria-expanded="savePanel" aria-controls="save-view-panel" @click="savePanel = !savePanel">{{ __('Save view') }}</button>
     </header>
     <div v-if="!embedded" class="view-context">
-      <label class="saved-selection"><span class="sr-only">Saved view</span><select v-model="selected" @change="openSaved"><option value="">Personal workspace</option><option v-for="view in saved" :key="view.name" :value="view.name">{{ view.title }}{{ view.shared ? ' · Shared' : '' }}</option></select></label>
-      <span class="context-note">{{ selectedView?.shared ? 'Shared view' : 'Personal view' }}</span>
-      <span v-if="!loading" class="context-note">{{ tasks.length }} {{ tasks.length === 1 ? 'task' : 'tasks' }}</span>
+      <label class="saved-selection"><span class="sr-only">{{ __('Saved view') }}</span><select v-model="selected" @change="openSaved"><option value="">{{ __('Personal workspace') }}</option><option v-for="view in saved" :key="view.name" :value="view.name">{{ view.title }}{{ view.shared ? ' · ' + __('Shared') : '' }}</option></select></label>
+      <span class="context-note">{{ selectedView?.shared ? __('Shared view') : __('Personal view') }}</span>
+      <span v-if="!loading" class="context-note">{{ tasks.length === 1 ? __('1 task') : __('{0} tasks', [tasks.length]) }}</span>
     </div>
     <div v-if="!embedded" class="view-toolbar">
-      <div class="layout-switch" role="group" aria-label="View layout">
+      <div class="layout-switch" role="group" :aria-label="__('View layout')">
         <button v-for="mode in layouts" :key="mode.key" :aria-pressed="config.layout === mode.key" :class="{ active: config.layout === mode.key }" @click="config.layout = mode.key"><svg viewBox="0 0 20 20" width="15" height="15" aria-hidden="true"><path :d="mode.icon" /></svg>{{ mode.label }}</button>
       </div>
       <div class="display-controls">
-        <button class="btn-ghost" :class="{ 'control-active': settings === 'filters' }" :aria-expanded="settings === 'filters'" aria-controls="filter-panel" @click="settings = settings === 'filters' ? '' : 'filters'">Filters<span v-if="filterCount" class="filter-count">{{ filterCount }}</span></button>
-        <button class="btn-ghost" :class="{ 'control-active': settings === 'display' }" :aria-expanded="settings === 'display'" aria-controls="display-panel" @click="settings = settings === 'display' ? '' : 'display'">Display</button>
-        <button class="btn-ghost" :disabled="loading" @click="load">Refresh</button>
+        <button class="btn-ghost" :class="{ 'control-active': settings === 'filters' }" :aria-expanded="settings === 'filters'" aria-controls="filter-panel" @click="settings = settings === 'filters' ? '' : 'filters'">{{ __('Filters') }}<span v-if="filterCount" class="filter-count">{{ filterCount }}</span></button>
+        <button class="btn-ghost" :class="{ 'control-active': settings === 'display' }" :aria-expanded="settings === 'display'" aria-controls="display-panel" @click="settings = settings === 'display' ? '' : 'display'">{{ __('Display') }}</button>
+        <button class="btn-ghost" :disabled="loading" @click="load">{{ __('Refresh') }}</button>
       </div>
     </div>
-    <section v-if="settings === 'filters'" id="filter-panel" class="settings-panel" aria-label="View filters">
-      <div class="panel-heading"><div><h2>Filter tasks</h2><p>Combine rules to narrow the work in this view.</p></div><button class="btn-ghost" aria-label="Close filters" @click="settings = ''; emit('close-panel')">Close</button></div>
+    <section v-if="settings === 'filters'" id="filter-panel" class="settings-panel" :aria-label="__('View filters')">
+      <div class="panel-heading"><div><h2>{{ __('Filter tasks') }}</h2><p>{{ __('Combine rules to narrow the work in this view.') }}</p></div><button class="btn-ghost" :aria-label="__('Close filters')" @click="settings = ''; emit('close-panel')">{{ __('Close') }}</button></div>
       <FilterGroup v-model="config.filter" />
-      <div class="panel-actions"><button class="btn-primary" @click="load">Apply filters</button><button class="btn-ghost" @click="config.filter = { op: 'and', rules: [] }; load()">Clear filters</button></div>
+      <div class="panel-actions"><button class="btn-primary" @click="load">{{ __('Apply filters') }}</button><button class="btn-ghost" @click="config.filter = { op: 'and', rules: [] }; load()">{{ __('Clear filters') }}</button></div>
     </section>
-    <section v-if="settings === 'display'" id="display-panel" class="settings-panel" aria-label="Display preferences">
-      <div class="panel-heading"><div><h2>Display</h2><p>These layout preferences are saved for you.</p></div><button class="btn-ghost" aria-label="Close display preferences" @click="settings = ''; emit('close-panel')">Close</button></div>
-      <label v-if="embedded" class="group-select">Saved view<select v-model="selected" @change="openSaved"><option value="">Personal workspace</option><option v-for="savedView in saved" :key="savedView.name" :value="savedView.name">{{ savedView.title }}{{ savedView.shared ? ' · Shared' : '' }}</option></select></label>
-      <label class="group-select">Group tasks by<select v-model="config.group"><option value="">No grouping</option><option v-for="key in groupFields" :key="key" :value="key">{{ labels[key] }}</option></select></label>
-      <div class="display-order"><label>Order by<select v-model="config.order_by"><option value="pulse_rank">Manual rank</option><option value="creation">Created date</option><option value="modified">Updated date</option><option value="exp_start_date">Start date</option><option value="exp_end_date">Due date</option><option value="priority">Priority</option><option v-if="!orderFields.includes(config.order_by)" :value="config.order_by">{{ labels[config.order_by] }}</option></select></label><label>Direction<select v-model="config.order_direction"><option value="asc">Ascending</option><option value="desc">Descending</option></select></label><label class="subtasks-option"><input v-model="config.show_subtasks" type="checkbox" /> Show subtasks</label></div>
-      <fieldset><legend>Table properties</legend><label class="column-search"><span class="sr-only">Search properties</span><input v-model="columnSearch" type="search" placeholder="Search properties" /></label><p class="field-note">Task ID and title stay pinned. Choose other properties and their order.</p><div class="column-options"><div v-for="key in filteredColumnOrder" :key="key" class="column-option"><label><input type="checkbox" :checked="key === 'subject' || config.columns.includes(key)" :disabled="key === 'subject'" @change="toggleColumn(key)" /> {{ labels[key] }}</label><button class="btn-ghost" :disabled="columnOrder.indexOf(key) === 0 || key === 'subject'" :aria-label="`Move ${labels[key]} earlier`" @click="moveColumn(columnOrder.indexOf(key), -1)">↑</button><button class="btn-ghost" :disabled="columnOrder.indexOf(key) === columnOrder.length - 1 || key === 'subject'" :aria-label="`Move ${labels[key]} later`" @click="moveColumn(columnOrder.indexOf(key), 1)">↓</button></div></div></fieldset>
+    <section v-if="settings === 'display'" id="display-panel" class="settings-panel" :aria-label="__('Display preferences')">
+      <div class="panel-heading"><div><h2>{{ __('Display') }}</h2><p>{{ __('These layout preferences are saved for you.') }}</p></div><button class="btn-ghost" :aria-label="__('Close display preferences')" @click="settings = ''; emit('close-panel')">{{ __('Close') }}</button></div>
+      <label v-if="embedded" class="group-select">{{ __('Saved view') }}<select v-model="selected" @change="openSaved"><option value="">{{ __('Personal workspace') }}</option><option v-for="savedView in saved" :key="savedView.name" :value="savedView.name">{{ savedView.title }}{{ savedView.shared ? ' · ' + __('Shared') : '' }}</option></select></label>
+      <label class="group-select">{{ __('Group tasks by') }}<select v-model="config.group"><option value="">{{ __('No grouping') }}</option><option v-for="key in groupFields" :key="key" :value="key">{{ labels[key] }}</option></select></label>
+      <div class="display-order"><label>{{ __('Order by') }}<select v-model="config.order_by"><option value="pulse_rank">{{ __('Manual rank') }}</option><option value="creation">{{ __('Created date') }}</option><option value="modified">{{ __('Updated date') }}</option><option value="exp_start_date">{{ __('Start date') }}</option><option value="exp_end_date">{{ __('Due date') }}</option><option value="priority">{{ __('Priority') }}</option><option v-if="!orderFields.includes(config.order_by)" :value="config.order_by">{{ labels[config.order_by] }}</option></select></label><label>{{ __('Direction') }}<select v-model="config.order_direction"><option value="asc">{{ __('Ascending') }}</option><option value="desc">{{ __('Descending') }}</option></select></label><label class="subtasks-option"><input v-model="config.show_subtasks" type="checkbox" /> {{ __('Show subtasks') }}</label></div>
+      <fieldset><legend>{{ __('Table properties') }}</legend><label class="column-search"><span class="sr-only">{{ __('Search properties') }}</span><input v-model="columnSearch" type="search" :placeholder="__('Search properties')" /></label><p class="field-note">{{ __('Task ID and title stay pinned. Choose other properties and their order.') }}</p><div class="column-options"><div v-for="key in filteredColumnOrder" :key="key" class="column-option"><label><input type="checkbox" :checked="key === 'subject' || config.columns.includes(key)" :disabled="key === 'subject'" @change="toggleColumn(key)" /> {{ labels[key] }}</label><button class="btn-ghost" :disabled="columnOrder.indexOf(key) === 0 || key === 'subject'" :aria-label="__('Move {0} earlier', [labels[key]])" @click="moveColumn(columnOrder.indexOf(key), -1)">↑</button><button class="btn-ghost" :disabled="columnOrder.indexOf(key) === columnOrder.length - 1 || key === 'subject'" :aria-label="__('Move {0} later', [labels[key]])" @click="moveColumn(columnOrder.indexOf(key), 1)">↓</button></div></div></fieldset>
     </section>
     <form v-if="savePanel" id="save-view-panel" class="settings-panel" @submit.prevent="save">
-      <div class="panel-heading"><div><h2>{{ selected ? 'Save changes or create a copy' : 'Save this view' }}</h2><p>Keep this layout, grouping and filters for later.</p></div><button type="button" class="btn-ghost" @click="savePanel = false; emit('close-panel')">Cancel</button></div>
-      <div class="save-fields"><label>View name<input v-model.trim="title" required maxlength="140" placeholder="e.g. Client delivery" /></label><label class="share-option"><input v-model="shared" type="checkbox" /> Share with the workspace</label></div>
-      <p v-if="selectedView && !selectedView.can_write" class="field-note">You can save your own copy of this shared view.</p>
-      <div class="panel-actions"><button class="btn-primary" :disabled="saving">{{ saving ? 'Saving…' : selected ? 'Save as new view' : 'Create view' }}</button><button v-if="selectedView?.can_write" type="button" class="btn-ghost" :disabled="saving || !title" @click="save(true)">Update selected view</button></div>
+      <div class="panel-heading"><div><h2>{{ selected ? __('Save changes or create a copy') : __('Save this view') }}</h2><p>{{ __('Keep this layout, grouping and filters for later.') }}</p></div><button type="button" class="btn-ghost" @click="savePanel = false; emit('close-panel')">{{ __('Cancel') }}</button></div>
+      <div class="save-fields"><label>{{ __('View name') }}<input v-model.trim="title" required maxlength="140" :placeholder="__('e.g. Client delivery')" /></label><label class="share-option"><input v-model="shared" type="checkbox" /> {{ __('Share with the workspace') }}</label></div>
+      <p v-if="selectedView && !selectedView.can_write" class="field-note">{{ __('You can save your own copy of this shared view.') }}</p>
+      <div class="panel-actions"><button class="btn-primary" :disabled="saving">{{ saving ? __('Saving…') : selected ? __('Save as new view') : __('Create view') }}</button><button v-if="selectedView?.can_write" type="button" class="btn-ghost" :disabled="saving || !title" @click="save(true)">{{ __('Update selected view') }}</button></div>
     </form>
-    <p v-if="error" class="view-error" role="alert">{{ error }} <button class="btn-ghost" @click="load">Retry</button></p><p v-if="notice" role="status" class="view-notice">{{ notice }}</p><p v-if="loading" class="loading-state" role="status">Loading work…</p>
+    <p v-if="error" class="view-error" role="alert">{{ error }} <button class="btn-ghost" @click="load">{{ __('Retry') }}</button></p><p v-if="notice" role="status" class="view-notice">{{ notice }}</p><p v-if="loading" class="loading-state" role="status">{{ __('Loading work…') }}</p>
     <template v-else>
       <div v-if="config.layout === 'calendar'" class="date-toolbar">
         <div class="month-navigation">
-          <button class="month-arrow" :aria-label="`Previous ${config.calendar_layout}`" @click="shiftMonth(-1)">‹</button>
+          <button class="month-arrow" :aria-label="config.calendar_layout === 'week' ? __('Previous week') : __('Previous month')" @click="shiftMonth(-1)">‹</button>
           <h2>{{ monthLabel }}</h2>
-          <button class="month-arrow" :aria-label="`Next ${config.calendar_layout}`" @click="shiftMonth(1)">›</button>
+          <button class="month-arrow" :aria-label="config.calendar_layout === 'week' ? __('Next week') : __('Next month')" @click="shiftMonth(1)">›</button>
           
 
         </div>
         <div class="date-actions">
-          <button v-if="unscheduled.length" class="btn-ghost" :aria-expanded="unscheduledOpen" @click="unscheduledOpen = !unscheduledOpen">Unscheduled ({{ unscheduled.length }})</button>
-          <button class="btn-ghost today-button" @click="goToToday">Today</button>
-          <details class="calendar-options"><summary>Options <span aria-hidden="true">⌄</span></summary><div class="options-menu">
-            <button class="calendar-layout-option" :aria-pressed="config.calendar_layout === 'month'" @click="config.calendar_layout = 'month'">Month layout <span v-if="config.calendar_layout === 'month'">✓</span></button>
-            <button class="calendar-layout-option" :aria-pressed="config.calendar_layout === 'week'" @click="config.calendar_layout = 'week'">Week layout <span v-if="config.calendar_layout === 'week'">✓</span></button>
-            <label class="weekend-option">Show weekends<input :checked="!config.hide_weekends" role="switch" type="checkbox" @change="config.hide_weekends = !$event.target.checked" /></label>
+          <button v-if="unscheduled.length" class="btn-ghost" :aria-expanded="unscheduledOpen" @click="unscheduledOpen = !unscheduledOpen">{{ __('Unscheduled ({0})', [unscheduled.length]) }}</button>
+          <button class="btn-ghost today-button" @click="goToToday">{{ __('Today') }}</button>
+          <details class="calendar-options"><summary>{{ __('Options') }} <span aria-hidden="true">⌄</span></summary><div class="options-menu">
+            <button class="calendar-layout-option" :aria-pressed="config.calendar_layout === 'month'" @click="config.calendar_layout = 'month'">{{ __('Month layout') }} <span v-if="config.calendar_layout === 'month'">✓</span></button>
+            <button class="calendar-layout-option" :aria-pressed="config.calendar_layout === 'week'" @click="config.calendar_layout = 'week'">{{ __('Week layout') }} <span v-if="config.calendar_layout === 'week'">✓</span></button>
+            <label class="weekend-option">{{ __('Show weekends') }}<input :checked="!config.hide_weekends" role="switch" type="checkbox" @change="config.hide_weekends = !$event.target.checked" /></label>
           </div></details>
         </div>
       </div>
       <form v-if="config.layout === 'timeline' && dependencyEditor" class="dependency-editor" @submit.prevent="link">
-        <label>Task<select v-model="dependent" required><option value="">Choose task</option><option v-for="t in tasks.filter(t => t.can_write)" :key="t.name" :value="t.name">{{ t.subject }}</option></select></label>
-        <label>Depends on<select v-model="prerequisite" required><option value="">Choose prerequisite</option><option v-for="t in tasks" :key="t.name" :value="t.name">{{ t.subject }}</option></select></label>
-        <button class="btn-ghost" :disabled="!dependent || !prerequisite || dependent === prerequisite">Add dependency</button>
+        <label>{{ __('Task') }}<select v-model="dependent" required><option value="">{{ __('Choose task') }}</option><option v-for="t in tasks.filter(t => t.can_write)" :key="t.name" :value="t.name">{{ t.subject }}</option></select></label>
+        <label>{{ __('Depends on') }}<select v-model="prerequisite" required><option value="">{{ __('Choose prerequisite') }}</option><option v-for="t in tasks" :key="t.name" :value="t.name">{{ t.subject }}</option></select></label>
+        <button class="btn-ghost" :disabled="!dependent || !prerequisite || dependent === prerequisite">{{ __('Add dependency') }}</button>
       </form>
       <div class="work-pane" :class="`layout-${config.layout}`">
       <div class="groups-scroll">
-      <TaskTimeline v-if="config.layout === 'timeline'" :tasks="sortedTasks" :groups="groups" :dependencies="dependencies" :month="month" :pending="pending" @open="openTaskId = $event" @edit="edit" @reschedule="rescheduleTask" @schedule="scheduleTimelineTask" :create-task="createInlineTask" :project="project" :projects="creationProjects" @period-change="month = $event"><template #actions><button class="btn-ghost" :aria-expanded="dateEditor" @click="dateEditor = !dateEditor">Edit dates</button><button class="btn-ghost" :aria-expanded="dependencyEditor" @click="dependencyEditor = !dependencyEditor">Dependencies</button></template></TaskTimeline>
-      <section v-for="(group, groupIndex) in displayedGroups" :key="group.name" class="task-group"><h2 v-if="config.group" class="font-semibold">{{ group.name }} <span class="text-muted">({{ group.tasks.length }})</span></h2>
+      <TaskTimeline v-if="config.layout === 'timeline'" :tasks="sortedTasks" :groups="groups" :dependencies="dependencies" :month="month" :pending="pending" @open="openTaskId = $event" @edit="edit" @reschedule="rescheduleTask" @schedule="scheduleTimelineTask" :create-task="createInlineTask" :project="project" :projects="creationProjects" @period-change="month = $event"><template #actions><button class="btn-ghost" :aria-expanded="dateEditor" @click="dateEditor = !dateEditor">{{ __('Edit dates') }}</button><button class="btn-ghost" :aria-expanded="dependencyEditor" @click="dependencyEditor = !dependencyEditor">{{ __('Dependencies') }}</button></template></TaskTimeline>
+      <section v-for="(group, groupIndex) in displayedGroups" :key="group.name" class="task-group"><h2 v-if="config.group" class="font-semibold">{{ __(group.name) }} <span class="text-muted">({{ group.tasks.length }})</span></h2>
         <div v-if="config.layout === 'calendar'" class="calendar-scroll">
           <div class="calendar-weekdays" :style="{ '--day-columns': config.hide_weekends ? 5 : 7 }"><span v-for="weekday in visibleWeekdays" :key="weekday">{{ weekday }}</span></div>
           <div class="calendar" :style="{ '--week-count': calendarDays.length / 7, '--day-columns': config.hide_weekends ? 5 : 7 }">
             <div v-for="day in visibleCalendarDays" :key="day" class="calendar-day" :class="{ 'outside-month': !day.startsWith(month), 'is-today': day === today }" @dragover.prevent @drop.prevent="drop($event, day)">
-              <div class="day-heading"><time :datetime="day" :aria-label="day">{{ day.endsWith('-01') ? new Date(day + 'T12:00:00').toLocaleDateString(undefined, { month: 'short', day: 'numeric' }) : Number(day.slice(-2)) }}</time></div><button class="day-add" :aria-label="`Add task on ${day}`" :aria-expanded="activeDay === `${groupIndex}:${day}`" @click="activeDay = activeDay === `${groupIndex}:${day}` ? null : `${groupIndex}:${day}`">+ Add work item</button>
-              <div v-if="activeDay === `${groupIndex}:${day}`" class="day-menu" @keydown.esc="activeDay = null"><button @click="createOnDay(day, groupIndex)">Create task</button><button @click="showTaskPicker(day)">Add existing tasks</button></div>
+              <div class="day-heading"><time :datetime="day" :aria-label="day">{{ day.endsWith('-01') ? new Date(day + 'T12:00:00').toLocaleDateString(lang, { month: 'short', day: 'numeric' }) : Number(day.slice(-2)) }}</time></div><button class="day-add" :aria-label="__('Add task on {0}', [day])" :aria-expanded="activeDay === `${groupIndex}:${day}`" @click="activeDay = activeDay === `${groupIndex}:${day}` ? null : `${groupIndex}:${day}`">{{ __('+ Add work item') }}</button>
+              <div v-if="activeDay === `${groupIndex}:${day}`" class="day-menu" @keydown.esc="activeDay = null"><button @click="createOnDay(day, groupIndex)">{{ __('Create task') }}</button><button @click="showTaskPicker(day)">{{ __('Add existing tasks') }}</button></div>
               <InlineTaskCreate v-if="inlineDay === `${groupIndex}:${day}`" :create-task="createInlineTask" :project="project" :projects="creationProjects" :date="day" @cancel="inlineDay = null" />
-              <div class="day-tasks"><button v-for="task in group.tasks.filter(t => dateValue(t.exp_end_date) === day)" :key="task.name" class="calendar-task" :class="{ 'task-focused': focused === task.name }" :draggable="task.can_write && !pending.has(task.name)" :title="`${task.subject} · ${task.workflow_state || ''}`" @dragstart="drag($event, task)" @click="focusDates(task)"><span class="calendar-key">{{ task.issue_key }}</span><span>{{ task.subject }}</span></button></div>
+              <div class="day-tasks"><button v-for="task in group.tasks.filter(t => dateValue(t.exp_end_date) === day)" :key="task.name" class="calendar-task" :class="{ 'task-focused': focused === task.name }" :draggable="task.can_write && !pending.has(task.name)" :title="`${task.subject} · ${__(task.workflow_state || '')}`" @dragstart="drag($event, task)" @click="focusDates(task)"><span class="calendar-key">{{ task.issue_key }}</span><span>{{ task.subject }}</span></button></div>
             </div>
           </div>
         </div>
         <TaskSpreadsheet v-if="config.layout === 'spreadsheet'" :grouped="Boolean(config.group)" :tasks="group.tasks" :columns="config.columns" :labels="labels" :pending="pending" :project-configs="projectConfigs" :order-by="config.order_by" :order-direction="config.order_direction" :create-task="createInlineTask" :project="project" :projects="creationProjects" @edit="edit" @open="openTaskId = $event" @sort="sortBy" />
-        <div v-if="dateEditor && config.layout === 'timeline'" class="table-scroll" :class="{ 'date-editor': config.layout !== 'spreadsheet' }"><table><caption class="sr-only">Editable tasks{{ config.layout !== 'spreadsheet' ? ' and accessible date controls' : '' }}</caption><thead><tr><th v-for="key in visibleColumns" :key="key">{{ labels[key] }}</th></tr></thead><tbody><tr v-for="task in group.tasks" :key="task.name" :class="{ focused: focused === task.name }"><td v-for="key in visibleColumns" :key="key"><input v-if="['assignees', 'labels'].includes(key)" :aria-label="`${labels[key]} for ${task.subject}, comma separated`" :value="task[key]?.join(', ')" placeholder="Comma-separated values" :disabled="!task.can_write || pending.has(task.name)" @change="edit(task, key, $event.target.value)" /><select v-else-if="['workflow_state', 'priority', 'type'].includes(key)" :aria-label="`${labels[key]} for ${task.subject}`" :value="key.includes('date') ? dateValue(task[key]) : task[key]" :disabled="!task.can_write || pending.has(task.name)" @change="edit(task, key, $event.target.value)"><option v-for="option in optionsFor(task, key)" :key="option" :value="option">{{ option }}</option></select><input v-else :aria-label="`${labels[key]} for ${task.subject}`" :type="key.includes('date') ? 'date' : ['expected_time', 'pulse_story_points'].includes(key) ? 'number' : 'text'" :value="key.includes('date') ? dateValue(task[key]) : task[key]" :disabled="!task.can_write || pending.has(task.name)" @change="edit(task, key, $event.target.value)" /></td></tr></tbody></table></div>
+        <div v-if="dateEditor && config.layout === 'timeline'" class="table-scroll" :class="{ 'date-editor': config.layout !== 'spreadsheet' }"><table><caption class="sr-only">{{ config.layout !== 'spreadsheet' ? __('Editable tasks and accessible date controls') : __('Editable tasks') }}</caption><thead><tr><th v-for="key in visibleColumns" :key="key">{{ labels[key] }}</th></tr></thead><tbody><tr v-for="task in group.tasks" :key="task.name" :class="{ focused: focused === task.name }"><td v-for="key in visibleColumns" :key="key"><input v-if="['assignees', 'labels'].includes(key)" :aria-label="__('{0} for {1}, comma separated', [labels[key], task.subject])" :value="task[key]?.join(', ')" :placeholder="__('Comma-separated values')" :disabled="!task.can_write || pending.has(task.name)" @change="edit(task, key, $event.target.value)" /><select v-else-if="['workflow_state', 'priority', 'type'].includes(key)" :aria-label="__('{0} for {1}', [labels[key], task.subject])" :value="key.includes('date') ? dateValue(task[key]) : task[key]" :disabled="!task.can_write || pending.has(task.name)" @change="edit(task, key, $event.target.value)"><option v-for="option in optionsFor(task, key)" :key="option" :value="option">{{ __(option) }}</option></select><input v-else :aria-label="__('{0} for {1}', [labels[key], task.subject])" :type="key.includes('date') ? 'date' : ['expected_time', 'pulse_story_points'].includes(key) ? 'number' : 'text'" :value="key.includes('date') ? dateValue(task[key]) : task[key]" :disabled="!task.can_write || pending.has(task.name)" @change="edit(task, key, $event.target.value)" /></td></tr></tbody></table></div>
       </section>
-      <div v-if="!sortedTasks.length" class="empty-work"><h2>No matching tasks</h2><p>Adjust your filters or create a task to start planning.</p></div>
+      <div v-if="!sortedTasks.length" class="empty-work"><h2>{{ __('No matching tasks') }}</h2><p>{{ __('Adjust your filters or create a task to start planning.') }}</p></div>
       </div>
-      <div v-if="config.layout === 'spreadsheet' && config.group" class="grouped-create-footer"><InlineTaskCreate v-if="tableCreating" variant="table" :create-task="createInlineTask" :project="project" :projects="creationProjects" @cancel="tableCreating = false" /><button v-else @click="tableCreating = true">+ Add work item</button></div>
-      <aside v-if="config.layout !== 'spreadsheet' && unscheduledOpen" class="unscheduled-pane" aria-label="Unscheduled tasks">
-        <div class="unscheduled-heading"><h2>Unscheduled <span class="count-badge">{{ unscheduled.length }}</span></h2><button class="btn-ghost" aria-label="Close unscheduled tasks" @click="unscheduledOpen = false">×</button></div>
-        <p class="field-note">Drag onto a day, or choose a due date.</p>
-        <div class="unscheduled-list"><div v-for="task in unscheduled" :key="task.name" class="unscheduled-task" :draggable="task.can_write && !pending.has(task.name)" @dragstart="drag($event, task)"><span class="calendar-key">{{ task.issue_key }}</span><p>{{ task.subject }}</p><input type="date" :aria-label="`Schedule ${task.subject}`" :disabled="!task.can_write || pending.has(task.name)" @change="edit(task, 'exp_end_date', $event.target.value)" /></div><p v-if="!unscheduled.length" class="field-note">Every task has a due date.</p></div>
+      <div v-if="config.layout === 'spreadsheet' && config.group" class="grouped-create-footer"><InlineTaskCreate v-if="tableCreating" variant="table" :create-task="createInlineTask" :project="project" :projects="creationProjects" @cancel="tableCreating = false" /><button v-else @click="tableCreating = true">{{ __('+ Add work item') }}</button></div>
+      <aside v-if="config.layout !== 'spreadsheet' && unscheduledOpen" class="unscheduled-pane" :aria-label="__('Unscheduled tasks')">
+        <div class="unscheduled-heading"><h2>{{ __('Unscheduled') }} <span class="count-badge">{{ unscheduled.length }}</span></h2><button class="btn-ghost" :aria-label="__('Close unscheduled tasks')" @click="unscheduledOpen = false">×</button></div>
+        <p class="field-note">{{ __('Drag onto a day, or choose a due date.') }}</p>
+        <div class="unscheduled-list"><div v-for="task in unscheduled" :key="task.name" class="unscheduled-task" :draggable="task.can_write && !pending.has(task.name)" @dragstart="drag($event, task)"><span class="calendar-key">{{ task.issue_key }}</span><p>{{ task.subject }}</p><input type="date" :aria-label="__('Schedule {0}', [task.subject])" :disabled="!task.can_write || pending.has(task.name)" @change="edit(task, 'exp_end_date', $event.target.value)" /></div><p v-if="!unscheduled.length" class="field-note">{{ __('Every task has a due date.') }}</p></div>
       </aside>
       </div>
     </template>
@@ -104,10 +104,11 @@ import TaskSpreadsheet from '../components/views/TaskSpreadsheet.vue'
 import TaskTimeline from '../components/views/TaskTimeline.vue'
 import CalendarTaskPicker from '../components/views/CalendarTaskPicker.vue'
 import { createState } from '../ui/create'
+import { __, lang } from '../translation'
 import InlineTaskCreate from '../components/views/InlineTaskCreate.vue'
 const props = defineProps({ embedded: Boolean, mode: { type: String, default: 'spreadsheet' }, project: { type: String, default: null }, module: { type: String, default: null }, moduleName: { type: String, default: '' }, taskNames: { type: Array, default: null }, includeArchived: Boolean, panel: { type: String, default: '' }, refreshKey: { type: Number, default: 0 } })
 const emit = defineEmits(['close-panel', 'changed'])
-const labels = { subject: 'Title', workflow_state: 'Status', priority: 'Priority', project: 'Project', exp_start_date: 'Start date', exp_end_date: 'Due date', type: 'Type', assignees: 'Assignees', labels: 'Labels', expected_time: 'Estimated hours', pulse_story_points: 'Points', creation: 'Created date', modified: 'Updated date', owner: 'Created by', modules: 'Modules', name: 'Link' }
+const labels = { subject: __('Title'), workflow_state: __('Status'), priority: __('Priority'), project: __('Project'), exp_start_date: __('Start date'), exp_end_date: __('Due date'), type: __('Type'), assignees: __('Assignees'), labels: __('Labels'), expected_time: __('Estimated hours'), pulse_story_points: __('Points'), creation: __('Created date'), modified: __('Updated date'), owner: __('Created by'), modules: __('Modules'), name: __('Link') }
 // ERPNext Date fields can arrive as midnight datetime strings. Keep their calendar day, not a timezone conversion.
 const dateValue = value => value ? String(value).slice(0, 10) : ''
 // frappe-ui keeps user-facing server validation in messages; message contains the RPC name.
@@ -124,7 +125,7 @@ function localMonth() { const now = new Date(); return `${now.getFullYear()}-${S
 const today = (() => { const now = new Date(); return `${localMonth()}-${String(now.getDate()).padStart(2, '0')}` })()
 const weekAnchor = ref(today)
 function goToToday() { month.value = localMonth(); weekAnchor.value = today }
-const weekdays = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+const weekdays = [__('Mon'), __('Tue'), __('Wed'), __('Thu'), __('Fri'), __('Sat'), __('Sun')]
 const visibleWeekdays = computed(() => config.value.hide_weekends ? weekdays.slice(0, 5) : weekdays)
 const visibleCalendarDays = computed(() => config.value.hide_weekends ? calendarDays.value.filter((_, index) => index % 7 < 5) : calendarDays.value)
 const tableCreating = ref(false)
@@ -140,7 +141,7 @@ async function createInlineTask({subject, project, date}) {
   locallyCreated.value.add(result.name)
   await load({ background: true })
   emit('changed')
-  notice.value = `${result.issue_key || 'Task'} created.`
+  notice.value = result.issue_key ? __('{0} created.', [result.issue_key]) : __('Task created.')
   return result
 }
 function closeTaskPicker() { if (pickerPending.value) return; ++pickerVersion; pickerDay.value = null; pickerLoading.value = false }
@@ -151,7 +152,7 @@ async function showTaskPicker(day) {
     const filter = { op: 'and', rules: props.project ? [{ field: 'project', op: 'eq', value: props.project }] : [] }
     const result = await call('pulse.api.views.tasks', { config: { ...defaultConfig(), filter } })
     if (token === pickerVersion) pickerTasks.value = result.tasks.filter(task => task.can_write)
-  } catch (e) { if (token === pickerVersion) pickerError.value = requestError(e, 'Tasks could not be loaded. Close and try again.') }
+  } catch (e) { if (token === pickerVersion) pickerError.value = requestError(e, __('Tasks could not be loaded. Close and try again.')) }
   finally { if (token === pickerVersion) pickerLoading.value = false }
 }
 async function schedulePicked(names) {
@@ -159,9 +160,9 @@ async function schedulePicked(names) {
   pickerPending.value = true; pickerError.value = ''
   try {
     await call('pulse.api.views.schedule_tasks', { tasks: names, date: pickerDay.value, module: props.module || null })
-    pickerDay.value = null; notice.value = 'Tasks scheduled.'; emit('changed')
+    pickerDay.value = null; notice.value = __('Tasks scheduled.'); emit('changed')
     await load()
-  } catch (e) { pickerError.value = requestError(e, 'Tasks could not be scheduled. Nothing was changed; try again.') }
+  } catch (e) { pickerError.value = requestError(e, __('Tasks could not be scheduled. Nothing was changed; try again.')) }
   finally { pickerPending.value = false }
 }
 watch(() => createState.created, () => { if (!restoring) load() })
@@ -172,19 +173,19 @@ function shiftMonth(delta) { if (config.value.calendar_layout === 'week') { week
 const monthLabel = computed(() => {
   if (config.value.calendar_layout === 'week') {
     const dates = calendarDays.value
-    if (!dates.length) return 'Choose a week'
-    const format = day => new Date(`${day}T12:00:00`).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })
+    if (!dates.length) return __('Choose a week')
+    const format = day => new Date(`${day}T12:00:00`).toLocaleDateString(lang, { month: 'short', day: 'numeric' })
     return `${format(dates[0])} – ${format(dates[config.value.hide_weekends ? 4 : 6])}, ${dates[0].slice(0,4)}`
   }
-  return new Date(`${month.value}-01T12:00:00`).toLocaleDateString(undefined, { month: 'long', year: 'numeric' })
+  return new Date(`${month.value}-01T12:00:00`).toLocaleDateString(lang, { month: 'long', year: 'numeric' })
 })
 const calendarDays = computed(() => calendarPeriodDays(month.value, config.value.calendar_layout, weekAnchor.value))
 watch(() => config.value.calendar_layout, layout => { if (layout === 'week' && !weekAnchor.value.startsWith(month.value)) weekAnchor.value = `${month.value}-01` })
 
 const layouts = [
-  { key: 'spreadsheet', label: 'Spreadsheet', icon: 'M3 3h14v14H3z M3 8h14 M8 3v14 M3 12h14' },
-  { key: 'calendar', label: 'Calendar', icon: 'M3 5h14v12H3z M6 2v5 M14 2v5 M3 9h14' },
-  { key: 'timeline', label: 'Timeline', icon: 'M4 3v14 M8 5h8 M8 10h5 M11 15h6' },
+  { key: 'spreadsheet', label: __('Spreadsheet'), icon: 'M3 3h14v14H3z M3 8h14 M8 3v14 M3 12h14' },
+  { key: 'calendar', label: __('Calendar'), icon: 'M3 5h14v12H3z M6 2v5 M14 2v5 M3 9h14' },
+  { key: 'timeline', label: __('Timeline'), icon: 'M4 3v14 M8 5h8 M8 10h5 M11 15h6' },
 ]
 const selectedView = computed(() => saved.value.find(view => view.name === selected.value))
 const countRules = node => node.rules ? node.rules.reduce((sum, rule) => sum + countRules(rule), 0) : 1
@@ -218,8 +219,8 @@ async function scheduleTimelineTask(task, day) {
   const end = new Date(Date.parse(day) + duration).toISOString().slice(0, 10)
   try {
     await call('pulse.api.tasks.bulk_update', { tasks: [task.name], fields: { exp_start_date: day, exp_end_date: end } })
-    await load({ background: true }); notice.value = 'Task scheduled.'
-  } catch (e) { error.value = requestError(e, 'Task could not be scheduled.') }
+    await load({ background: true }); notice.value = __('Task scheduled.')
+  } catch (e) { error.value = requestError(e, __('Task could not be scheduled.')) }
   finally { pending.value.delete(task.name) }
 }
 const optimisticDateTasks = new Set()
@@ -232,7 +233,7 @@ async function rescheduleTask(name, day) {
   task.exp_end_date = day
   if (task.exp_start_date) task.exp_start_date = new Date(Date.parse(day) - duration).toISOString().slice(0, 10)
   try { await call('pulse.api.views.schedule_tasks', { tasks: [name], date: day }) }
-  catch(e) { Object.assign(task, previous); error.value = requestError(e, 'Task could not be rescheduled.') }
+  catch(e) { Object.assign(task, previous); error.value = requestError(e, __('Task could not be rescheduled.')) }
   finally { optimisticDateTasks.delete(name); pending.value.delete(name); await load({ background: true }) }
 }
 
@@ -254,14 +255,14 @@ const preferenceContext = computed(() => props.embedded ? `view:${props.project 
 watch(preferenceContext, () => { flushPreferences(); restorePreferences() })
 watch(() => [props.taskNames, props.includeArchived, props.refreshKey], () => { if (!restoring) load({ background: true }) })
 let version = 0, restoring = true, persistTimer, loadedContext
-async function load(options = {}) { if (options?.background && optimisticDateTasks.size) return; const v = ++version; if (!options?.background) { loading.value = true; error.value = '' } try { const result = await call('pulse.api.views.tasks', { config: scopedConfiguration(), include_archived: Number(props.includeArchived) }); if (v === version) { tasks.value = props.taskNames ? result.tasks.filter(task => props.taskNames.includes(task.name) || locallyCreated.value.has(task.name)) : result.tasks; dependencies.value = result.dependencies; for (const project of [...new Set(result.tasks.map(t => t.project).filter(Boolean))]) { if (!projectConfigs.value[project]) { try { projectConfigs.value[project] = await call('pulse.api.task_config.get_config', { project }) } catch { /* Current value remains available when vocabulary is not readable. */ } } } } } catch (e) { if (v === version) error.value = requestError(e, 'Work could not be loaded.') } finally { if (v === version) loading.value = false } }
+async function load(options = {}) { if (options?.background && optimisticDateTasks.size) return; const v = ++version; if (!options?.background) { loading.value = true; error.value = '' } try { const result = await call('pulse.api.views.tasks', { config: scopedConfiguration(), include_archived: Number(props.includeArchived) }); if (v === version) { tasks.value = props.taskNames ? result.tasks.filter(task => props.taskNames.includes(task.name) || locallyCreated.value.has(task.name)) : result.tasks; dependencies.value = result.dependencies; for (const project of [...new Set(result.tasks.map(t => t.project).filter(Boolean))]) { if (!projectConfigs.value[project]) { try { projectConfigs.value[project] = await call('pulse.api.task_config.get_config', { project }) } catch { /* Current value remains available when vocabulary is not readable. */ } } } } } catch (e) { if (v === version) error.value = requestError(e, __('Work could not be loaded.')) } finally { if (v === version) loading.value = false } }
 async function edit(task, key, value) {
   if (!task.can_write || pending.value.has(task.name)) return
   notice.value = ''
   if (['exp_start_date', 'exp_end_date'].includes(key)) {
     const previous = task[key]; ++version; optimisticDateTasks.add(task.name); pending.value.add(task.name); error.value = ''; task[key] = value || null
     try { await call('pulse.api.tasks.bulk_update', { tasks: [task.name], fields: { [key]: value || null } }) }
-    catch (e) { task[key] = previous; error.value = requestError(e, 'Task dates could not be updated.') }
+    catch (e) { task[key] = previous; error.value = requestError(e, __('Task dates could not be updated.')) }
     finally { optimisticDateTasks.delete(task.name); pending.value.delete(task.name); await load({ background: true }) }
     return
   }
@@ -270,17 +271,17 @@ async function edit(task, key, value) {
     const values = ['assignees', 'labels'].includes(key) ? [...new Set((Array.isArray(value) ? value : value.split(',')).map(v => v.trim()).filter(Boolean))] : null
     const args = { tasks: [task.name], fields: key === 'assignees' ? {} : { [key === 'labels' ? 'pulse_labels' : key]: values || (value === '' ? null : value) } }
     if (key === 'assignees') { args.assign = values.filter(v => !task.assignees.includes(v)); args.unassign = task.assignees.filter(v => !values.includes(v)) }
-    await call('pulse.api.tasks.bulk_update', args); await load({ background: true }); notice.value = 'Task updated.'
-  } catch (e) { await load({ background: true }); error.value = requestError(e, 'Task could not be updated.') }
+    await call('pulse.api.tasks.bulk_update', args); await load({ background: true }); notice.value = __('Task updated.')
+  } catch (e) { await load({ background: true }); error.value = requestError(e, __('Task could not be updated.')) }
   finally { pending.value.delete(task.name) }
 }
-function toggleColumn(key) { const enabled = new Set(config.value.columns); if (enabled.has(key) && enabled.size === 1) { notice.value = 'Keep at least one column visible.'; return } enabled.has(key) ? enabled.delete(key) : enabled.add(key); config.value.columns = columnOrder.value.filter(k => enabled.has(k)) }
+function toggleColumn(key) { const enabled = new Set(config.value.columns); if (enabled.has(key) && enabled.size === 1) { notice.value = __('Keep at least one column visible.'); return } enabled.has(key) ? enabled.delete(key) : enabled.add(key); config.value.columns = columnOrder.value.filter(k => enabled.has(k)) }
 function moveColumn(i, delta) { const next = [...columnOrder.value]; [next[i], next[i + delta]] = [next[i + delta], next[i]]; columnOrder.value = next; config.value.columns = next.filter(k => config.value.columns.includes(k)) }
-async function save(update = false) { saving.value = true; error.value = ''; try { const view = await call('pulse.api.views.save_view', { title: title.value, config: scopedConfiguration(), shared: Number(shared.value), name: update === true ? selected.value : null }); saved.value = await call('pulse.api.views.saved_views'); selected.value = view.name; notice.value = 'View saved.'; savePanel.value = false; emit('close-panel') } catch (e) { error.value = requestError(e, 'View could not be saved.') } finally { saving.value = false } }
+async function save(update = false) { saving.value = true; error.value = ''; try { const view = await call('pulse.api.views.save_view', { title: title.value, config: scopedConfiguration(), shared: Number(shared.value), name: update === true ? selected.value : null }); saved.value = await call('pulse.api.views.saved_views'); selected.value = view.name; notice.value = __('View saved.'); savePanel.value = false; emit('close-panel') } catch (e) { error.value = requestError(e, __('View could not be saved.')) } finally { saving.value = false } }
 function openSaved() { const view = saved.value.find(v => v.name === selected.value); if (!view) { if (personalConfig.value) config.value = JSON.parse(JSON.stringify(personalConfig.value)); title.value = ''; shared.value = false; if (props.embedded) config.value.layout = props.mode; load(); return } config.value = typeof view.configuration === 'string' ? JSON.parse(view.configuration) : view.configuration; if (props.embedded) config.value.layout = props.mode; title.value = view.title; shared.value = Boolean(view.shared); columnOrder.value = [...config.value.columns, ...Object.keys(labels).filter(k => !config.value.columns.includes(k))]; load() }
 function drag(event, task) { if (event.target.closest('.resize')) { event.preventDefault(); return } event.dataTransfer.setData('text/plain', task.name); event.dataTransfer.effectAllowed = 'move' }
-async function drop(event, day) { const task = tasks.value.find(t => t.name === event.dataTransfer.getData('text/plain')); if (!task || !task.can_write || pending.value.has(task.name)) return; pending.value.add(task.name); const duration = task.exp_start_date && task.exp_end_date ? Math.max(0, (Date.parse(dateValue(task.exp_end_date)) - Date.parse(dateValue(task.exp_start_date))) / 86400000) : 0; const fields = { exp_end_date: day }; if (task.exp_start_date) fields.exp_start_date = new Date(Date.parse(day) - duration * 86400000).toISOString().slice(0, 10); try { await call('pulse.api.tasks.bulk_update', { tasks: [task.name], fields }); await load() } catch (e) { error.value = requestError(e, 'Task could not be rescheduled.') } finally { pending.value.delete(task.name) } }
-async function link() { try { await call('pulse.api.spa.add_dependency', { task: dependent.value, depends_on: prerequisite.value }); await load(); notice.value = 'Dependency added.' } catch (e) { error.value = requestError(e, 'Dependency could not be added.') } }
+async function drop(event, day) { const task = tasks.value.find(t => t.name === event.dataTransfer.getData('text/plain')); if (!task || !task.can_write || pending.value.has(task.name)) return; pending.value.add(task.name); const duration = task.exp_start_date && task.exp_end_date ? Math.max(0, (Date.parse(dateValue(task.exp_end_date)) - Date.parse(dateValue(task.exp_start_date))) / 86400000) : 0; const fields = { exp_end_date: day }; if (task.exp_start_date) fields.exp_start_date = new Date(Date.parse(day) - duration * 86400000).toISOString().slice(0, 10); try { await call('pulse.api.tasks.bulk_update', { tasks: [task.name], fields }); await load() } catch (e) { error.value = requestError(e, __('Task could not be rescheduled.')) } finally { pending.value.delete(task.name) } }
+async function link() { try { await call('pulse.api.spa.add_dependency', { task: dependent.value, depends_on: prerequisite.value }); await load(); notice.value = __('Dependency added.') } catch (e) { error.value = requestError(e, __('Dependency could not be added.')) } }
 let pendingPreferences = null, preferenceWrites = Promise.resolve(), restoreVersion = 0, disposed = false
 function flushPreferences() {
   clearTimeout(persistTimer)
@@ -288,7 +289,7 @@ function flushPreferences() {
   const snapshot = pendingPreferences
   pendingPreferences = null
   preferenceWrites = preferenceWrites.then(() => call('pulse.api.views.preferences', snapshot)).catch(e => {
-    if (!disposed && snapshot.context === preferenceContext.value) error.value = requestError(e, 'Layout preferences could not be saved.')
+    if (!disposed && snapshot.context === preferenceContext.value) error.value = requestError(e, __('Layout preferences could not be saved.'))
   })
   return preferenceWrites
 }
@@ -318,7 +319,7 @@ async function restorePreferences() {
   } catch (e) {
     if (token !== restoreVersion || disposed) return
     config.value = { ...defaultConfig(), layout: props.embedded ? props.mode : 'spreadsheet' }
-    error.value = requestError(e, 'Saved preferences could not be loaded.')
+    error.value = requestError(e, __('Saved preferences could not be loaded.'))
   } finally {
     if (token === restoreVersion && !disposed) { loadedContext = context; restoring = false; await load() }
   }
@@ -327,7 +328,7 @@ onBeforeUnmount(() => { disposed = true; ++restoreVersion; ++version; flushPrefe
 onMounted(async () => {
   settings.value = ['filters', 'display'].includes(props.panel) ? props.panel : ''
   savePanel.value = props.panel === 'save'
-  await Promise.all([call('frappe.client.get_list', { doctype: 'Project', fields: ['name', 'project_name', 'pulse_project_key'], limit_page_length: 0 }).then(rows => { creationProjects.value = rows }).catch(e => { error.value = requestError(e, 'Projects could not be loaded.') }), restorePreferences(), call('pulse.api.views.saved_views').then(views => { if (!disposed) saved.value = views }).catch(e => { if (!disposed) error.value = requestError(e, 'Saved views could not be loaded.') })])
+  await Promise.all([call('frappe.client.get_list', { doctype: 'Project', fields: ['name', 'project_name', 'pulse_project_key'], limit_page_length: 0 }).then(rows => { creationProjects.value = rows }).catch(e => { error.value = requestError(e, __('Projects could not be loaded.')) }), restorePreferences(), call('pulse.api.views.saved_views').then(views => { if (!disposed) saved.value = views }).catch(e => { if (!disposed) error.value = requestError(e, __('Saved views could not be loaded.')) })])
 })
 </script>
 <style scoped>

@@ -1,5 +1,5 @@
 <template>
-  <span class="tag" :style="{ color: c[0], background: c[1] }">{{ value || 'Task' }}</span>
+  <span class="tag" :style="{ color: c[0], background: c[1] }">{{ value ? __(value) : __('Task') }}</span>
 </template>
 
 <script setup>

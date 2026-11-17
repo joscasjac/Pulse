@@ -1,18 +1,19 @@
 <!-- THESIS: Edit a CRM follow-up in place. OWN-WORLD: Existing compact neutral form controls. STORY: Change details on the original CRM task. FIRST VIEWPORT: Title, status, priority and timing. FORM: Inline expansion inside My work. -->
 <template>
   <form class="crm-editor" @submit.prevent="save">
-    <label class="crm-title">Title<input v-model="draft.title" required :disabled="saving" /></label>
-    <label>Status<select v-model="draft.status"><option v-for="value in statuses" :key="value">{{ value }}</option></select></label>
-    <label>Priority<select v-model="draft.priority"><option v-for="value in ['Low', 'Medium', 'High']" :key="value">{{ value }}</option></select></label>
-    <label>Start date<input v-model="draft.start_date" type="date" /></label>
-    <label>Due date<input v-model="draft.due_date" type="datetime-local" /></label>
+    <label class="crm-title">{{ __('Title') }}<input v-model="draft.title" required :disabled="saving" /></label>
+    <label>{{ __('Status') }}<select v-model="draft.status"><option v-for="value in statuses" :key="value" :value="value">{{ __(value) }}</option></select></label>
+    <label>{{ __('Priority') }}<select v-model="draft.priority"><option v-for="value in ['Low', 'Medium', 'High']" :key="value" :value="value">{{ __(value) }}</option></select></label>
+    <label>{{ __('Start date') }}<input v-model="draft.start_date" type="date" /></label>
+    <label>{{ __('Due date') }}<input v-model="draft.due_date" type="datetime-local" /></label>
     <p v-if="error" class="crm-error" role="alert">{{ error }}</p>
-    <div class="crm-actions"><button type="button" class="btn-ghost" :disabled="saving" @click="$emit('close')">Cancel</button><button class="btn-primary" :disabled="saving">{{ saving ? 'Saving…' : 'Save changes' }}</button></div>
+    <div class="crm-actions"><button type="button" class="btn-ghost" :disabled="saving" @click="$emit('close')">{{ __('Cancel') }}</button><button class="btn-primary" :disabled="saving">{{ saving ? __('Saving…') : __('Save changes') }}</button></div>
   </form>
 </template>
 <script setup>
 import { reactive, ref } from 'vue'
 import { call } from 'frappe-ui'
+import { __ } from '@/translation'
 const props = defineProps({ task: { type: Object, required: true } })
 const emit = defineEmits(['saved', 'close'])
 const statuses = ['Backlog', 'Todo', 'In Progress', 'Done', 'Canceled']
@@ -23,7 +24,7 @@ async function save() {
   try {
     const row = await call('pulse.api.crm_tasks.update', { task: props.task.name, modified: props.task.modified, fields: { ...draft, start_date: draft.start_date || null, due_date: draft.due_date ? draft.due_date.replace('T', ' ') : null } })
     emit('saved', row)
-  } catch { error.value = 'Could not save. The task may have changed or your access changed. Cancel and refresh before trying again.' }
+  } catch { error.value = __('Could not save. The task may have changed or your access changed. Cancel and refresh before trying again.') }
   finally { saving.value = false }
 }
 </script>

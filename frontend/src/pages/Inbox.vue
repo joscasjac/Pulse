@@ -1,14 +1,14 @@
 <template>
   <section class="inbox-page">
-    <header class="page-header"><div><h1 class="page-title">Inbox</h1><p class="page-description">Assignments, mentions, and updates to the work you follow.</p></div><span class="connection" :title="connected ? 'Live updates connected' : 'Checking every 30 seconds'"><span :class="{ online: connected }" />{{ connected ? 'Live' : 'Syncing' }}</span></header>
-    <div class="inbox-toolbar" aria-label="Notification filter"><button :class="{ selected: !unread }" @click="unread = false; load()">All updates</button><button :class="{ selected: unread }" @click="unread = true; load()">Unread</button></div>
-    <p v-if="error" role="alert" class="notice">{{ error }} <button class="underline" @click="load">Try again</button></p>
-    <p v-if="loading" role="status" class="empty">Loading updates…</p>
-    <div v-else-if="!rows.length && !error" class="empty"><InboxIcon class="empty-icon" /><h2>{{ unread ? 'You’re all caught up' : 'A little quiet here' }}</h2><p>{{ unread ? 'New updates will appear here as your team makes progress.' : 'Your assignments, mentions, and followed task updates will appear here.' }}</p></div>
+    <header class="page-header"><div><h1 class="page-title">{{ __('Inbox') }}</h1><p class="page-description">{{ __('Assignments, mentions, and updates to the work you follow.') }}</p></div><span class="connection" :title="connected ? __('Live updates connected') : __('Checking every 30 seconds')"><span :class="{ online: connected }" />{{ connected ? __('Live') : __('Syncing') }}</span></header>
+    <div class="inbox-toolbar" :aria-label="__('Notification filter')"><button :class="{ selected: !unread }" @click="unread = false; load()">{{ __('All updates') }}</button><button :class="{ selected: unread }" @click="unread = true; load()">{{ __('Unread') }}</button></div>
+    <p v-if="error" role="alert" class="notice">{{ error }} <button class="underline" @click="load">{{ __('Try again') }}</button></p>
+    <p v-if="loading" role="status" class="empty">{{ __('Loading updates…') }}</p>
+    <div v-else-if="!rows.length && !error" class="empty"><InboxIcon class="empty-icon" /><h2>{{ unread ? __('You’re all caught up') : __('A little quiet here') }}</h2><p>{{ unread ? __('New updates will appear here as your team makes progress.') : __('Your assignments, mentions, and followed task updates will appear here.') }}</p></div>
     <ul class="notification-list"><li v-for="row in rows" :key="row.name" :class="{ unread: !row.is_read }">
       <span class="read-indicator" :class="{ fresh: !row.is_read }" aria-hidden="true" />
-      <div class="notification-body"><button class="notification-title" :class="{ 'font-semibold': !row.is_read }" @click="open(row)">{{ row.message }}</button><p>{{ row.notification_type }} <span aria-hidden="true">·</span> {{ formatDate(row.creation) }}</p></div>
-      <button class="read-action" :disabled="!!saving" @click="mark(row)">{{ row.is_read ? 'Mark unread' : 'Mark read' }}</button>
+      <div class="notification-body"><button class="notification-title" :class="{ 'font-semibold': !row.is_read }" @click="open(row)">{{ row.message }}</button><p>{{ __(row.notification_type) }} <span aria-hidden="true">·</span> {{ formatDate(row.creation) }}</p></div>
+      <button class="read-action" :disabled="!!saving" @click="mark(row)">{{ row.is_read ? __('Mark unread') : __('Mark read') }}</button>
     </li></ul>
   </section>
 </template>
@@ -18,13 +18,14 @@ import { call } from 'frappe-ui'
 import { io } from 'socket.io-client'
 import InboxIcon from '~icons/lucide/inbox'
 import { useRouter } from 'vue-router'
+import { __, lang } from '@/translation'
 const rows=ref([]), unread=ref(false), loading=ref(false), error=ref(''), saving=ref(''), router=useRouter()
 const connected = ref(false)
 let socket, poll
 let generation = 0
-function formatDate(value) { const date = new Date(value); return Number.isNaN(date.getTime()) ? value : date.toLocaleString(undefined, { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' }) }
-async function load() { const request = ++generation; loading.value=true; error.value=''; try { const result=await call('pulse.api.personal.inbox',{unread_only:unread.value?1:0}); if(request === generation) rows.value=result } catch { if(request === generation) error.value='Notifications could not load.' } finally { if(request === generation) loading.value=false } }
-async function mark(row, read) { if (saving.value) return false; saving.value=row.name; try { await call('pulse.api.personal.mark_read',{name:row.name,is_read:read ?? (row.is_read?0:1)}); await load(); return true } catch { error.value='Could not update this notification. Try again.'; return false } finally { saving.value='' } }
+function formatDate(value) { const date = new Date(value); return Number.isNaN(date.getTime()) ? value : date.toLocaleString(lang, { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' }) }
+async function load() { const request = ++generation; loading.value=true; error.value=''; try { const result=await call('pulse.api.personal.inbox',{unread_only:unread.value?1:0}); if(request === generation) rows.value=result } catch { if(request === generation) error.value=__('Notifications could not load.') } finally { if(request === generation) loading.value=false } }
+async function mark(row, read) { if (saving.value) return false; saving.value=row.name; try { await call('pulse.api.personal.mark_read',{name:row.name,is_read:read ?? (row.is_read?0:1)}); await load(); return true } catch { error.value=__('Could not update this notification. Try again.'); return false } finally { saving.value='' } }
 async function open(row) { if(await mark(row,1)) router.push(row.url) }
 onMounted(() => {
   load()

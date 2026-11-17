@@ -1,19 +1,19 @@
 <template>
   <dialog ref="dialog" class="command-dialog bg-surface text-app rounded-xl p-0 border border-app" @close="$emit('close')" @click="backdrop">
     <form method="dialog" class="flex items-center border-b border-app p-3 gap-3">
-      <input ref="input" v-model="query" aria-label="Search tasks, projects and pages" placeholder="Search tasks, projects and pages…" class="flex-1 min-w-0 bg-transparent outline-none p-2" @keydown.down.prevent="move(1)" @keydown.up.prevent="move(-1)" @keydown.enter.prevent="activate(options[selected])">
-      <button aria-label="Close search" class="btn">Esc</button>
+      <input ref="input" v-model="query" :aria-label="__('Search tasks, projects and pages')" :placeholder="__('Search tasks, projects and pages…')" class="flex-1 min-w-0 bg-transparent outline-none p-2" @keydown.down.prevent="move(1)" @keydown.up.prevent="move(-1)" @keydown.enter.prevent="activate(options[selected])">
+      <button :aria-label="__('Close search')" class="btn">Esc</button>
     </form>
     <div class="p-2 max-h-[60vh] overflow-auto">
-      <p v-if="busy" class="p-3 text-muted" role="status">Searching…</p>
-      <p v-else-if="error" class="p-3" role="alert">{{ error }} <button class="underline" @click="search">Retry</button></p>
-      <p v-else-if="query.length > 1 && !options.length" class="p-3 text-muted">No matching tasks, projects or pages.</p>
-      <p v-else-if="!query" class="p-3 text-muted text-xs">Favorites and recently opened</p>
+      <p v-if="busy" class="p-3 text-muted" role="status">{{ __('Searching…') }}</p>
+      <p v-else-if="error" class="p-3" role="alert">{{ error }} <button class="underline" @click="search">{{ __('Retry') }}</button></p>
+      <p v-else-if="query.length > 1 && !options.length" class="p-3 text-muted">{{ __('No matching tasks, projects or pages.') }}</p>
+      <p v-else-if="!query" class="p-3 text-muted text-xs">{{ __('Favorites and recently opened') }}</p>
       <button v-for="(item, i) in options" :key="item.url || item.name" :ref="el => optionElements[i] = el" :class="['command-row', { 'bg-app': selected === i }]" @click="activate(item)">
-        <span class="truncate">{{ item.title }}</span><span class="text-muted text-xs shrink-0">{{ item.doctype }}</span>
+        <span class="truncate">{{ item.title }}</span><span class="text-muted text-xs shrink-0">{{ __(item.doctype) }}</span>
       </button>
     </div>
-    <p class="p-3 border-t border-app text-xs text-muted">↑ ↓ select · Enter opens · Ctrl/⌘ K search · N creates a task</p>
+    <p class="p-3 border-t border-app text-xs text-muted">{{ __('↑ ↓ select · Enter opens · Ctrl/⌘ K search · N creates a task') }}</p>
   </dialog>
 </template>
 <script setup>
@@ -21,14 +21,15 @@ import { ref, computed, watch, onBeforeUnmount, nextTick } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { call } from 'frappe-ui'
 import { openCreate } from '@/ui/create'
+import { __ } from '@/translation'
 const props = defineProps({ open: Boolean }); const emit = defineEmits(['close'])
 const route = useRoute()
 const router = useRouter(), dialog = ref(), input = ref(), query = ref(''), results = ref([]), busy = ref(false), error = ref(''), selected = ref(0)
 const commands = [
-  { name: 'create', title: 'New task', doctype: 'Action' },
-  { url: '/inbox', title: 'Open inbox', doctype: 'Navigate' },
-  { url: '/views', title: 'Open views', doctype: 'Navigate' },
-  { url: '/documents', title: 'Open pages', doctype: 'Navigate' },
+  { name: 'create', title: __('New task'), doctype: 'Action' },
+  { url: '/inbox', title: __('Open inbox'), doctype: 'Navigate' },
+  { url: '/views', title: __('Open views'), doctype: 'Navigate' },
+  { url: '/documents', title: __('Open pages'), doctype: 'Navigate' },
 ]
 const optionElements = ref([])
 const options = computed(() => [...commands.filter(item => item.title.toLowerCase().includes(query.value.toLowerCase().trim())), ...results.value])
@@ -49,7 +50,7 @@ async function search() {
       rows = items.filter(r => r.kind !== 'Follow').sort((a,b) => Number(b.kind === 'Favorite') - Number(a.kind === 'Favorite')).filter(r => { const key = r.reference_doctype + r.reference_name; if (seen.has(key)) return false; seen.add(key); return true }).slice(0,20).map(r => ({ ...r, doctype: r.reference_doctype, name: r.reference_name }))
     } else rows = []
     if (request === generation) { results.value = rows; selected.value = 0 }
-  } catch { if (request === generation) error.value = 'Search could not load.' }
+  } catch { if (request === generation) error.value = __('Search could not load.') }
   finally { if (request === generation) busy.value = false }
 }
 function move(delta) { selected.value = Math.max(0, Math.min(options.value.length - 1, selected.value + delta)); optionElements.value[selected.value]?.scrollIntoView({ block: 'nearest' }) }

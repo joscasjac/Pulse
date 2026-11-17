@@ -1,54 +1,54 @@
 <template>
   <main class="documents">
     <form class="pages-toolbar" @submit.prevent="load">
-      <h1>Pages</h1>
-      <label v-if="!route.query.project" class="project-filter"><span class="sr-only">Project</span><select v-model="project" @change="changeProject"><option value="">All projects</option><option v-for="p in projects" :key="p.name" :value="p.name">{{ p.project_name || p.name }}</option></select></label>
-      <label class="page-search"><span class="sr-only">Search pages</span><input v-model="query" type="search" placeholder="Search pages…" /></label>
-      <button class="btn-ghost search-submit">Search</button>
-      <button type="button" class="btn-primary" @click="newPage">New page</button>
+      <h1>{{ __('Pages') }}</h1>
+      <label v-if="!route.query.project" class="project-filter"><span class="sr-only">{{ __('Project') }}</span><select v-model="project" @change="changeProject"><option value="">{{ __('All projects') }}</option><option v-for="p in projects" :key="p.name" :value="p.name">{{ p.project_name || p.name }}</option></select></label>
+      <label class="page-search"><span class="sr-only">{{ __('Search pages') }}</span><input v-model="query" type="search" :placeholder="__('Search pages…')" /></label>
+      <button class="btn-ghost search-submit">{{ __('Search') }}</button>
+      <button type="button" class="btn-primary" @click="newPage">{{ __('New page') }}</button>
     </form>
-    <p v-if="error" class="page-alert" role="alert">{{ error }} <button class="btn-ghost" @click="load">Retry</button></p>
+    <p v-if="error" class="page-alert" role="alert">{{ error }} <button class="btn-ghost" @click="load">{{ __('Retry') }}</button></p>
     <div class="doc-layout">
-      <nav class="page-library" aria-label="Project pages">
-        <div class="library-heading"><span>All pages</span><span>{{ pages.length }}</span></div>
-        <p v-if="loading" class="library-empty" role="status">Loading pages…</p>
+      <nav class="page-library" :aria-label="__('Project pages')">
+        <div class="library-heading"><span>{{ __('All pages') }}</span><span>{{ pages.length }}</span></div>
+        <p v-if="loading" class="library-empty" role="status">{{ __('Loading pages…') }}</p>
         <button v-for="row in pages" :key="row.name" class="page-row" :title="`${row.title} · ${projectLabel(row.project)}`" :aria-current="page?.name === row.name ? 'page' : undefined" @click="open(row.name)">
           <FeatherIcon name="file-text" class="page-file" aria-hidden="true" /><span class="page-row-copy">{{ row.title }}</span>
         </button>
-        <p v-if="!loading && !pages.length" class="library-empty">No pages found.<br />Create a page or change your search.</p>
+        <p v-if="!loading && !pages.length" class="library-empty">{{ __('No pages found.') }}<br />{{ __('Create a page or change your search.') }}</p>
       </nav>
       <article v-if="page" :key="page.name || 'new-page'" class="doc-body">
         <p v-if="actionError" class="page-alert" role="alert">{{ actionError }}</p>
         <p v-if="notice" class="page-notice" role="status">{{ notice }}</p>
         <template v-if="editing">
-          <div class="editor-heading"><span class="page-context">{{ page.name ? 'Editing page' : 'New page' }}</span><div class="doc-actions"><button class="btn-ghost" :disabled="busy" @click="cancel">{{ page.name ? 'Close' : 'Cancel' }}</button><button class="btn-primary" :disabled="busy || !draft.title || !draft.project" @click="save">{{ busy ? 'Saving…' : page.name ? 'Save details' : 'Create page' }}</button></div></div>
-          <label class="title-field"><span class="sr-only">Page title</span><input v-model.trim="draft.title" placeholder="Untitled page" maxlength="140" required /></label>
+          <div class="editor-heading"><span class="page-context">{{ page.name ? __('Editing page') : __('New page') }}</span><div class="doc-actions"><button class="btn-ghost" :disabled="busy" @click="cancel">{{ page.name ? __('Close') : __('Cancel') }}</button><button class="btn-primary" :disabled="busy || !draft.title || !draft.project" @click="save">{{ busy ? __('Saving…') : page.name ? __('Save details') : __('Create page') }}</button></div></div>
+          <label class="title-field"><span class="sr-only">{{ __('Page title') }}</span><input v-model.trim="draft.title" :placeholder="__('Untitled page')" maxlength="140" required /></label>
           <div v-if="!page.name" class="new-page-options">
-            <label>Project<select v-model="draft.project" @change="options"><option value="">Select project</option><option v-for="p in projects" :key="p.name" :value="p.name">{{ p.project_name || p.name }}</option></select></label>
-            <label>Template<select v-model="template" @change="applyTemplate"><option value="">Blank page</option><option value="brief">Project brief</option><option value="meeting">Meeting notes</option><option value="specification">Specification</option></select></label>
+            <label>{{ __('Project') }}<select v-model="draft.project" @change="options"><option value="">{{ __('Select project') }}</option><option v-for="p in projects" :key="p.name" :value="p.name">{{ p.project_name || p.name }}</option></select></label>
+            <label>{{ __('Template') }}<select v-model="template" @change="applyTemplate"><option value="">{{ __('Blank page') }}</option><option value="brief">{{ __('Project brief') }}</option><option value="meeting">{{ __('Meeting notes') }}</option><option value="specification">{{ __('Specification') }}</option></select></label>
           </div>
           <CollaborativeEditor v-if="page.name" ref="collaborativeEditor" :key="page.name" :name="page.name" :content="page.content" :mentions="mentions" @synced="page.modified = $event" />
-          <TextEditor v-else :key="editorKey" :content="draft.content" :fixed-menu="draftEditorMenu" :mentions="mentionOptions" :upload-function="uploadPageImage" placeholder="Write your page. Type @ to mention a teammate." editor-class="prose prose-sm doc-editor" @change="draft.content = $event" />
-          <p v-if="!page.name" class="text-muted text-sm">Create this page before uploading images or files so attachments stay private and linked to it.</p>
-          <details class="page-panel"><summary>Linked tasks <span>{{ draft.tasks.length }}</span></summary><div class="panel-content"><label>Choose tasks<select v-model="draft.tasks" multiple size="4"><option v-for="task in taskOptions" :key="task.name" :value="task.name">{{ task.subject }} ({{ task.name }})</option></select></label><small>Use Ctrl or Command to select several tasks.</small></div></details>
+          <TextEditor v-else :key="editorKey" :content="draft.content" :fixed-menu="draftEditorMenu" :mentions="mentionOptions" :upload-function="uploadPageImage" :placeholder="__('Write your page. Type @ to mention a teammate.')" editor-class="prose prose-sm doc-editor" @change="draft.content = $event" />
+          <p v-if="!page.name" class="text-muted text-sm">{{ __('Create this page before uploading images or files so attachments stay private and linked to it.') }}</p>
+          <details class="page-panel"><summary>{{ __('Linked tasks') }} <span>{{ draft.tasks.length }}</span></summary><div class="panel-content"><label>{{ __('Choose tasks') }}<select v-model="draft.tasks" multiple size="4"><option v-for="task in taskOptions" :key="task.name" :value="task.name">{{ task.subject }} ({{ task.name }})</option></select></label><small>{{ __('Use Ctrl or Command to select several tasks.') }}</small></div></details>
         </template>
         <template v-else>
           <header class="reader-heading">
             <h2>{{ page.title }}</h2>
             <div class="reader-actions">
-              <details class="page-details" @keydown.esc="$event.currentTarget.open = false"><summary>Details</summary><div class="metadata-popover"><dl><dt>Project</dt><dd>{{ projectLabel(page.project) }}</dd><dt>Updated</dt><dd>{{ page.modified?.slice(0,10) }}</dd><dt>Updated by</dt><dd>{{ page.modified_by }}</dd></dl><PersonalControls doctype="Pulse Document" :name="page.name" /></div></details>
-              <button v-if="page.can_write" class="btn-ghost" @click="edit">Edit page</button>
+              <details class="page-details" @keydown.esc="$event.currentTarget.open = false"><summary>{{ __('Details') }}</summary><div class="metadata-popover"><dl><dt>{{ __('Project') }}</dt><dd>{{ projectLabel(page.project) }}</dd><dt>{{ __('Updated') }}</dt><dd>{{ page.modified?.slice(0,10) }}</dd><dt>{{ __('Updated by') }}</dt><dd>{{ page.modified_by }}</dd></dl><PersonalControls doctype="Pulse Document" :name="page.name" /></div></details>
+              <button v-if="page.can_write" class="btn-ghost" @click="edit">{{ __('Edit page') }}</button>
             </div>
           </header>
           <TextEditor :key="page.modified" :content="page.content" :mentions="mentionOptions" :editable="false" editor-class="prose prose-sm doc-reader" />
           <div class="page-tools">
-            <details class="page-panel"><summary>Linked tasks <span>{{ page.tasks?.length || 0 }}</span></summary><div class="panel-content"><a v-for="task in page.tasks" :key="task.name" class="task-link" :href="`/app/task/${encodeURIComponent(task.name)}`"><span>{{ task.subject }}</span><small>{{ task.name }}</small></a><p v-if="!page.tasks?.length" class="text-muted">No linked tasks. Edit this page to connect it to your work.</p></div></details>
-            <details class="page-panel"><summary>Comments <span>{{ page.comments?.length || 0 }}</span></summary><div class="panel-content"><ol class="comment-list"><li v-for="item in page.comments" :key="item.name"><small>{{ item.owner }} · {{ item.creation }}</small><TextEditor :content="item.content" :mentions="mentionOptions" :editable="false" editor-class="prose prose-sm" /></li></ol><TextEditor :key="commentKey" :content="comment" :mentions="mentionOptions" :upload-function="uploadPageImage" placeholder="Add a comment or @mention a teammate" editor-class="prose prose-sm doc-comment" @change="comment = $event" /><div class="comment-actions"><button class="btn-ghost" :disabled="busy || !plain(comment).trim()" @click="postComment">Post comment</button></div></div></details>
-            <details class="page-panel" @toggle="loadHistory"><summary>Revision history</summary><div class="panel-content"><p v-if="historyError" role="alert">{{ historyError }}</p><ol class="revision-list"><li v-for="revision in history" :key="revision.name"><small>{{ revision.creation }} · {{ revision.owner }}</small><details><summary>View changes</summary><div v-for="(change,index) in changes(revision)" :key="index"><strong>{{ change[0] }}</strong><p class="revision-value">Previous: {{ plain(change[1]) }}</p><p class="revision-value">Updated: {{ plain(change[2]) }}</p></div></details></li></ol><p v-if="!history.length" class="text-muted">No saved revisions yet.</p></div></details>
+            <details class="page-panel"><summary>{{ __('Linked tasks') }} <span>{{ page.tasks?.length || 0 }}</span></summary><div class="panel-content"><a v-for="task in page.tasks" :key="task.name" class="task-link" :href="`/app/task/${encodeURIComponent(task.name)}`"><span>{{ task.subject }}</span><small>{{ task.name }}</small></a><p v-if="!page.tasks?.length" class="text-muted">{{ __('No linked tasks. Edit this page to connect it to your work.') }}</p></div></details>
+            <details class="page-panel"><summary>{{ __('Comments') }} <span>{{ page.comments?.length || 0 }}</span></summary><div class="panel-content"><ol class="comment-list"><li v-for="item in page.comments" :key="item.name"><small>{{ item.owner }} · {{ item.creation }}</small><TextEditor :content="item.content" :mentions="mentionOptions" :editable="false" editor-class="prose prose-sm" /></li></ol><TextEditor :key="commentKey" :content="comment" :mentions="mentionOptions" :upload-function="uploadPageImage" :placeholder="__('Add a comment or @mention a teammate')" editor-class="prose prose-sm doc-comment" @change="comment = $event" /><div class="comment-actions"><button class="btn-ghost" :disabled="busy || !plain(comment).trim()" @click="postComment">{{ __('Post comment') }}</button></div></div></details>
+            <details class="page-panel" @toggle="loadHistory"><summary>{{ __('Revision history') }}</summary><div class="panel-content"><p v-if="historyError" role="alert">{{ historyError }}</p><ol class="revision-list"><li v-for="revision in history" :key="revision.name"><small>{{ revision.creation }} · {{ revision.owner }}</small><details><summary>{{ __('View changes') }}</summary><div v-for="(change,index) in changes(revision)" :key="index"><strong>{{ change[0] }}</strong><p class="revision-value">{{ __('Previous: {0}', [plain(change[1])]) }}</p><p class="revision-value">{{ __('Updated: {0}', [plain(change[2])]) }}</p></div></details></li></ol><p v-if="!history.length" class="text-muted">{{ __('No saved revisions yet.') }}</p></div></details>
           </div>
         </template>
       </article>
-      <div v-else class="pages-empty"><FeatherIcon name="file-text" class="empty-page-icon" aria-hidden="true" /><h2>Select a page</h2><p>Choose from the list or create a new page.</p></div>
+      <div v-else class="pages-empty"><FeatherIcon name="file-text" class="empty-page-icon" aria-hidden="true" /><h2>{{ __('Select a page') }}</h2><p>{{ __('Choose from the list or create a new page.') }}</p></div>
     </div>
   </main>
 </template>
@@ -59,6 +59,7 @@ import { call, TextEditor, FeatherIcon, useFileUpload } from 'frappe-ui'
 import { createPrivateEditorUpload } from '@/utils/privateEditorUpload'
 import CollaborativeEditor from '../components/documents/CollaborativeEditor.vue'
 import PersonalControls from '../components/PersonalControls.vue'
+import { __ } from '@/translation'
 const collaborativeEditor = ref(null)
 const route = useRoute(), router = useRouter()
 const pages=ref([]), projects=ref([]), project=ref(typeof route.query.project === 'string' ? route.query.project : ''), query=ref(''), page=ref(null), loading=ref(false), busy=ref(false), error=ref(''), actionError=ref(''), notice=ref(''), editing=ref(false)
@@ -71,7 +72,7 @@ let request=0, listRequest=0, optionsRequest=0, historyRequest=0
 function projectLabel(name){return projects.value.find(p=>p.name===name)?.project_name||name}
 async function changeProject(){const next={...route.query};if(project.value)next.project=project.value;else delete next.project;if(page.value?.project && project.value && page.value.project!==project.value)delete next.name;await router.replace({query:next});project.value=typeof route.query.project==='string'?route.query.project:''}
 
-async function load(){const current=++listRequest;loading.value=true;error.value='';try{const result=await api('list_pages',{project:project.value||null,query:query.value||null});if(current===listRequest)pages.value=result}catch(e){if(current===listRequest)error.value=e.message||'Pages could not be loaded.'}finally{if(current===listRequest)loading.value=false}}
+async function load(){const current=++listRequest;loading.value=true;error.value='';try{const result=await api('list_pages',{project:project.value||null,query:query.value||null});if(current===listRequest)pages.value=result}catch(e){if(current===listRequest)error.value=e.message||__('Pages could not be loaded.')}finally{if(current===listRequest)loading.value=false}}
 async function options(){
   const current=++optionsRequest, selectedProject=draft.value.project
   mentions.value=[];taskOptions.value=[]
@@ -79,7 +80,7 @@ async function options(){
   try{const data=await api('editor_options',{project:selectedProject});if(current!==optionsRequest || selectedProject!==draft.value.project)return;mentions.value=data.mentions||[];taskOptions.value=data.tasks||[]}
   catch(e){if(current===optionsRequest)actionError.value=e.message}
 }
-async function discard(){if(!editing.value)return true;if(page.value?.name){try{await collaborativeEditor.value?.flush()}catch(e){actionError.value=e.message;return false}if(draft.value.title===page.value.title && JSON.stringify([...draft.value.tasks].sort())===JSON.stringify((page.value.task_links||[]).map(row=>row.task).sort()))return true}return window.confirm(page.value?.name ? 'Leave editing? Shared body changes are already saved. Unsaved title and task changes will be discarded.' : 'Discard your unsaved page changes?')}
+async function discard(){if(!editing.value)return true;if(page.value?.name){try{await collaborativeEditor.value?.flush()}catch(e){actionError.value=e.message;return false}if(draft.value.title===page.value.title && JSON.stringify([...draft.value.tasks].sort())===JSON.stringify((page.value.task_links||[]).map(row=>row.task).sort()))return true}return window.confirm(page.value?.name ? __('Leave editing? Shared body changes are already saved. Unsaved title and task changes will be discarded.') : __('Discard your unsaved page changes?'))}
 async function open(name){if(!await discard())return;const version=++request;actionError.value='';try{const result=await api('get_page',{name});if(version!==request)return;page.value=result;editing.value=false;draft.value.project=result.project;await options();if(version!==request)return;history.value=[];comment.value='';commentKey.value++}catch(e){actionError.value=e.message;error.value=e.message}}
 async function newPage(){if(!await discard())return;request++;historyRequest++;history.value=[];historyError.value='';comment.value='';commentKey.value++;page.value={};draft.value={title:'',project:project.value,content:'',tasks:[]};template.value='';editing.value=true;editorKey.value++;actionError.value='';notice.value='';options()}
 function edit(){draft.value={title:page.value.title,project:page.value.project,content:page.value.content||'',tasks:(page.value.task_links||[]).map(t=>t.task)};editing.value=true;editorKey.value++;notice.value=''}
@@ -95,11 +96,11 @@ async function cancel(){
     const latest=await api('get_page',{name})
     if(version!==request)return
     page.value=latest;history.value=[];historyError.value='';editing.value=false
-  }catch(e){actionError.value=e.message||'The saved page could not be refreshed. Keep the editor open and try Close again.'}
+  }catch(e){actionError.value=e.message||__('The saved page could not be refreshed. Keep the editor open and try Close again.')}
   finally{busy.value=false}
 }
 function applyTemplate(){draft.value.content=templateContents.value[template.value]||'';editorKey.value++}
-async function save(){busy.value=true;actionError.value='';try{await collaborativeEditor.value?.flush();page.value=await api('save_page',{...draft.value,name:page.value.name||null,modified:page.value.modified||null,base_details:page.value.name?{title:page.value.title,tasks:(page.value.task_links||[]).map(row=>row.task)}:null});editing.value=false;notice.value='Page saved.';await load()}catch(e){actionError.value=e.message||'The page could not be saved. Your draft is still here.'}finally{busy.value=false}}
+async function save(){busy.value=true;actionError.value='';try{await collaborativeEditor.value?.flush();page.value=await api('save_page',{...draft.value,name:page.value.name||null,modified:page.value.modified||null,base_details:page.value.name?{title:page.value.title,tasks:(page.value.task_links||[]).map(row=>row.task)}:null});editing.value=false;notice.value=__('Page saved.');await load()}catch(e){actionError.value=e.message||__('The page could not be saved. Your draft is still here.')}finally{busy.value=false}}
 async function postComment(){busy.value=true;actionError.value='';try{page.value=await api('add_comment',{name:page.value.name,content:comment.value});comment.value='';commentKey.value++}catch(e){actionError.value=e.message}finally{busy.value=false}}
 async function loadHistory(event){
   // A disclosure can emit toggle while its previous page is being unmounted.

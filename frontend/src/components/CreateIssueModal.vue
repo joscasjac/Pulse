@@ -1,23 +1,23 @@
 <template>
   <transition name="fade">
     <div v-if="createState.open" class="ovl" @click.self="close" @keydown.esc="close">
-      <div class="modal" role="dialog" aria-modal="true" aria-label="Create task">
+      <div class="modal" role="dialog" aria-modal="true" :aria-label="__('Create task')">
         <div class="head">
           <div class="flex items-center gap-2">
             <SquarePen class="w-4 h-4" style="color:var(--accent)" />
-            <span class="font-semibold">New task</span>
+            <span class="font-semibold">{{ __('New task') }}</span>
           </div>
-          <button class="p-1 rounded hover-app text-muted" aria-label="Close new task" @click="close"><X class="w-4 h-4" /></button>
+          <button class="p-1 rounded hover-app text-muted" :aria-label="__('Close new task')" @click="close"><X class="w-4 h-4" /></button>
         </div>
 
         <div class="body">
-          <p v-if="dataError" class="load-error" role="alert">{{ dataError }} <button class="underline" @click="retryData">Retry</button></p>
-          <p v-else-if="!projects.length" class="text-sm text-muted">{{ dataLoading ? 'Loading projects…' : 'No projects are available. Create a project or ask for access first.' }}</p>
-          <div v-if="form.module" class="module-context"><span>Module: {{ createState.defaults.module_name || form.module }}</span><button type="button" aria-label="Remove module from new task" @click="form.module = null">×</button></div>
+          <p v-if="dataError" class="load-error" role="alert">{{ dataError }} <button class="underline" @click="retryData">{{ __('Retry') }}</button></p>
+          <p v-else-if="!projects.length" class="text-sm text-muted">{{ dataLoading ? __('Loading projects…') : __('No projects are available. Create a project or ask for access first.') }}</p>
+          <div v-if="form.module" class="module-context"><span>{{ __('Module: {0}', [createState.defaults.module_name || form.module]) }}</span><button type="button" :aria-label="__('Remove module from new task')" @click="form.module = null">×</button></div>
           <!-- project + type -->
           <div class="project-row">
             <label class="fld">
-              <span class="lbl">Project</span>
+              <span class="lbl">{{ __('Project') }}</span>
               <select v-model="form.project" @change="changeProject" class="in" :disabled="submitting">
                 <option v-for="p in projects" :key="p.name" :value="p.name">{{ p.project_name || p.name }}</option>
               </select>
@@ -26,100 +26,98 @@
           </div>
 
           <label class="fld">
-            <span class="lbl">Summary <b style="color:var(--accent)">*</b></span>
-            <input ref="first" v-model="form.subject" placeholder="What needs to be done?" class="in" @keyup.enter="focusDesc" />
+            <span class="lbl">{{ __('Summary') }} <b style="color:var(--accent)">*</b></span>
+            <input ref="first" v-model="form.subject" :placeholder="__('What needs to be done?')" class="in summary-input" @keyup.enter="focusDesc" />
           </label>
 
           <label class="fld">
-            <span class="lbl">Description</span>
-            <textarea aria-label="Task description" v-model="form.description" rows="3" placeholder="Add detail, acceptance criteria…" class="in" />
+            <span class="lbl">{{ __('Description') }}</span>
+            <textarea ref="desc" :aria-label="__('Task description')" v-model="form.description" rows="3" :placeholder="__('Add detail, acceptance criteria…')" class="in" />
           </label>
 
           <!-- priority + state + points + due -->
           <div class="row">
             <label class="fld">
-              <span class="lbl">Priority</span>
-              <select v-model="form.priority" class="in"><option>Low</option><option>Medium</option><option>High</option><option>Urgent</option></select>
+              <span class="lbl">{{ __('Priority') }}</span>
+              <select v-model="form.priority" class="in"><option value="Low">{{ __('Low') }}</option><option value="Medium">{{ __('Medium') }}</option><option value="High">{{ __('High') }}</option><option value="Urgent">{{ __('Urgent') }}</option></select>
             </label>
             <label class="fld">
-              <span class="lbl">Status</span>
-              <select v-model="form.state" class="in"><option v-for="s in config.statuses" :key="s.label">{{ s.label }}</option></select>
+              <span class="lbl">{{ __('Status') }}</span>
+              <select v-model="form.state" class="in"><option v-for="s in config.statuses" :key="s.label" :value="s.label">{{ __(s.label) }}</option></select>
             </label>
 
           </div>
 
-          <section v-if="visibleCompanyFields.length && !form.repeat" class="company-fields" aria-label="Project task fields">
-            <h3 class="lbl">Project fields</h3>
+          <section v-if="visibleCompanyFields.length && !form.repeat" class="company-fields" :aria-label="__('Project task fields')">
+            <h3 class="lbl">{{ __('Project fields') }}</h3>
             <label v-for="field in visibleCompanyFields" :key="field.fieldname" class="fld">
-              <span class="lbl">{{ field.label }} <b v-if="fieldRequired(field)" style="color:var(--accent)">* required in {{ form.state }}</b></span>
+              <span class="lbl">{{ field.label }} <b v-if="fieldRequired(field)" style="color:var(--accent)">{{ __('* required in {0}', [__(form.state)]) }}</b></span>
               <input v-if="field.fieldtype === 'Check'" v-model="form.field_values[field.fieldname]" type="checkbox" :aria-label="field.label" :aria-required="fieldRequired(field)" />
-              <select v-else-if="field.fieldtype === 'Select'" v-model="form.field_values[field.fieldname]" class="in" :aria-label="field.label" :required="fieldRequired(field)"><option value="">Choose {{ field.label }}</option><option v-for="option in field.options.split('\n').filter(Boolean)" :key="option" :value="option">{{ option }}</option></select>
+              <select v-else-if="field.fieldtype === 'Select'" v-model="form.field_values[field.fieldname]" class="in" :aria-label="field.label" :required="fieldRequired(field)"><option value="">{{ __('Choose {0}', [field.label]) }}</option><option v-for="option in field.options.split('\n').filter(Boolean)" :key="option" :value="option">{{ __(option) }}</option></select>
               <textarea v-else-if="['Small Text', 'Text'].includes(field.fieldtype)" v-model="form.field_values[field.fieldname]" class="in" rows="2" :aria-label="field.label" :required="fieldRequired(field)" />
               <input v-else-if="['Int', 'Float', 'Currency', 'Percent'].includes(field.fieldtype)" v-model.number="form.field_values[field.fieldname]" type="number" :step="field.fieldtype === 'Int' ? '1' : 'any'" class="in" :aria-label="field.label" :required="fieldRequired(field)" />
               <input v-else v-model="form.field_values[field.fieldname]" :type="field.fieldtype === 'Date' ? 'date' : 'text'" class="in" :aria-label="field.label" :required="fieldRequired(field)" />
             </label>
           </section>
-          <p v-if="requiredFieldsUnavailable && !form.repeat" role="alert" class="load-error">Required project fields are unavailable with your current access. Ask a project administrator to review field permissions.</p>
-          <p v-if="form.repeat && companyFields.fields.length" class="text-xs text-muted">Project custom-field values are supported for one-off tasks. Scheduled templates do not store them.</p>
-          <p v-if="form.repeat && companyFields.recurring_custom_fields_required" role="alert" class="load-error">This project's recurring start status requires custom fields. Create a one-off task instead, or ask an administrator to change its field requirements.</p>
+          <p v-if="requiredFieldsUnavailable && !form.repeat" role="alert" class="load-error">{{ __('Required project fields are unavailable with your current access. Ask a project administrator to review field permissions.') }}</p>
+          <p v-if="form.repeat && companyFields.fields.length" class="text-xs text-muted">{{ __('Project custom-field values are supported for one-off tasks. Scheduled templates do not store them.') }}</p>
+          <p v-if="form.repeat && companyFields.recurring_custom_fields_required" role="alert" class="load-error">{{ __("This project's recurring start status requires custom fields. Create a one-off task instead, or ask an administrator to change its field requirements.") }}</p>
 
-          <p v-if="form.repeat && companyFields.recurring_approval_required" role="alert" class="load-error">The recurring start status requires approval. Create a one-off task or ask an administrator to choose an unprotected start status.</p>
+          <p v-if="form.repeat && companyFields.recurring_approval_required" role="alert" class="load-error">{{ __('The recurring start status requires approval. Create a one-off task or ask an administrator to choose an unprotected start status.') }}</p>
 
           <!-- assignees -->
           <div class="fld">
-            <span class="lbl">Assignees</span>
+            <span class="lbl">{{ __('Assignees') }}</span>
             <div class="chips">
-              <button v-for="name in form.assignees" :key="name" type="button" class="chip on" :aria-label="`Remove ${name}`" @click="toggle(name)">
+              <button v-for="name in form.assignees" :key="name" type="button" class="chip on" :aria-label="__('Remove {0}', [name])" @click="toggle(name)">
                 <Avatar :name="name" :size="18" /><span>{{ assignable.find(u => u.name === name)?.full_name || name.split('@')[0] }}</span><X class="w-3 h-3" />
               </button>
-              <select class="assignee-select" aria-label="Add assignee" @change="if ($event.target.value) toggle($event.target.value); $event.target.value = ''">
-                <option value="">Add assignee</option><option v-for="u in assignable.filter(u => !form.assignees.includes(u.name))" :key="u.name" :value="u.name">{{ u.full_name || u.name }}</option>
+              <select class="assignee-select" :aria-label="__('Add assignee')" @change="if ($event.target.value) toggle($event.target.value); $event.target.value = ''">
+                <option value="">{{ __('Add assignee') }}</option><option v-for="u in assignable.filter(u => !form.assignees.includes(u.name))" :key="u.name" :value="u.name">{{ u.full_name || u.name }}</option>
               </select>
             </div>
           </div>
-          <details class="additional-properties" :open="createState.defaults.repeat || createState.defaults.exp_end_date || createState.defaults.exp_start_date || undefined"><summary>More properties <span>Dates, estimates, labels & repeating tasks</span></summary><div class="additional-content">
+          <details class="additional-properties" :open="createState.defaults.repeat || createState.defaults.exp_end_date || createState.defaults.exp_start_date || undefined"><summary>{{ __('More properties') }} <span>{{ __('Dates, estimates, labels & repeating tasks') }}</span></summary><div class="additional-content">
           <div class="row">            <label class="fld">
-              <span class="lbl">Type</span>
+              <span class="lbl">{{ __('Type') }}</span>
               <select v-model="form.task_type" class="in">
-                <option v-for="t in issueTypes" :key="t" :value="t">{{ t }}</option>
+                <option v-for="t in issueTypes" :key="t" :value="t">{{ __(t) }}</option>
               </select>
             </label>            <label class="fld">
-              <span class="lbl">Due date</span>
+              <span class="lbl">{{ __('Due date') }}</span>
               <input v-model="form.exp_end_date" type="date" class="in" />
             </label></div>
           <div class="row4" v-if="!form.repeat">
-            <label class="fld"><span class="lbl">Start date</span><input v-model="form.exp_start_date" type="date" class="in" /></label>
-            <label class="fld"><span class="lbl">Estimated hours</span><input v-model.number="form.expected_time" type="number" min="0" step="0.25" class="in" /></label>
-            <label class="fld"><span class="lbl">Story points</span><input v-model.number="form.pulse_story_points" type="number" min="0" step="0.5" class="in" /></label>
+            <label class="fld"><span class="lbl">{{ __('Start date') }}</span><input v-model="form.exp_start_date" type="date" class="in" /></label>
+            <label class="fld"><span class="lbl">{{ __('Estimated hours') }}</span><input v-model.number="form.expected_time" type="number" min="0" step="0.25" class="in" /></label>
+            <label class="fld"><span class="lbl">{{ __('Story points') }}</span><input v-model.number="form.pulse_story_points" type="number" min="0" step="0.5" class="in" /></label>
           </div>
-          <fieldset v-if="config.labels.length && !form.repeat"><legend class="lbl mb-2">Labels</legend><div class="chips"><label v-for="l in config.labels" :key="l.name" class="chip"><input v-model="form.pulse_labels" type="checkbox" :value="l.name" /><span :style="{ color: l.color }">●</span>{{ l.label_name }}</label></div></fieldset>
+          <fieldset v-if="config.labels.length && !form.repeat"><legend class="lbl mb-2">{{ __('Labels') }}</legend><div class="chips"><label v-for="l in config.labels" :key="l.name" class="chip"><input v-model="form.pulse_labels" type="checkbox" :value="l.name" /><span :style="{ color: l.color }">●</span>{{ l.label_name }}</label></div></fieldset>
           <!-- repeat / recurring -->
           <div class="row">
             <label class="fld">
-              <span class="lbl">Repeat</span>
+              <span class="lbl">{{ __('Repeat') }}</span>
               <select v-model="form.repeat" class="in" :disabled="!!form.module">
-                <option :value="false">Does not repeat (one-off)</option>
-                <option :value="true">Repeats on a schedule</option>
+                <option :value="false">{{ __('Does not repeat (one-off)') }}</option>
+                <option :value="true">{{ __('Repeats on a schedule') }}</option>
               </select>
             </label>
             <label class="fld" v-if="form.repeat">
-              <span class="lbl">Every</span>
+              <span class="lbl">{{ __('Every') }}</span>
               <div class="flex gap-2">
                 <input v-model.number="form.interval_count" type="number" min="1" class="in" style="width:72px" />
-                <select v-model="form.interval_unit" class="in"><option>Day</option><option>Week</option><option>Month</option></select>
+                <select v-model="form.interval_unit" class="in"><option value="Day">{{ __('Day') }}</option><option value="Week">{{ __('Week') }}</option><option value="Month">{{ __('Month') }}</option></select>
               </div>
             </label>
           </div>
-          <p v-if="form.module" class="text-xs text-muted">Remove the module selection to create a repeating task.</p>
-          <div v-if="form.repeat" class="text-[11px] text-faint -mt-1">
-            A new task lands in <b>To Do</b> {{ cadenceLabel }} — it won't get buried in the backlog. Status above is ignored for recurring tasks.
-          </div>
+          <p v-if="form.module" class="text-xs text-muted">{{ __('Remove the module selection to create a repeating task.') }}</p>
+          <div v-if="form.repeat" class="text-[11px] text-faint -mt-1" v-html="__('A new task lands in {0} {1} — it won\'t get buried in the backlog. Status above is ignored for recurring tasks.', [`<b>${__('To Do')}</b>`, cadenceLabel])"></div>
 
           <label class="fld" v-if="sprints.length && !form.repeat">
-            <span class="lbl">Sprint</span>
+            <span class="lbl">{{ __('Sprint') }}</span>
             <select v-model="form.pulse_sprint" class="in">
-              <option :value="null">— none —</option>
-              <option v-for="s in sprints" :key="s.name" :value="s.name">{{ s.sprint_name || s.name }} ({{ s.status }})</option>
+              <option :value="null">{{ __('— none —') }}</option>
+              <option v-for="s in sprints" :key="s.name" :value="s.name">{{ s.sprint_name || s.name }} ({{ __(s.status) }})</option>
             </select>
           </label>
 
@@ -127,11 +125,11 @@
         </div>
 
         <div class="foot">
-          <span class="text-xs text-faint">{{ form.assignees.length }} assignee{{ form.assignees.length === 1 ? '' : 's' }}</span>
+          <span class="text-xs text-faint">{{ form.assignees.length === 1 ? __('1 assignee') : __('{0} assignees', [form.assignees.length]) }}</span>
           <div class="flex gap-2">
-            <button class="btn ghost" @click="close">Cancel</button>
+            <button class="btn ghost" @click="close">{{ __('Cancel') }}</button>
             <button class="btn primary" :disabled="!canSubmit || submitting" @click="submit">
-              {{ submitting ? 'Creating…' : (form.repeat ? 'Create recurring' : 'Create task') }}
+              {{ submitting ? __('Creating…') : (form.repeat ? __('Create recurring') : __('Create task')) }}
             </button>
           </div>
         </div>
@@ -146,6 +144,7 @@ import { call } from 'frappe-ui'
 import Avatar from '@/ui/Avatar.vue'
 import { createState, closeCreate, markCreated } from '@/ui/create'
 import { toast } from '@/ui/toast'
+import { __ } from '@/translation'
 import SquarePen from '~icons/lucide/square-pen'
 import X from '~icons/lucide/x'
 import Check from '~icons/lucide/check'
@@ -161,6 +160,7 @@ const assignable = ref([])
 const sprints = ref([])
 const submitting = ref(false)
 const first = ref(null)
+const desc = ref(null)
 
 const form = reactive({
   project: null, module: null, task_type: 'Task', subject: '', description: '',
@@ -176,22 +176,23 @@ const requiredFieldsUnavailable = computed(() => companyFields.value.unavailable
 const canSubmit = computed(() => form.project && form.subject.trim() && !dataLoading.value && !configLoading.value && config.value.statuses.length && (form.repeat ? !companyFields.value.recurring_custom_fields_required && !companyFields.value.recurring_approval_required : !requiredFieldsUnavailable.value))
 const cadenceLabel = computed(() => {
   const n = form.interval_count || 1
-  const u = (form.interval_unit || 'Week').toLowerCase()
-  return n === 1 ? `every ${u}` : `every ${n} ${u}s`
+  const u = form.interval_unit || 'Week'
+  if (n === 1) return { Day: __('every day'), Week: __('every week'), Month: __('every month') }[u] || __('every week')
+  return { Day: __('every {0} days', [n]), Week: __('every {0} weeks', [n]), Month: __('every {0} months', [n]) }[u] || __('every {0} weeks', [n])
 })
 
 function toggle(u) {
   const i = form.assignees.indexOf(u)
   i >= 0 ? form.assignees.splice(i, 1) : form.assignees.push(u)
 }
-function focusDesc() { document.querySelector('[aria-label="Task description"]')?.focus() }
+function focusDesc() { desc.value?.focus() }
 
 async function ensureData() {
   dataError.value = ''; dataLoading.value = true
   try {
     projects.value = await call('frappe.client.get_list', { doctype: 'Project', fields: ['name', 'project_name'], limit_page_length: 0 })
     assignable.value = await call('pulse.api.spa.get_assignable_users')
-  } catch (e) { dataError.value = e?.messages?.[0] || 'Could not load project choices. Retry to create your task.' }
+  } catch (e) { dataError.value = e?.messages?.[0] || __('Could not load project choices. Retry to create your task.') }
   finally { dataLoading.value = false }
 }
 async function retryData() {
@@ -220,7 +221,7 @@ async function loadProject() {
     if (!issueTypes.value.includes(form.task_type)) form.task_type = issueTypes.value[0] || null
     if (!result.statuses.some(s => s.label === form.state)) form.state = result.statuses[0]?.label
     form.pulse_labels = []
-  } catch (e) { toast.error('Could not load project task settings. Select the project again to retry.') }
+  } catch (e) { toast.error(__('Could not load project task settings. Select the project again to retry.')) }
   finally { if (request === projectRequest) configLoading.value = false }
 }
 async function loadSprints() {
@@ -270,7 +271,7 @@ async function submit() {
         assign_to: form.assignees[0] || null, description: form.description,
         generate_now: 1,
       })
-      toast.success(`Recurring task created (${cadenceLabel.value})`)
+      toast.success(__('Recurring task created ({0})', [cadenceLabel.value]))
       markCreated()
       form.subject = ''; form.description = ''; form.field_values = {}; nextTick(() => first.value?.focus())
       return
@@ -285,16 +286,16 @@ async function submit() {
       field_values: Object.fromEntries(Object.entries(form.field_values).filter(([fieldname]) => visibleCompanyFields.value.some(field => field.fieldname === fieldname))),
     })
     if (res.blocked && res.blocked.length) {
-      toast.error(`${res.issue_key} created, but ${res.blocked.length} assignment(s) blocked by hierarchy`)
+      toast.error(__('{0} created, but {1} assignment(s) blocked by hierarchy', [res.issue_key, res.blocked.length]))
     } else if (res.assignees.length) {
-      toast.success(`${res.issue_key} created & assigned`)
+      toast.success(__('{0} created & assigned', [res.issue_key]))
     } else {
-      toast.success(`${res.issue_key} created`)
+      toast.success(__('{0} created', [res.issue_key]))
     }
     markCreated()
     form.subject = ''; form.description = ''; form.field_values = {}; nextTick(() => first.value?.focus())
   } catch (e) {
-    toast.error(e?.messages?.[0] || 'Could not create issue')
+    toast.error(e?.messages?.[0] || __('Could not create issue'))
   } finally {
     submitting.value = false
   }
@@ -336,7 +337,7 @@ button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 .additional-properties > summary { cursor: pointer; padding: 13px 0 0; font-size: 12px; font-weight: 500; }
 .additional-properties > summary span { font-size: 11px; font-weight: 400; color: var(--muted); margin-left: 6px; }
 .additional-content { display: flex; flex-direction: column; gap: 14px; margin-top: 16px; }
-input[placeholder="What needs to be done?"] { font-size: 18px; font-weight: 500; padding: 5px 0; border: 0; border-radius: 0; }
+input.summary-input { font-size: 18px; font-weight: 500; padding: 5px 0; border: 0; border-radius: 0; }
 textarea.in { border-color: transparent; padding: 6px 0; }
 textarea.in:focus { border-color: var(--accent); padding: 6px 8px; }
 .additional-properties > summary:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }

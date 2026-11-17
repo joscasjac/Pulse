@@ -1,10 +1,10 @@
 <template>
   <div class="p-6">
     <div class="flex items-center justify-between mb-1">
-      <h1 class="text-2xl font-bold">To Do</h1>
-      <span class="tele text-[10px] text-faint">{{ tasks.length }} open</span>
+      <h1 class="text-2xl font-bold">{{ __('To Do') }}</h1>
+      <span class="tele text-[10px] text-faint">{{ __('{0} open', [tasks.length]) }}</span>
     </div>
-    <p class="text-xs text-faint mb-5">Everything assigned to you that isn't done — across all projects. Tick to complete.</p>
+    <p class="text-xs text-faint mb-5">{{ __('Everything assigned to you that isn\'t done — across all projects. Tick to complete.') }}</p>
 
     <div v-if="loading" class="space-y-2">
       <div v-for="n in 6" :key="n" class="flex items-center gap-3 py-2 border-b border-soft">
@@ -21,7 +21,7 @@
           <div v-for="t in g.items" :key="t.name"
             class="flex items-center gap-3 py-2 border-b border-soft hover-app cursor-pointer"
             @click="openId = t.name">
-            <input type="checkbox" class="shrink-0 cursor-pointer" title="Mark done" @click.stop="complete(t)" />
+            <input type="checkbox" class="shrink-0 cursor-pointer" :title="__('Mark done')" @click.stop="complete(t)" />
             <span class="mono text-[11px] text-faint w-16 shrink-0">{{ t.issue_key }}</span>
             <span class="flex-1 truncate text-app">{{ t.subject }}</span>
             <PriorityDot :value="t.priority" />
@@ -30,7 +30,7 @@
           </div>
         </div>
       </div>
-      <div v-if="!tasks.length" class="py-16 text-center text-faint">Nothing assigned to you right now.</div>
+      <div v-if="!tasks.length" class="py-16 text-center text-faint">{{ __('Nothing assigned to you right now.') }}</div>
     </div>
 
     <TaskDrawer :task-id="openId" @close="openId = null" @changed="reload" @open="openId = $event" />
@@ -45,6 +45,7 @@ import PriorityDot from '@/ui/PriorityDot.vue'
 import Skeleton from '@/ui/Skeleton.vue'
 import { toast } from '@/ui/toast'
 import { createState } from '@/ui/create'
+import { __ } from '@/translation'
 
 const loading = ref(true)
 const tasks = ref([])
@@ -67,11 +68,11 @@ const groups = computed(() => {
     else b.later.push(t)
   }
   return [
-    { label: 'Overdue', items: b.overdue, tone: 'text-red-500' },
-    { label: 'Due today', items: b.today, tone: 'text-accent' },
-    { label: 'This week', items: b.week, tone: 'text-muted' },
-    { label: 'Later', items: b.later, tone: 'text-muted' },
-    { label: 'No due date', items: b.none, tone: 'text-faint' },
+    { label: __('Overdue'), items: b.overdue, tone: 'text-red-500' },
+    { label: __('Due today'), items: b.today, tone: 'text-accent' },
+    { label: __('This week'), items: b.week, tone: 'text-muted' },
+    { label: __('Later'), items: b.later, tone: 'text-muted' },
+    { label: __('No due date'), items: b.none, tone: 'text-faint' },
   ]
 })
 
@@ -84,9 +85,9 @@ async function complete(t) {
   try {
     await call('pulse.api.spa.update_task_state', { task: t.name, state: 'Done' })
     tasks.value = tasks.value.filter((x) => x.name !== t.name)
-    toast.success(`${t.issue_key} completed`)
+    toast.success(__('{0} completed', [t.issue_key]))
   } catch (e) {
-    toast.error('Could not complete task')
+    toast.error(__('Could not complete task'))
     reload()
   }
 }

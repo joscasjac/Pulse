@@ -1,18 +1,18 @@
 <template>
   <div class="backlog-page">
     <header class="planning-page-header">
-      <div><h1 class="page-title">Backlog</h1><p class="text-sm text-muted">Unplanned work, ready for your next sprint.</p></div>
-      <button class="btn-primary" @click="openEntity('Pulse Sprint', null, project ? { project } : {})"><Plus class="w-3.5 h-3.5" /> New sprint</button>
+      <div><h1 class="page-title">{{ __('Backlog') }}</h1><p class="text-sm text-muted">{{ __('Unplanned work, ready for your next sprint.') }}</p></div>
+      <button class="btn-primary" @click="openEntity('Pulse Sprint', null, project ? { project } : {})"><Plus class="w-3.5 h-3.5" /> {{ __('New sprint') }}</button>
     </header>
-    <nav class="planning-tabs" aria-label="Planning views"><RouterLink :to="{ name: 'Sprints', query: route.query }">Sprints</RouterLink><RouterLink :to="{ name: 'Backlog', query: route.query }" aria-current="page">Backlog</RouterLink></nav>
+    <nav class="planning-tabs" :aria-label="__('Planning views')"><RouterLink :to="{ name: 'Sprints', query: route.query }">{{ __('Sprints') }}</RouterLink><RouterLink :to="{ name: 'Backlog', query: route.query }" aria-current="page">{{ __('Backlog') }}</RouterLink></nav>
     <div class="backlog-toolbar">
-      <label for="backlog-sprint" class="text-sm text-muted">Plan into</label>
+      <label for="backlog-sprint" class="text-sm text-muted">{{ __('Plan into') }}</label>
       <select id="backlog-sprint" v-model="selected" class="planning-select">
-        <option value="">{{ project ? 'Project backlog' : 'All projects’ backlog' }}</option><option v-for="s in sprints" :key="s.name" :value="s.name">{{ s.sprint_name }}{{ project ? '' : ` · ${s.project}` }}</option>
+        <option value="">{{ project ? __('Project backlog') : __('All projects’ backlog') }}</option><option v-for="s in sprints" :key="s.name" :value="s.name">{{ s.sprint_name }}{{ project ? '' : ` · ${s.project}` }}</option>
       </select>
     </div>
     <div class="backlog-content">
-      <p v-if="error" role="alert" class="mb-4 text-sm">{{ error }} <button class="btn-ghost" @click="load">Retry</button></p>
+      <p v-if="error" role="alert" class="mb-4 text-sm">{{ error }} <button class="btn-ghost" @click="load">{{ __('Retry') }}</button></p>
       <SprintPlanner :project="current?.project || project" :sprint="selected" />
     </div>
   </div>
@@ -21,6 +21,7 @@
 import { computed, ref, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import { call } from 'frappe-ui'
+import { __ } from '@/translation'
 import { openEntity, entityState } from '@/ui/entity'
 import Plus from '~icons/lucide/plus'
 import SprintPlanner from '@/components/sprints/SprintPlanner.vue'
@@ -37,7 +38,7 @@ async function load() {
     if (version !== loadVersion) return
     sprints.value = rows
     if (!rows.some(s => s.name === selected.value)) selected.value = ''
-  } catch (e) { if (version === loadVersion) error.value = e.message || 'Sprints could not be loaded.' }
+  } catch (e) { if (version === loadVersion) error.value = e.message || __('Sprints could not be loaded.') }
 }
 watch(project, () => { selected.value = ''; sprints.value = []; load() }, { immediate: true })
 watch(() => entityState.saved, load)

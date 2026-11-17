@@ -6,12 +6,12 @@
         :stroke="s.color" :stroke-width="stroke" :stroke-dasharray="`${s.len} ${circ - s.len}`"
         :stroke-dashoffset="-s.offset" :transform="`rotate(-90 ${c} ${c})`" stroke-linecap="butt" />
       <text :x="c" :y="c - 2" text-anchor="middle" font-size="18" font-weight="700" fill="currentColor">{{ total }}</text>
-      <text :x="c" :y="c + 14" text-anchor="middle" font-size="8" fill="var(--muted)">{{ centerLabel }}</text>
+      <text :x="c" :y="c + 14" text-anchor="middle" font-size="8" fill="var(--muted)">{{ __(centerLabel) }}</text>
     </svg>
     <ul class="text-xs space-y-1">
       <li v-for="(s, i) in segments" :key="i" class="flex items-center gap-1.5">
         <span class="w-2.5 h-2.5 rounded-sm" :style="{ background: s.color }" />
-        <span class="text-muted">{{ s.label }}</span>
+        <span class="text-muted">{{ __(s.label) }}</span>
         <span class="ml-1 font-medium">{{ s.value }}</span>
       </li>
     </ul>

@@ -12,7 +12,7 @@
         <span class="w-1.5 h-1.5 rounded-full shrink-0" style="background:var(--accent)" />
         <span class="truncate">{{ item }}</span>
       </li>
-      <li v-if="!listItems.length" class="text-muted text-xs">No items</li>
+      <li v-if="!listItems.length" class="text-muted text-xs">{{ __('No items') }}</li>
     </ul>
 
     <!-- Bar chart -->
@@ -27,12 +27,13 @@
       </g>
     </svg>
 
-    <div v-else class="h-full grid place-items-center text-muted text-xs">No data</div>
+    <div v-else class="h-full grid place-items-center text-muted text-xs">{{ __('No data') }}</div>
   </div>
 </template>
 
 <script setup>
 import { computed } from 'vue'
+import { __ } from '@/translation'
 
 const props = defineProps({
   widget: { type: Object, required: true },
@@ -58,7 +59,7 @@ const listItems = computed(() => {
     props.widget.widget_type === 'Activity Feed'
       ? props.series?.workload
       : props.series?.tasks_by_state
-  return (src || []).map((x) => `${x.label} - ${x.value}`)
+  return (src || []).map((x) => `${__(x.label)} - ${x.value}`)
 })
 
 const seriesData = computed(() => {
@@ -84,7 +85,7 @@ const bars = computed(() => {
   const max = Math.max(...data.map((d) => d.value), 1)
   return data.map((d) => ({
     h: ((d.value / max) * (vh - 22)) || 0,
-    short: String(d.label).slice(0, 4),
+    short: String(__(d.label)).slice(0, 4),
   }))
 })
 </script>

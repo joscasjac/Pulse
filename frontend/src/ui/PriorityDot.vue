@@ -1,11 +1,11 @@
 <template>
-  <span class="prio" :style="{ color: color }" :title="`Priority: ${value || 'None'}`">
+  <span class="prio" :style="{ color: color }" :title="__('Priority: {0}', [value ? __(value) : __('None')])">
     <svg viewBox="0 0 16 16" class="priority-icon" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" aria-hidden="true">
       <template v-if="urgent"><rect x="1.5" y="1.5" width="13" height="13" rx="3"/><path d="M8 4.5v4M8 11.5h.01"/></template>
       <template v-else-if="!level"><circle cx="8" cy="8" r="6"/><path d="m4 4 8 8"/></template>
       <template v-else><path v-for="n in 4" :key="n" :d="`M${2 + (n - 1) * 4} 13v-${n * 3 - 2}`" :opacity="n <= level + 1 ? 1 : .18"/></template>
     </svg>
-    <span v-if="showLabel">{{ value || 'None' }}</span>
+    <span v-if="showLabel">{{ value ? __(value) : __('None') }}</span>
   </span>
 </template>
 <script setup>

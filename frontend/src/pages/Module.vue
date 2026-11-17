@@ -1,9 +1,9 @@
 <template>
   <div class="p-6">
     <div class="flex items-center justify-between mb-4">
-      <h1 class="text-2xl font-bold">{{ cfg?.title || 'Module' }}</h1>
+      <h1 class="text-2xl font-bold">{{ cfg?.title || __('Module') }}</h1>
       <button v-if="cfg" @click="openEntity(cfg.doctype)" class="btn-primary">
-        <Plus class="w-3.5 h-3.5" /> New {{ singular }}
+        <Plus class="w-3.5 h-3.5" /> {{ __('New {0}', [__(singular)]) }}
       </button>
     </div>
     <div v-if="loading" class="space-y-2">
@@ -29,16 +29,16 @@
               </div>
             </template>
             <template v-else-if="c.type === 'badge'">
-              <span v-if="row[c.key]" class="text-xs px-1.5 py-0.5 rounded bg-surface-2">{{ row[c.key] }}</span>
+              <span v-if="row[c.key]" class="text-xs px-1.5 py-0.5 rounded bg-surface-2">{{ __(row[c.key]) }}</span>
               <span v-else class="text-muted">-</span>
             </template>
             <template v-else-if="c.type === 'check'">
-              <span :class="row[c.key] ? 'term-green' : 'text-muted'">{{ row[c.key] ? 'Yes' : 'No' }}</span>
+              <span :class="row[c.key] ? 'term-green' : 'text-muted'">{{ row[c.key] ? __('Yes') : __('No') }}</span>
             </template>
             <template v-else>{{ row[c.key] ?? '-' }}</template>
           </td>
         </tr>
-        <tr v-if="!rows.length"><td :colspan="cfg.columns.length" class="py-16 text-center text-faint">No records yet. Create your first {{ singular.toLowerCase() }}.</td></tr>
+        <tr v-if="!rows.length"><td :colspan="cfg.columns.length" class="py-16 text-center text-faint">{{ __('No records yet. Create your first {0}.', [__(singular).toLowerCase()]) }}</td></tr>
       </tbody>
     </table>
     </div>

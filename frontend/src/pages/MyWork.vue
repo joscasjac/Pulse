@@ -1,21 +1,21 @@
 <!-- THESIS: One clear list of personal work. OWN-WORLD: Quiet tab bar and compact task rows. STORY: Filter assigned tasks, then act in the task drawer. FIRST VIEWPORT: Title, status tabs, search and grouped list. FORM: User-selected Plane workspace grammar. -->
 <template>
   <div class="my-work">
-    <header class="work-header"><div><h1>My work</h1><p>Project tasks and CRM follow-ups assigned to you.</p></div></header>
+    <header class="work-header"><div><h1>{{ __('My work') }}</h1><p>{{ __('Project tasks and CRM follow-ups assigned to you.') }}</p></div></header>
     <div class="work-toolbar">
-      <nav class="work-tabs" aria-label="Task status"><button v-for="tab in tabs" :key="tab.value" :class="{ selected: selected === tab.value }" :aria-pressed="selected === tab.value" @click="selected = tab.value">{{ tab.label }}<span>{{ tab.count }}</span></button></nav>
-      <label class="work-source">Source<select v-model="source"><option value="all">All work</option><option value="project">Project tasks</option><option value="crm">CRM tasks</option></select></label><label class="work-search"><span class="sr-only">Search your tasks</span><input v-model="query" type="search" placeholder="Search tasks…" /></label>
+      <nav class="work-tabs" :aria-label="__('Task status')"><button v-for="tab in tabs" :key="tab.value" :class="{ selected: selected === tab.value }" :aria-pressed="selected === tab.value" @click="selected = tab.value">{{ tab.label }}<span>{{ tab.count }}</span></button></nav>
+      <label class="work-source">{{ __('Source') }}<select v-model="source"><option value="all">{{ __('All work') }}</option><option value="project">{{ __('Project tasks') }}</option><option value="crm">{{ __('CRM tasks') }}</option></select></label><label class="work-search"><span class="sr-only">{{ __('Search your tasks') }}</span><input v-model="query" type="search" :placeholder="__('Search tasks…')" /></label>
     </div>
-    <p v-if="source === 'crm' && !crmAvailable && !loading" class="work-loading">Frappe CRM is not installed on this site. CRM tasks will appear here when it is available.</p><p v-if="crmError" role="alert" class="work-error">{{ crmError }} <button class="btn-ghost" @click="reload">Try again</button></p><div v-if="error" class="work-error" role="alert">{{ error }} <button class="btn-ghost" @click="reload">Try again</button></div>
-    <div v-if="loading" class="work-loading" role="status">Loading your tasks…</div>
+    <p v-if="source === 'crm' && !crmAvailable && !loading" class="work-loading">{{ __('Frappe CRM is not installed on this site. CRM tasks will appear here when it is available.') }}</p><p v-if="crmError" role="alert" class="work-error">{{ crmError }} <button class="btn-ghost" @click="reload">{{ __('Try again') }}</button></p><div v-if="error" class="work-error" role="alert">{{ error }} <button class="btn-ghost" @click="reload">{{ __('Try again') }}</button></div>
+    <div v-if="loading" class="work-loading" role="status">{{ __('Loading your tasks…') }}</div>
     <template v-else>
       <section v-for="group in groups" :key="group.title" class="work-group" :aria-label="group.title">
         <h2>{{ group.title }} <span>{{ group.tasks.length }}</span></h2>
-        <div class="work-table-wrap"><table class="work-table"><thead><tr><th scope="col">Task</th><th scope="col">Priority</th><th scope="col">Status</th><th scope="col">Project / CRM record</th><th scope="col">Due date</th></tr></thead><tbody>
-          <template v-for="task in group.tasks" :key="task.identity || task.name"><tr><td><button class="task-link" @click="task.source === 'frappe_crm' ? (crmOpen = crmOpen === task.identity ? null : task.identity) : (openId = task.name)"><span class="task-identifier">{{ task.issue_key || task.name }}</span><span class="task-title">{{ task.subject }}</span></button><span v-if="task.task_type" class="task-type">{{ task.task_type }}</span></td><td><PriorityDot :value="task.priority" show-label /></td><td><StatusPill :value="task.status" :label="task.workflow_state || task.status" /></td><td class="project-cell"><router-link v-if="task.project" :to="{ path: '/board', query: { project: task.project } }">{{ projectNames[task.project] || task.project }}</router-link><a v-else-if="task.reference_url" :href="task.reference_url">{{ task.reference_doctype.replace('CRM ', '') }} {{ task.reference_docname }}</a><span v-else>—</span></td><td :class="{ overdue: isOverdue(task) }">{{ task.exp_end_date ? formatDate(task.exp_end_date) : 'No date' }}</td></tr><tr v-if="crmOpen === task.identity && task.source === 'frappe_crm'"><td colspan="5"><CrmTaskEditor v-if="task.can_write" :task="task" @close="crmOpen = null" @saved="crmSaved" /><p v-else>You have read-only access to this CRM task.</p></td></tr></template>
+        <div class="work-table-wrap"><table class="work-table"><thead><tr><th scope="col">{{ __('Task') }}</th><th scope="col">{{ __('Priority') }}</th><th scope="col">{{ __('Status') }}</th><th scope="col">{{ __('Project / CRM record') }}</th><th scope="col">{{ __('Due date') }}</th></tr></thead><tbody>
+          <template v-for="task in group.tasks" :key="task.identity || task.name"><tr><td><button class="task-link" @click="task.source === 'frappe_crm' ? (crmOpen = crmOpen === task.identity ? null : task.identity) : (openId = task.name)"><span class="task-identifier">{{ task.issue_key || task.name }}</span><span class="task-title">{{ task.subject }}</span></button><span v-if="task.task_type" class="task-type">{{ __(task.task_type) }}</span></td><td><PriorityDot :value="task.priority" show-label /></td><td><StatusPill :value="task.status" :label="__(task.workflow_state || task.status)" /></td><td class="project-cell"><router-link v-if="task.project" :to="{ path: '/board', query: { project: task.project } }">{{ projectNames[task.project] || task.project }}</router-link><a v-else-if="task.reference_url" :href="task.reference_url">{{ __(task.reference_doctype.replace('CRM ', '')) }} {{ task.reference_docname }}</a><span v-else>—</span></td><td :class="{ overdue: isOverdue(task) }">{{ task.exp_end_date ? formatDate(task.exp_end_date) : __('No date') }}</td></tr><tr v-if="crmOpen === task.identity && task.source === 'frappe_crm'"><td colspan="5"><CrmTaskEditor v-if="task.can_write" :task="task" @close="crmOpen = null" @saved="crmSaved" /><p v-else>{{ __('You have read-only access to this CRM task.') }}</p></td></tr></template>
         </tbody></table></div>
       </section>
-      <div v-if="!groups.length" class="work-empty"><h2>{{ query ? 'No matching tasks' : selected === 'completed' ? 'No completed tasks yet' : selected === 'overdue' ? 'Nothing overdue' : 'No open tasks assigned to you' }}</h2><p>{{ query ? 'Try another task name, project, or task ID.' : selected === 'overdue' ? 'Your open tasks are on schedule or have no due date.' : 'Your assigned work will appear here as your team plans tasks.' }}</p><button v-if="query" class="btn-ghost" @click="query = ''">Clear search</button><router-link v-else to="/projects" class="btn-ghost">Browse projects</router-link></div>
+      <div v-if="!groups.length" class="work-empty"><h2>{{ query ? __('No matching tasks') : selected === 'completed' ? __('No completed tasks yet') : selected === 'overdue' ? __('Nothing overdue') : __('No open tasks assigned to you') }}</h2><p>{{ query ? __('Try another task name, project, or task ID.') : selected === 'overdue' ? __('Your open tasks are on schedule or have no due date.') : __('Your assigned work will appear here as your team plans tasks.') }}</p><button v-if="query" class="btn-ghost" @click="query = ''">{{ __('Clear search') }}</button><router-link v-else to="/projects" class="btn-ghost">{{ __('Browse projects') }}</router-link></div>
     </template>
     <TaskDrawer :task-id="openId" @close="openId = null" @changed="reload" @open="openId = $event" />
   </div>
@@ -29,6 +29,7 @@ import TaskDrawer from '@/components/TaskDrawer.vue'
 import PriorityDot from '@/ui/PriorityDot.vue'
 import StatusPill from '@/ui/StatusPill.vue'
 import { createState } from '@/ui/create'
+import { __ } from '@/translation'
 const loading = ref(true), tasks = ref([]), openId = ref(null), error = ref(''), query = ref(''), selected = ref('open'), projectNames = ref({})
 const source = ref('all'), crmAvailable = ref(false), crmError = ref(''), crmOpen = ref(null)
 function normalizeCrm(row) { return { ...row, subject: row.title, issue_key: `CRM-${row.name}`, task_type: 'CRM task', crm_status: row.status, status: row.status === 'Done' ? 'Completed' : row.status === 'Canceled' ? 'Cancelled' : 'Open', workflow_state: row.status, exp_end_date: row.due_date?.slice(0, 10) || null } }
@@ -37,7 +38,7 @@ const scopedTasks = computed(() => tasks.value.filter(task => source.value === '
 const now = new Date(), today = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`
 const isOpen = task => !['Completed', 'Cancelled'].includes(task.status)
 const isOverdue = task => isOpen(task) && nativeDateDay(task.exp_end_date) && nativeDateDay(task.exp_end_date) < today
-const tabs = computed(() => [{ value: 'open', label: 'Open', count: scopedTasks.value.filter(isOpen).length }, { value: 'overdue', label: 'Overdue', count: scopedTasks.value.filter(isOverdue).length }, { value: 'completed', label: 'Completed', count: scopedTasks.value.filter(t => t.status === 'Completed').length }, { value: 'all', label: 'All', count: scopedTasks.value.length }])
+const tabs = computed(() => [{ value: 'open', label: __('Open'), count: scopedTasks.value.filter(isOpen).length }, { value: 'overdue', label: __('Overdue'), count: scopedTasks.value.filter(isOverdue).length }, { value: 'completed', label: __('Completed'), count: scopedTasks.value.filter(t => t.status === 'Completed').length }, { value: 'all', label: __('All'), count: scopedTasks.value.length }])
 const visible = computed(() => scopedTasks.value.filter(task => {
   if (selected.value === 'open' && !isOpen(task)) return false
   if (selected.value === 'overdue' && !isOverdue(task)) return false
@@ -45,8 +46,8 @@ const visible = computed(() => scopedTasks.value.filter(task => {
   return [task.subject, task.issue_key, task.name, projectNames.value[task.project], task.project, task.reference_docname].join(' ').toLowerCase().includes(query.value.toLowerCase().trim())
 }))
 const groups = computed(() => {
-  if (selected.value !== 'open') return visible.value.length ? [{ title: tabs.value.find(t => t.value === selected.value).label + ' tasks', tasks: visible.value }] : []
-  return [{ title: 'Overdue', tasks: visible.value.filter(isOverdue) }, { title: 'Due today', tasks: visible.value.filter(t => nativeDateDay(t.exp_end_date) === today) }, { title: 'Upcoming', tasks: visible.value.filter(t => nativeDateDay(t.exp_end_date) > today) }, { title: 'No due date', tasks: visible.value.filter(t => !nativeDateDay(t.exp_end_date)) }].filter(g => g.tasks.length)
+  if (selected.value !== 'open') return visible.value.length ? [{ title: { overdue: __('Overdue tasks'), completed: __('Completed tasks'), all: __('All tasks') }[selected.value], tasks: visible.value }] : []
+  return [{ title: __('Overdue'), tasks: visible.value.filter(isOverdue) }, { title: __('Due today'), tasks: visible.value.filter(t => nativeDateDay(t.exp_end_date) === today) }, { title: __('Upcoming'), tasks: visible.value.filter(t => nativeDateDay(t.exp_end_date) > today) }, { title: __('No due date'), tasks: visible.value.filter(t => !nativeDateDay(t.exp_end_date)) }].filter(g => g.tasks.length)
 })
 let requestId = 0
 async function reload() {
@@ -61,11 +62,11 @@ async function reload() {
     ])
     if (request !== requestId) return
     tasks.value = native.status === 'fulfilled' ? (native.value || []).filter(task => { try { return JSON.parse(task._assign || '[]').includes(me) } catch { return false } }) : []
-    if (native.status === 'rejected') error.value = 'Project tasks could not be loaded. Please try again.'
+    if (native.status === 'rejected') error.value = __('Project tasks could not be loaded. Please try again.')
     if (crmResult.status === 'fulfilled') { crmAvailable.value = crmResult.value.available; tasks.value.push(...(crmResult.value.tasks || []).map(normalizeCrm)) }
-    else crmError.value = 'CRM tasks could not be loaded. Please try again.'
+    else crmError.value = __('CRM tasks could not be loaded. Please try again.')
     projectNames.value = Object.fromEntries((projectResult.status === 'fulfilled' ? projectResult.value || [] : []).map(p => [p.name, p.project_name]))
-  } catch { if (request === requestId) error.value = 'Your tasks could not be loaded. Please try again.' }
+  } catch { if (request === requestId) error.value = __('Your tasks could not be loaded. Please try again.') }
   finally { if (request === requestId) loading.value = false }
 }
 watch(() => createState.created, reload)

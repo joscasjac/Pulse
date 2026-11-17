@@ -3,7 +3,7 @@
     <path :d="arc(0, 180)" fill="none" stroke="var(--surface-2)" stroke-width="12" stroke-linecap="round" />
     <path :d="arc(0, pct * 1.8)" fill="none" :stroke="color" stroke-width="12" stroke-linecap="round" />
     <text x="60" y="52" text-anchor="middle" font-size="20" font-weight="700" fill="currentColor">{{ Math.round(pct) }}%</text>
-    <text x="60" y="64" text-anchor="middle" font-size="7" fill="var(--muted)">{{ label }}</text>
+    <text x="60" y="64" text-anchor="middle" font-size="7" fill="var(--muted)">{{ __(label) }}</text>
   </svg>
 </template>
 

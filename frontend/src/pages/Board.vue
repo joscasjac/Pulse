@@ -2,47 +2,47 @@
   <div class="task-board h-full flex flex-col">
     <Teleport v-if="toolbarReady" to="#task-toolbar-host">
     <header class="workspace-toolbar">
-      <div class="work-breadcrumb"><router-link to="/projects">{{ projectLabel }}</router-link><span aria-hidden="true">/</span><h1>{{ moduleDetails?.title || 'Work items' }}</h1><span class="work-count">{{ visibleCount }}</span></div>
-      <span v-if="movingTask" role="status" class="move-feedback">Moving task…</span>
+      <div class="work-breadcrumb"><router-link to="/projects">{{ projectLabel }}</router-link><span aria-hidden="true">/</span><h1>{{ moduleDetails?.title || __('Work items') }}</h1><span class="work-count">{{ visibleCount }}</span></div>
+      <span v-if="movingTask" role="status" class="move-feedback">{{ __('Moving task…') }}</span>
       <div class="workspace-actions">
-        <div class="workspace-modes" role="group" aria-label="Task layout"><button v-for="mode in modes" :key="mode.key" :class="{ active: view === mode.key }" :aria-pressed="view === mode.key" :aria-label="`${mode.label} view`" :title="`${mode.label} view`" @click="view = mode.key"><component :is="mode.icon" /></button></div>
-        <select v-if="!route.query.project && !moduleId" aria-label="Project" v-model="project" @change="changeProject" class="ctl"><option :value="null">All projects</option><option v-for="p in projects" :key="p.name" :value="p.name">{{ p.project_name || p.name }}</option></select>
-        <button class="toolbar-action" :aria-expanded="filtersOpen" @click="filtersOpen = !filtersOpen">Filters<span v-if="hasFilters" class="active-dot" /></button>
-        <button class="toolbar-action" :aria-expanded="displayOpen" @click="displayOpen = !displayOpen">Display</button>
-        <button class="btn-primary" @click="startToolbarAdd"><Plus class="w-3.5 h-3.5" /> Add work item</button>
-        <details class="board-overflow"><summary aria-label="More task actions" title="More task actions"><Ellipsis aria-hidden="true" /></summary><div class="board-overflow-menu"><button @click="load">Refresh tasks</button><button @click="selectVisible(true)">Select visible tasks</button><button v-if="project" @click="settingsOpen = !settingsOpen">Task settings</button><router-link :to="{ path: '/analytics', query: project ? { project } : {} }">Analytics</router-link><router-link :to="{ path: '/reports', query: project ? { project } : {} }">Reports</router-link></div></details>
+        <div class="workspace-modes" role="group" :aria-label="__('Task layout')"><button v-for="mode in modes" :key="mode.key" :class="{ active: view === mode.key }" :aria-pressed="view === mode.key" :aria-label="__('{0} view', [mode.label])" :title="__('{0} view', [mode.label])" @click="view = mode.key"><component :is="mode.icon" /></button></div>
+        <select v-if="!route.query.project && !moduleId" :aria-label="__('Project')" v-model="project" @change="changeProject" class="ctl"><option :value="null">{{ __('All projects') }}</option><option v-for="p in projects" :key="p.name" :value="p.name">{{ p.project_name || p.name }}</option></select>
+        <button class="toolbar-action" :aria-expanded="filtersOpen" @click="filtersOpen = !filtersOpen">{{ __('Filters') }}<span v-if="hasFilters" class="active-dot" /></button>
+        <button class="toolbar-action" :aria-expanded="displayOpen" @click="displayOpen = !displayOpen">{{ __('Display') }}</button>
+        <button class="btn-primary" @click="startToolbarAdd"><Plus class="w-3.5 h-3.5" /> {{ __('Add work item') }}</button>
+        <details class="board-overflow"><summary :aria-label="__('More task actions')" :title="__('More task actions')"><Ellipsis aria-hidden="true" /></summary><div class="board-overflow-menu"><button @click="load">{{ __('Refresh tasks') }}</button><button @click="selectVisible(true)">{{ __('Select visible tasks') }}</button><button v-if="project" @click="settingsOpen = !settingsOpen">{{ __('Task settings') }}</button><router-link :to="{ path: '/analytics', query: project ? { project } : {} }">{{ __('Analytics') }}</router-link><router-link :to="{ path: '/reports', query: project ? { project } : {} }">{{ __('Reports') }}</router-link></div></details>
       </div>
     </header>
     </Teleport>
     <div v-if="filtersOpen" class="board-filters flex items-center flex-wrap gap-2 border-b border-soft">
-      <div class="relative"><Search class="w-3.5 h-3.5 absolute left-2.5 top-1/2 -translate-y-1/2 text-muted" /><input v-model="filters.q" placeholder="Search tasks" aria-label="Search tasks" class="ctl task-search" /></div>
-      <select aria-label="Filter by type" v-model="filters.type" class="ctl"><option value="">All types</option><option v-for="t in issueTypes" :key="t">{{ t }}</option></select>
-      <select aria-label="Filter by priority" v-model="filters.priority" class="ctl"><option value="">All priorities</option><option>Urgent</option><option>High</option><option>Medium</option><option>Low</option></select>
-      <select aria-label="Filter by assignee" v-model="filters.assignee" class="ctl"><option value="">Anyone</option><option v-for="a in assignees" :key="a" :value="a">{{ a.split('@')[0] }}</option></select>
-      <button v-if="hasFilters" @click="clearFilters" class="toolbar-action">Clear filters</button>
+      <div class="relative"><Search class="w-3.5 h-3.5 absolute left-2.5 top-1/2 -translate-y-1/2 text-muted" /><input v-model="filters.q" :placeholder="__('Search tasks')" :aria-label="__('Search tasks')" class="ctl task-search" /></div>
+      <select :aria-label="__('Filter by type')" v-model="filters.type" class="ctl"><option value="">{{ __('All types') }}</option><option v-for="t in issueTypes" :key="t" :value="t">{{ __(t) }}</option></select>
+      <select :aria-label="__('Filter by priority')" v-model="filters.priority" class="ctl"><option value="">{{ __('All priorities') }}</option><option value="Urgent">{{ __('Urgent') }}</option><option value="High">{{ __('High') }}</option><option value="Medium">{{ __('Medium') }}</option><option value="Low">{{ __('Low') }}</option></select>
+      <select :aria-label="__('Filter by assignee')" v-model="filters.assignee" class="ctl"><option value="">{{ __('Anyone') }}</option><option v-for="a in assignees" :key="a" :value="a">{{ a.split('@')[0] }}</option></select>
+      <button v-if="hasFilters" @click="clearFilters" class="toolbar-action">{{ __('Clear filters') }}</button>
     </div>
     <div v-if="displayOpen" class="display-panel border-b border-soft">
-      <label><input type="checkbox" v-model="includeArchived" @change="load" /> Include archived</label><label><input type="checkbox" v-model="showCardDetails" /> Type, dates and estimates</label>
-      <button v-if="['board', 'list'].includes(view)" class="toolbar-action" @click="selectVisible(true)">Select visible tasks</button>
-      <button v-if="project" class="toolbar-action" @click="settingsOpen = !settingsOpen">Task settings</button>
-      <template v-if="advancedMode"><button class="toolbar-action" @click="advancedPanel = advancedPanel === 'display' ? '' : 'display'">Grouping and columns</button><button class="toolbar-action" @click="advancedPanel = advancedPanel === 'filters' ? '' : 'filters'">Advanced filters</button><button class="toolbar-action" @click="advancedPanel = advancedPanel === 'save' ? '' : 'save'">Save view</button></template>
-      <span class="text-xs text-muted">{{ visibleCount }} tasks</span>
+      <label><input type="checkbox" v-model="includeArchived" @change="load" /> {{ __('Include archived') }}</label><label><input type="checkbox" v-model="showCardDetails" /> {{ __('Type, dates and estimates') }}</label>
+      <button v-if="['board', 'list'].includes(view)" class="toolbar-action" @click="selectVisible(true)">{{ __('Select visible tasks') }}</button>
+      <button v-if="project" class="toolbar-action" @click="settingsOpen = !settingsOpen">{{ __('Task settings') }}</button>
+      <template v-if="advancedMode"><button class="toolbar-action" @click="advancedPanel = advancedPanel === 'display' ? '' : 'display'">{{ __('Grouping and columns') }}</button><button class="toolbar-action" @click="advancedPanel = advancedPanel === 'filters' ? '' : 'filters'">{{ __('Advanced filters') }}</button><button class="toolbar-action" @click="advancedPanel = advancedPanel === 'save' ? '' : 'save'">{{ __('Save view') }}</button></template>
+      <span class="text-xs text-muted">{{ visibleCount === 1 ? __('1 task') : __('{0} tasks', [visibleCount]) }}</span>
     </div>
     <TaskSettings v-if="settingsOpen && project" :project="project" @close="settingsOpen = false" @changed="load" />
     <div v-if="selected.length && !advancedMode" class="selection-toolbar flex items-center flex-wrap gap-2 border-b border-soft text-xs">
-      <label class="flex items-center gap-2"><input type="checkbox" :checked="allSelected" @change="selectVisible($event.target.checked)" /> Select visible</label>
+      <label class="flex items-center gap-2"><input type="checkbox" :checked="allSelected" @change="selectVisible($event.target.checked)" /> {{ __('Select visible') }}</label>
       <template v-if="selected.length">
-        <span>{{ selected.length }} selected</span>
-        <select v-model="bulk.project" class="ctl" aria-label="Move selected to project" @change="loadBulkConfig"><option value="">Keep project</option><option v-for="p in projects" :key="p.name" :value="p.name">{{ p.project_name || p.name }}</option></select>
-        <select v-model="bulk.workflow_state" class="ctl" aria-label="Bulk status"><option value="">Keep status</option><option v-for="s in bulkStatuses" :key="s.label">{{ s.label }}</option></select>
-        <select v-model="bulk.priority" class="ctl" aria-label="Bulk priority"><option value="">Keep priority</option><option>Low</option><option>Medium</option><option>High</option><option>Urgent</option></select>
-        <select v-model="bulk.user" class="ctl" aria-label="Assign selected"><option value="">Assign to…</option><option v-for="u in users" :key="u.name" :value="u.name">{{ u.full_name || u.name }}</option></select>
-        <button class="ctl" :disabled="bulkBusy" @click="applyBulk()">Apply changes</button>
-        <button class="ctl" :disabled="bulkBusy" @click="applyBulk(1)">Archive</button><button v-if="includeArchived" class="ctl" :disabled="bulkBusy" @click="applyBulk(0)">Restore</button>
-        <button @click="selected = []">Clear selection</button>
+        <span>{{ __('{0} selected', [selected.length]) }}</span>
+        <select v-model="bulk.project" class="ctl" :aria-label="__('Move selected to project')" @change="loadBulkConfig"><option value="">{{ __('Keep project') }}</option><option v-for="p in projects" :key="p.name" :value="p.name">{{ p.project_name || p.name }}</option></select>
+        <select v-model="bulk.workflow_state" class="ctl" :aria-label="__('Bulk status')"><option value="">{{ __('Keep status') }}</option><option v-for="s in bulkStatuses" :key="s.label" :value="s.label">{{ __(s.label) }}</option></select>
+        <select v-model="bulk.priority" class="ctl" :aria-label="__('Bulk priority')"><option value="">{{ __('Keep priority') }}</option><option value="Low">{{ __('Low') }}</option><option value="Medium">{{ __('Medium') }}</option><option value="High">{{ __('High') }}</option><option value="Urgent">{{ __('Urgent') }}</option></select>
+        <select v-model="bulk.user" class="ctl" :aria-label="__('Assign selected')"><option value="">{{ __('Assign to…') }}</option><option v-for="u in users" :key="u.name" :value="u.name">{{ u.full_name || u.name }}</option></select>
+        <button class="ctl" :disabled="bulkBusy" @click="applyBulk()">{{ __('Apply changes') }}</button>
+        <button class="ctl" :disabled="bulkBusy" @click="applyBulk(1)">{{ __('Archive') }}</button><button v-if="includeArchived" class="ctl" :disabled="bulkBusy" @click="applyBulk(0)">{{ __('Restore') }}</button>
+        <button @click="selected = []">{{ __('Clear selection') }}</button>
       </template>
     </div>
-    <p v-if="loadError" role="alert" class="px-6 py-3 text-sm">{{ loadError }} <button class="underline" @click="load">Retry</button></p>
+    <p v-if="loadError" role="alert" class="px-6 py-3 text-sm">{{ loadError }} <button class="underline" @click="load">{{ __('Retry') }}</button></p>
     <Views v-if="advancedMode" embedded :mode="view" :project="project" :task-names="visibleNames" :include-archived="includeArchived" :panel="advancedPanel" :refresh-key="refreshKey" :module="moduleId" :module-name="moduleDetails?.title" @changed="load" @close-panel="advancedPanel = ''" />
     <!-- Loading skeleton -->
     <div v-if="loading && !advancedMode && !movingTask && !cardBusy && !adding" class="flex gap-3 p-6 overflow-hidden">
@@ -63,38 +63,38 @@
         @dragover.prevent="dragOver = col.name; dragBefore = null" @dragleave="dragOver === col.name && (dragOver = null)" @drop.prevent="onDrop(col.name)">
         <div class="column-heading flex items-center gap-2">
           <component :is="statusIcon(col.name)" class="column-status-icon" :style="{ color: colColor(col.name) }" aria-hidden="true" />
-          <span class="column-name">{{ col.name }}</span>
+          <span class="column-name">{{ __(col.name) }}</span>
           <span class="column-count">{{ col.tasks.length }}</span>
-          <button class="column-collapse" :aria-expanded="!collapsedColumns.includes(col.name)" :aria-label="`${collapsedColumns.includes(col.name) ? 'Expand' : 'Collapse'} ${col.name}`" :title="`${collapsedColumns.includes(col.name) ? 'Expand' : 'Collapse'} column`" @click="toggleColumn(col.name)"><component :is="collapsedColumns.includes(col.name) ? Expand : Collapse" /></button>
-          <button v-if="!collapsedColumns.includes(col.name)" @click="startAdd(col.name)" class="column-add" :aria-label="`Add task to ${col.name}`" title="Add task"><Plus /></button>
+          <button class="column-collapse" :aria-expanded="!collapsedColumns.includes(col.name)" :aria-label="collapsedColumns.includes(col.name) ? __('Expand {0}', [__(col.name)]) : __('Collapse {0}', [__(col.name)])" :title="collapsedColumns.includes(col.name) ? __('Expand column') : __('Collapse column')" @click="toggleColumn(col.name)"><component :is="collapsedColumns.includes(col.name) ? Expand : Collapse" /></button>
+          <button v-if="!collapsedColumns.includes(col.name)" @click="startAdd(col.name)" class="column-add" :aria-label="__('Add task to {0}', [__(col.name)])" :title="__('Add task')"><Plus /></button>
         </div>
         <div v-show="!collapsedColumns.includes(col.name)" class="column-cards" :class="{ 'column-drop-active': dragOver === col.name }">
 
           <div v-for="t in col.tasks" :key="t.name" :data-drop-task="t.name" :draggable="!movingTask" @dragstart="startDrag($event, t)" @dragend="endDrag" @dragover.prevent.stop="dragOver = col.name; dragBefore = t.name" @drop.prevent.stop="onDrop(col.name, t.name)" @click="open(t.name)"
             :class="{ 'task-moving': movingTask === t.name, 'insert-before': dragTask && dragTask.name !== t.name && dragOver === col.name && dragBefore === t.name }" :aria-busy="movingTask === t.name" class="task-card group cursor-pointer">
             <div class="card-topline">
-              <button type="button" class="drag-grip" :aria-label="`Drag ${t.issue_key || t.subject} to move or reorder`" title="Drag to move or reorder task" :disabled="!!movingTask" :draggable="false" @pointerdown.stop.prevent="startGripDrag($event, t)" @dragstart.stop.prevent @click.stop><GripVertical aria-hidden="true" /></button>
-              <input type="checkbox" v-model="selected" :value="t.name" :aria-label="`Select ${t.subject}`" @click.stop />
+              <button type="button" class="drag-grip" :aria-label="__('Drag {0} to move or reorder', [t.issue_key || t.subject])" :title="__('Drag to move or reorder task')" :disabled="!!movingTask" :draggable="false" @pointerdown.stop.prevent="startGripDrag($event, t)" @dragstart.stop.prevent @click.stop><GripVertical aria-hidden="true" /></button>
+              <input type="checkbox" v-model="selected" :value="t.name" :aria-label="__('Select {0}', [t.subject])" @click.stop />
               <span class="card-identifier">{{ t.issue_key || t.name }}</span>
               <TypeTag v-if="showCardDetails" :value="t.task_type" class="card-type" />
             </div>
             <button class="card-title" @click.stop="open(t.name)">{{ t.subject }}</button>
             <div v-if="showCardDetails && (t.exp_end_date || t.expected_time || t.pulse_story_points)" class="card-metadata">
-              <span v-if="t.exp_end_date">Due {{ String(t.exp_end_date).slice(0, 10) }}</span><span v-if="t.expected_time">{{ t.expected_time }}h</span><span v-if="t.pulse_story_points">{{ t.pulse_story_points }} pts</span>
+              <span v-if="t.exp_end_date">{{ __('Due {0}', [String(t.exp_end_date).slice(0, 10)]) }}</span><span v-if="t.expected_time">{{ __('{0}h', [t.expected_time]) }}</span><span v-if="t.pulse_story_points">{{ __('{0} pts', [t.pulse_story_points]) }}</span>
             </div>
             <div class="card-properties" @click.stop @pointerdown.stop @dragstart.stop.prevent>
-              <label class="property-chip status-chip" :title="`Change status: ${t.workflow_state || col.name}`"><component :is="statusIcon(col.name)" class="chip-status-icon" :style="{ color: colColor(col.name) }" aria-hidden="true" /><select :value="t.workflow_state || col.name" :aria-label="`Status for ${t.subject}`" :disabled="Boolean(cardBusy) || Boolean(movingTask)" @focus="loadCardConfig(t.project)" @change="editCard(t, 'workflow_state', $event)"><option v-for="state in cardStatuses(t, col.name)" :key="state.label" :value="state.label">{{ state.label }}</option></select></label>
-              <label class="property-chip priority-chip" title="Change priority"><PriorityDot :value="t.priority" /><select :value="t.priority || 'Low'" :aria-label="`Priority for ${t.subject}`" :disabled="Boolean(cardBusy) || Boolean(movingTask)" @change="editCard(t, 'priority', $event)"><option>Low</option><option>Medium</option><option>High</option><option>Urgent</option></select></label>
-              <label class="property-chip assignee-chip" :title="t.assignees?.join(', ') || 'Assign task'"><Avatar v-if="t.assignees?.length" :name="t.assignees[0]" :size="16" /><UserRound v-else class="assignee-icon" /><select value="" :aria-label="`Assignees for ${t.subject}`" :disabled="Boolean(cardBusy) || Boolean(movingTask)" @change="editAssignment(t, $event)"><option value="" disabled>{{ t.assignees?.length ? `${t.assignees.length} assigned` : 'Assign' }}</option><optgroup label="Add assignee"><option v-for="user in users.filter(u => !t.assignees?.includes(u.name))" :key="user.name" :value="`add:${user.name}`">{{ user.full_name || user.name }}</option></optgroup><optgroup v-if="t.assignees?.length" label="Remove assignee"><option v-for="user in t.assignees" :key="user" :value="`remove:${user}`">{{ user }}</option></optgroup></select></label>
+              <label class="property-chip status-chip" :title="__('Change status: {0}', [__(t.workflow_state || col.name)])"><component :is="statusIcon(col.name)" class="chip-status-icon" :style="{ color: colColor(col.name) }" aria-hidden="true" /><select :value="t.workflow_state || col.name" :aria-label="__('Status for {0}', [t.subject])" :disabled="Boolean(cardBusy) || Boolean(movingTask)" @focus="loadCardConfig(t.project)" @change="editCard(t, 'workflow_state', $event)"><option v-for="state in cardStatuses(t, col.name)" :key="state.label" :value="state.label">{{ __(state.label) }}</option></select></label>
+              <label class="property-chip priority-chip" :title="__('Change priority')"><PriorityDot :value="t.priority" /><select :value="t.priority || 'Low'" :aria-label="__('Priority for {0}', [t.subject])" :disabled="Boolean(cardBusy) || Boolean(movingTask)" @change="editCard(t, 'priority', $event)"><option value="Low">{{ __('Low') }}</option><option value="Medium">{{ __('Medium') }}</option><option value="High">{{ __('High') }}</option><option value="Urgent">{{ __('Urgent') }}</option></select></label>
+              <label class="property-chip assignee-chip" :title="t.assignees?.join(', ') || __('Assign task')"><Avatar v-if="t.assignees?.length" :name="t.assignees[0]" :size="16" /><UserRound v-else class="assignee-icon" /><select value="" :aria-label="__('Assignees for {0}', [t.subject])" :disabled="Boolean(cardBusy) || Boolean(movingTask)" @change="editAssignment(t, $event)"><option value="" disabled>{{ t.assignees?.length ? __('{0} assigned', [t.assignees.length]) : __('Assign') }}</option><optgroup :label="__('Add assignee')"><option v-for="user in users.filter(u => !t.assignees?.includes(u.name))" :key="user.name" :value="`add:${user.name}`">{{ user.full_name || user.name }}</option></optgroup><optgroup v-if="t.assignees?.length" :label="__('Remove assignee')"><option v-for="user in t.assignees" :key="user" :value="`remove:${user}`">{{ user }}</option></optgroup></select></label>
             </div>
           </div>
           <div v-if="dragTask && dragOver === col.name && !dragBefore" class="drop-insertion" aria-hidden="true" />
 <form v-if="adding === col.name" class="inline-task-form" @submit.prevent="submitAdd(col.name)" @keydown.esc.stop.prevent="cancelAdd">
-          <label v-if="!project && !moduleDetails?.project" class="inline-project"><span>Project</span><select v-model="addProject" required :disabled="addBusy"><option value="" disabled>Choose project</option><option v-for="p in projects" :key="p.name" :value="p.name">{{ p.project_name || p.name }}</option></select></label>
-          <div class="inline-task-line"><span class="inline-prefix">{{ addProjectLabel }}</span><input ref="addInput" v-model="newSubject" aria-label="New work item title" placeholder="Work item title" :disabled="addBusy" maxlength="140" required autocomplete="off" /></div>
-          <p v-if="addError" class="inline-error" role="alert">{{ addError }}</p><div class="inline-task-hint"><span>{{ addBusy ? 'Creating…' : `Press 'Enter' to add another work item` }}</span><button type="button" :disabled="addBusy" @click="cancelAdd" aria-label="Cancel new task"><X /></button></div>
+          <label v-if="!project && !moduleDetails?.project" class="inline-project"><span>{{ __('Project') }}</span><select v-model="addProject" required :disabled="addBusy"><option value="" disabled>{{ __('Choose project') }}</option><option v-for="p in projects" :key="p.name" :value="p.name">{{ p.project_name || p.name }}</option></select></label>
+          <div class="inline-task-line"><span class="inline-prefix">{{ addProjectLabel }}</span><input ref="addInput" v-model="newSubject" :aria-label="__('New work item title')" :placeholder="__('Work item title')" :disabled="addBusy" maxlength="140" required autocomplete="off" /></div>
+          <p v-if="addError" class="inline-error" role="alert">{{ addError }}</p><div class="inline-task-hint"><span>{{ addBusy ? __('Creating…') : __("Press 'Enter' to add another work item") }}</span><button type="button" :disabled="addBusy" @click="cancelAdd" :aria-label="__('Cancel new task')"><X /></button></div>
         </form>
-        <button v-if="!collapsedColumns.includes(col.name) && adding !== col.name" @click="startAdd(col.name)" class="column-new-task"><Plus /> New work item</button>
+        <button v-if="!collapsedColumns.includes(col.name) && adding !== col.name" @click="startAdd(col.name)" class="column-new-task"><Plus /> {{ __('New work item') }}</button>
         </div>
       </div>
     </div>
@@ -104,30 +104,30 @@
       <div v-for="col in cols" :key="col.name" :data-drop-state="col.name" class="list-group" :class="{ 'drop-active': dragOver === col.name }" @dragover.prevent="dragOver = col.name; dragBefore = null" @drop.prevent="onDrop(col.name)">
         <div class="list-status-heading flex items-center gap-2 sticky top-0">
           <component :is="statusIcon(col.name)" class="column-status-icon" :style="{ color: colColor(col.name) }" aria-hidden="true" />
-          <span class="text-[13px] font-medium">{{ col.name }}</span>
+          <span class="text-[13px] font-medium">{{ __(col.name) }}</span>
           <span class="text-[11px] text-faint tnum">{{ col.tasks.length }}</span>
-          <button class="list-group-add" :aria-label="`Add task to ${col.name}`" :title="`Add task to ${col.name}`" @click="startAdd(col.name)"><Plus /></button>
+          <button class="list-group-add" :aria-label="__('Add task to {0}', [__(col.name)])" :title="__('Add task to {0}', [__(col.name)])" @click="startAdd(col.name)"><Plus /></button>
         </div>
         <div v-for="t in col.tasks" :key="t.name" :data-drop-task="t.name" :draggable="!movingTask" @dragstart="startDrag($event, t)" @dragend="endDrag" @dragover.prevent.stop="dragOver = col.name; dragBefore = t.name" @drop.prevent.stop="onDrop(col.name, t.name)" @click="open(t.name)"
           :class="{ 'task-moving': movingTask === t.name, 'insert-before': dragTask && dragTask.name !== t.name && dragOver === col.name && dragBefore === t.name }" :aria-busy="movingTask === t.name" class="list-row flex items-center gap-3 px-2 py-2 hover-app cursor-pointer">
-          <button type="button" class="drag-grip" :aria-label="`Drag ${t.issue_key || t.subject} to move or reorder`" title="Drag to move or reorder task" :disabled="!!movingTask" :draggable="false" @pointerdown.stop.prevent="startGripDrag($event, t)" @dragstart.stop.prevent @click.stop><GripVertical aria-hidden="true" /></button>
-          <input type="checkbox" v-model="selected" :value="t.name" :aria-label="`Select ${t.subject}`" @click.stop />
+          <button type="button" class="drag-grip" :aria-label="__('Drag {0} to move or reorder', [t.issue_key || t.subject])" :title="__('Drag to move or reorder task')" :disabled="!!movingTask" :draggable="false" @pointerdown.stop.prevent="startGripDrag($event, t)" @dragstart.stop.prevent @click.stop><GripVertical aria-hidden="true" /></button>
+          <input type="checkbox" v-model="selected" :value="t.name" :aria-label="__('Select {0}', [t.subject])" @click.stop />
           <span class="list-identifier">{{ t.issue_key || t.name }}</span>
           <TypeTag v-if="showCardDetails" :value="t.task_type" />
           <button class="list-task-title flex-1 truncate text-[13px]" @click.stop="open(t.name)">{{ t.subject }}</button>
             <div class="card-properties list-properties" @click.stop @pointerdown.stop @dragstart.stop.prevent>
-              <label class="property-chip status-chip" :title="`Change status: ${t.workflow_state || col.name}`"><component :is="statusIcon(col.name)" class="chip-status-icon" :style="{ color: colColor(col.name) }" aria-hidden="true" /><select :value="t.workflow_state || col.name" :aria-label="`Status for ${t.subject}`" :disabled="Boolean(cardBusy) || Boolean(movingTask)" @focus="loadCardConfig(t.project)" @change="editCard(t, 'workflow_state', $event)"><option v-for="state in cardStatuses(t, col.name)" :key="state.label" :value="state.label">{{ state.label }}</option></select></label>
-              <label class="property-chip priority-chip" title="Change priority"><PriorityDot :value="t.priority" /><select :value="t.priority || 'Low'" :aria-label="`Priority for ${t.subject}`" :disabled="Boolean(cardBusy) || Boolean(movingTask)" @change="editCard(t, 'priority', $event)"><option>Low</option><option>Medium</option><option>High</option><option>Urgent</option></select></label>
-              <label class="property-chip assignee-chip" :title="t.assignees?.join(', ') || 'Assign task'"><Avatar v-if="t.assignees?.length" :name="t.assignees[0]" :size="16" /><UserRound v-else class="assignee-icon" /><select value="" :aria-label="`Assignees for ${t.subject}`" :disabled="Boolean(cardBusy) || Boolean(movingTask)" @change="editAssignment(t, $event)"><option value="" disabled>{{ t.assignees?.length ? `${t.assignees.length} assigned` : 'Assign' }}</option><optgroup label="Add assignee"><option v-for="user in users.filter(u => !t.assignees?.includes(u.name))" :key="user.name" :value="`add:${user.name}`">{{ user.full_name || user.name }}</option></optgroup><optgroup v-if="t.assignees?.length" label="Remove assignee"><option v-for="user in t.assignees" :key="user" :value="`remove:${user}`">{{ user }}</option></optgroup></select></label>
+              <label class="property-chip status-chip" :title="__('Change status: {0}', [__(t.workflow_state || col.name)])"><component :is="statusIcon(col.name)" class="chip-status-icon" :style="{ color: colColor(col.name) }" aria-hidden="true" /><select :value="t.workflow_state || col.name" :aria-label="__('Status for {0}', [t.subject])" :disabled="Boolean(cardBusy) || Boolean(movingTask)" @focus="loadCardConfig(t.project)" @change="editCard(t, 'workflow_state', $event)"><option v-for="state in cardStatuses(t, col.name)" :key="state.label" :value="state.label">{{ __(state.label) }}</option></select></label>
+              <label class="property-chip priority-chip" :title="__('Change priority')"><PriorityDot :value="t.priority" /><select :value="t.priority || 'Low'" :aria-label="__('Priority for {0}', [t.subject])" :disabled="Boolean(cardBusy) || Boolean(movingTask)" @change="editCard(t, 'priority', $event)"><option value="Low">{{ __('Low') }}</option><option value="Medium">{{ __('Medium') }}</option><option value="High">{{ __('High') }}</option><option value="Urgent">{{ __('Urgent') }}</option></select></label>
+              <label class="property-chip assignee-chip" :title="t.assignees?.join(', ') || __('Assign task')"><Avatar v-if="t.assignees?.length" :name="t.assignees[0]" :size="16" /><UserRound v-else class="assignee-icon" /><select value="" :aria-label="__('Assignees for {0}', [t.subject])" :disabled="Boolean(cardBusy) || Boolean(movingTask)" @change="editAssignment(t, $event)"><option value="" disabled>{{ t.assignees?.length ? __('{0} assigned', [t.assignees.length]) : __('Assign') }}</option><optgroup :label="__('Add assignee')"><option v-for="user in users.filter(u => !t.assignees?.includes(u.name))" :key="user.name" :value="`add:${user.name}`">{{ user.full_name || user.name }}</option></optgroup><optgroup v-if="t.assignees?.length" :label="__('Remove assignee')"><option v-for="user in t.assignees" :key="user" :value="`remove:${user}`">{{ user }}</option></optgroup></select></label>
             </div>
         </div>
-        <p v-if="!col.tasks.length && dragTask" class="empty-drop">Drop a task here</p>
+        <p v-if="!col.tasks.length && dragTask" class="empty-drop">{{ __('Drop a task here') }}</p>
 <form v-if="adding === col.name" class="inline-task-form" @submit.prevent="submitAdd(col.name)" @keydown.esc.stop.prevent="cancelAdd">
-          <label v-if="!project && !moduleDetails?.project" class="inline-project"><span>Project</span><select v-model="addProject" required :disabled="addBusy"><option value="" disabled>Choose project</option><option v-for="p in projects" :key="p.name" :value="p.name">{{ p.project_name || p.name }}</option></select></label>
-          <div class="inline-task-line"><span class="inline-prefix">{{ addProjectLabel }}</span><input ref="addInput" v-model="newSubject" aria-label="New work item title" placeholder="Work item title" :disabled="addBusy" maxlength="140" required autocomplete="off" /></div>
-          <p v-if="addError" class="inline-error" role="alert">{{ addError }}</p><div class="inline-task-hint"><span>{{ addBusy ? 'Creating…' : `Press 'Enter' to add another work item` }}</span><button type="button" :disabled="addBusy" @click="cancelAdd" aria-label="Cancel new task"><X /></button></div>
+          <label v-if="!project && !moduleDetails?.project" class="inline-project"><span>{{ __('Project') }}</span><select v-model="addProject" required :disabled="addBusy"><option value="" disabled>{{ __('Choose project') }}</option><option v-for="p in projects" :key="p.name" :value="p.name">{{ p.project_name || p.name }}</option></select></label>
+          <div class="inline-task-line"><span class="inline-prefix">{{ addProjectLabel }}</span><input ref="addInput" v-model="newSubject" :aria-label="__('New work item title')" :placeholder="__('Work item title')" :disabled="addBusy" maxlength="140" required autocomplete="off" /></div>
+          <p v-if="addError" class="inline-error" role="alert">{{ addError }}</p><div class="inline-task-hint"><span>{{ addBusy ? __('Creating…') : __("Press 'Enter' to add another work item") }}</span><button type="button" :disabled="addBusy" @click="cancelAdd" :aria-label="__('Cancel new task')"><X /></button></div>
         </form>
-        <button v-if="adding !== col.name" class="list-new-task" @click="startAdd(col.name)"><Plus /> New work item</button>
+        <button v-if="adding !== col.name" class="list-new-task" @click="startAdd(col.name)"><Plus /> {{ __('New work item') }}</button>
       </div>
     </div>
 
@@ -153,6 +153,7 @@ import TypeTag from '@/ui/TypeTag.vue'
 import PriorityDot from '@/ui/PriorityDot.vue'
 import Skeleton from '@/ui/Skeleton.vue'
 import { toast } from '@/ui/toast'
+import { __ } from '@/translation'
 import { openCreate, createState } from '@/ui/create'
 import SquareKanban from '~icons/lucide/square-kanban'
 import List from '~icons/lucide/list'
@@ -180,15 +181,15 @@ function statusIcon(name) { return { done: CircleCheck, active: CircleDot, backl
 async function loadCardConfig(projectName) {
   if (!projectName || cardConfigs.value[projectName]) return
   try { cardConfigs.value[projectName] = await call('pulse.api.task_config.get_config', { project: projectName }) }
-  catch { toast.error('Task statuses could not be loaded. Try again.') }
+  catch { toast.error(__('Task statuses could not be loaded. Try again.')) }
 }
 function cardStatuses(task, current) { return cardConfigs.value[task.project]?.statuses || [{ label: task.workflow_state || current }] }
 async function editCard(task, field, event) {
   const value = event.target.value, previous = task[field]
   if (cardBusy.value || movingTask.value) { event.target.value = previous; return }
   cardBusy.value = task.name
-  try { await call('pulse.api.tasks.bulk_update', { tasks: [task.name], fields: { [field]: value } }); await load(); toast.success('Task updated') }
-  catch (error) { event.target.value = previous; toast.error(error?.messages?.[0] || 'Could not update this task. Try again.') }
+  try { await call('pulse.api.tasks.bulk_update', { tasks: [task.name], fields: { [field]: value } }); await load(); toast.success(__('Task updated')) }
+  catch (error) { event.target.value = previous; toast.error(error?.messages?.[0] || __('Could not update this task. Try again.')) }
   finally { cardBusy.value = null }
 }
 async function editAssignment(task, event) {
@@ -196,8 +197,8 @@ async function editAssignment(task, event) {
   event.target.value = ''
   if (!user || cardBusy.value || movingTask.value) return
   cardBusy.value = task.name
-  try { await call('pulse.api.tasks.bulk_update', { tasks: [task.name], [removing ? 'unassign' : 'assign']: [user] }); await load(); toast.success(removing ? 'Assignee removed' : 'Task assigned') }
-  catch (error) { toast.error(error?.messages?.[0] || 'Could not change the assignment. Try again.') }
+  try { await call('pulse.api.tasks.bulk_update', { tasks: [task.name], [removing ? 'unassign' : 'assign']: [user] }); await load(); toast.success(removing ? __('Assignee removed') : __('Task assigned')) }
+  catch (error) { toast.error(error?.messages?.[0] || __('Could not change the assignment. Try again.')) }
   finally { cardBusy.value = null }
 }
 
@@ -222,15 +223,15 @@ async function applyBulk(archived) {
   try {
     const fields = Object.fromEntries(['project', 'workflow_state', 'priority'].filter(k => bulk[k]).map(k => [k, bulk[k]]))
     if (archived !== undefined) fields.pulse_archived = archived
-    if (!Object.keys(fields).length && !bulk.user) { toast.error('Choose a change to apply'); return }
+    if (!Object.keys(fields).length && !bulk.user) { toast.error(__('Choose a change to apply')); return }
     await call('pulse.api.tasks.bulk_update', { tasks: selected.value, fields, assign: bulk.user ? [bulk.user] : [] })
-    toast.success(`${selected.value.length} tasks updated`); selected.value = []; Object.assign(bulk, { project: '', workflow_state: '', priority: '', user: '' }); await load()
-  } catch (e) { toast.error(e?.messages?.[0] || 'Could not update selected tasks. No changes were applied.') }
+    toast.success(__('{0} tasks updated', [selected.value.length])); selected.value = []; Object.assign(bulk, { project: '', workflow_state: '', priority: '', user: '' }); await load()
+  } catch (e) { toast.error(e?.messages?.[0] || __('Could not update selected tasks. No changes were applied.')) }
   finally { bulkBusy.value = false }
 }
 const loading = ref(true)
 const view = ref('list')
-const modes = [{ key: 'list', label: 'List', icon: List }, { key: 'board', label: 'Board', icon: SquareKanban }, { key: 'calendar', label: 'Calendar', icon: Calendar }, { key: 'timeline', label: 'Timeline', icon: Timeline }, { key: 'spreadsheet', label: 'Spreadsheet', icon: Table }]
+const modes = [{ key: 'list', label: __('List'), icon: List }, { key: 'board', label: __('Board'), icon: SquareKanban }, { key: 'calendar', label: __('Calendar'), icon: Calendar }, { key: 'timeline', label: __('Timeline'), icon: Timeline }, { key: 'spreadsheet', label: __('Spreadsheet'), icon: Table }]
 const advancedMode = computed(() => ['calendar', 'timeline', 'spreadsheet'].includes(view.value))
 const filtersOpen = ref(false), displayOpen = ref(false), advancedPanel = ref(''), refreshKey = ref(0)
 const visibleNames = computed(() => cols.value.flatMap(c => c.tasks.map(t => t.name)))
@@ -248,8 +249,8 @@ const openId = ref(route.query.task || null)
 watch(() => route.query.task, value => { openId.value = value || null })
 const adding = ref(null)
 const newSubject = ref(''), addBusy = ref(false), addError = ref(''), addProject = ref('')
-const projectLabel = computed(() => projects.value.find(p => p.name === project.value)?.project_name || project.value || 'Projects')
-const addProjectLabel = computed(() => { const name = project.value || moduleDetails.value?.project || addProject.value; const selectedProject = projects.value.find(p => p.name === name); return selectedProject?.pulse_project_key || name || 'PROJECT' })
+const projectLabel = computed(() => projects.value.find(p => p.name === project.value)?.project_name || project.value || __('Projects'))
+const addProjectLabel = computed(() => { const name = project.value || moduleDetails.value?.project || addProject.value; const selectedProject = projects.value.find(p => p.name === name); return selectedProject?.pulse_project_key || name || __('PROJECT') })
 const addInput = ref(null)
 const filters = reactive({ q: '', type: '', priority: '', assignee: '' })
 let restoringPreferences = true, preferenceTimer = null, preferenceVersion = 0, pendingPreference = null, preferenceWrites = Promise.resolve()
@@ -258,7 +259,7 @@ function flushPreference() {
   clearTimeout(preferenceTimer)
   if (!pendingPreference) return preferenceWrites
   const snapshot = pendingPreference; pendingPreference = null
-  preferenceWrites = preferenceWrites.then(() => call('pulse.api.views.preferences', snapshot)).catch(() => toast.error('Workspace preferences could not be saved.'))
+  preferenceWrites = preferenceWrites.then(() => call('pulse.api.views.preferences', snapshot)).catch(() => toast.error(__('Workspace preferences could not be saved.')))
   return preferenceWrites
 }
 async function restorePreferences() {
@@ -272,7 +273,7 @@ async function restorePreferences() {
     includeArchived.value = Boolean(prefs.include_archived)
     filtersOpen.value = Boolean(prefs.filters_open); displayOpen.value = Boolean(prefs.display_open)
     await nextTick()
-  } catch (e) { toast.error('Could not restore your workspace preferences.') }
+  } catch (e) { toast.error(__('Could not restore your workspace preferences.')) }
   finally { if (version === preferenceVersion) restoringPreferences = false }
 }
 async function changeProject() { selected.value = []; await flushPreference(); await restorePreferences(); await load() }
@@ -333,7 +334,7 @@ async function load() {
   if (!users.value.length) users.value = await call('pulse.api.spa.get_assignable_users')
   if (project.value) { const config = await call('pulse.api.task_config.get_config', { project: project.value }); issueTypes.value = config.task_types; cardConfigs.value[project.value] = config }
   await loadBulkConfig()
-  } catch (e) { if (version === loadVersion) loadError.value = e?.messages?.[0] || 'Could not load tasks.' }
+  } catch (e) { if (version === loadVersion) loadError.value = e?.messages?.[0] || __('Could not load tasks.') }
   finally { if (version === loadVersion) loading.value = false }
 }
 
@@ -360,8 +361,8 @@ async function onDrop(colName, beforeName = null) {
   clearTimeout(rtTimer)
   try {
     const changed = await moveTaskToGroup(board.value.columns, task.name, colName, (name, state, before, after) => call('pulse.api.tasks.move_task', { task: name, state, before, after }), beforeName)
-    if (changed) { toast.success(`${task.issue_key || task.subject} moved to ${colName}`); deferredBoardRefresh = true }
-  } catch (e) { toast.error(e?.messages?.[0] || 'Could not move task'); deferredBoardRefresh = true }
+    if (changed) { toast.success(__('{0} moved to {1}', [task.issue_key || task.subject, __(colName)])); deferredBoardRefresh = true }
+  } catch (e) { toast.error(e?.messages?.[0] || __('Could not move task')); deferredBoardRefresh = true }
   finally { movingTask.value = null; if (deferredBoardRefresh) { deferredBoardRefresh = false; await load() } }
 }
 
@@ -376,7 +377,7 @@ function startAdd(col) {
 async function startToolbarAdd() {
   if (!['board', 'list'].includes(view.value)) { view.value = 'list'; await nextTick() }
   if (cols.value.length) startAdd(cols.value[0].name)
-  else toast.error('Choose a project with task statuses first.')
+  else toast.error(__('Choose a project with task statuses first.'))
 }
 function dismissInlineOutside(event) { if (adding.value && !event.target.closest('.inline-task-form')) cancelAdd() }
 function cancelAdd() { if (!addBusy.value) { adding.value = null; newSubject.value = ''; addError.value = '' } }
@@ -384,14 +385,14 @@ async function submitAdd(col) {
   if (addBusy.value) return
   const subject = newSubject.value.trim(), proj = project.value || moduleDetails.value?.project || addProject.value
   if (!subject) return
-  if (!proj) { addError.value = 'Choose a project for this task.'; return }
+  if (!proj) { addError.value = __('Choose a project for this task.'); return }
   addBusy.value = true; addError.value = ''
   try {
     const task = await call('pulse.api.spa.create_task', { project: proj, subject, state: col, module: moduleId.value || undefined })
     newSubject.value = ''
     await load()
-    toast.success(`Created ${task.issue_key || subject}`)
-  } catch (error) { addError.value = error?.messages?.[0] || 'Task could not be created. Your title is still here; try again.' }
+    toast.success(__('Created {0}', [task.issue_key || subject]))
+  } catch (error) { addError.value = error?.messages?.[0] || __('Task could not be created. Your title is still here; try again.') }
   finally { addBusy.value = false; focusInlineInput() }
 }
 

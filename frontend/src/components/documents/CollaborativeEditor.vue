@@ -1,9 +1,9 @@
 <template>
   <div>
     <p class="sync-state" role="status">{{ status }}</p>
-    <p v-if="error" role="alert">{{ error }} <button class="btn-ghost" @click="synchronize">Retry sync</button></p>
+    <p v-if="error" role="alert">{{ error }} <button class="btn-ghost" @click="synchronize">{{ __('Retry sync') }}</button></p>
     <TextEditor v-if="!ready" ref="seedEditor" :content="content" :mentions="mentionOptions" :editable="false" editor-class="prose prose-sm doc-editor" />
-    <TextEditor v-else ref="editor" :extensions="extensions" :starterkit-options="{ undoRedo: false }" :fixed-menu="true" :mentions="mentionOptions" :upload-function="uploadPageImage" placeholder="Write together. Type @ to mention a teammate." editor-class="prose prose-sm doc-editor" />
+    <TextEditor v-else ref="editor" :extensions="extensions" :starterkit-options="{ undoRedo: false }" :fixed-menu="true" :mentions="mentionOptions" :upload-function="uploadPageImage" :placeholder="__('Write together. Type @ to mention a teammate.')" editor-class="prose prose-sm doc-editor" />
   </div>
 </template>
 <script setup>
@@ -14,12 +14,13 @@ import * as Y from 'yjs'
 import Collaboration from '@tiptap/extension-collaboration'
 import { prosemirrorToYDoc } from 'y-prosemirror'
 import { applyStates, encodeState } from '../../utils/documentSync'
+import { __ } from '@/translation'
 const props = defineProps({ name: String, content: String, mentions: Array })
 const emit = defineEmits(['synced'])
 const uploadPageImage = createPrivateEditorUpload((file, args) => useFileUpload().upload(file, args), () => ({ doctype: 'Pulse Document', docname: props.name }))
 const mentionOptions = { mentions: () => props.mentions || [] }
 const ready = ref(false), seedEditor = ref(null), editor = ref(null), extensions = shallowRef([])
-const error = ref(''), status = ref('Connecting to shared page…')
+const error = ref(''), status = ref(__('Connecting to shared page…'))
 let doc = new Y.Doc(), sequence = 0, timer, inFlight, stopped = false, dirty = false, lastState = ''
 const api = args => call('pulse.api.documents.sync_page', { name: props.name, ...args })
 async function initialize() {
@@ -38,9 +39,9 @@ async function initialize() {
   }
   lastState = encodeState(doc)
   extensions.value = [Collaboration.configure({ document: doc })]
-  doc.on('update', (_, origin) => { if (origin !== 'remote') { dirty = true; status.value = 'Saving shared changes…' } })
+  doc.on('update', (_, origin) => { if (origin !== 'remote') { dirty = true; status.value = __('Saving shared changes…') } })
   ready.value = true
-  status.value = 'Shared page · changes save automatically'
+  status.value = __('Shared page · changes save automatically')
 }
 async function performSync() {
   error.value = ''
@@ -56,13 +57,13 @@ async function performSync() {
   dirty = merged !== state
   lastState = state
   emit('synced', data.modified)
-  status.value = dirty ? 'Synchronizing shared changes…' : 'All shared changes saved'
+  status.value = dirty ? __('Synchronizing shared changes…') : __('All shared changes saved')
 }
 async function synchronize() {
   if (inFlight) return inFlight
   inFlight = performSync().catch(e => {
-    error.value = e.message || 'Changes could not sync. Keep this page open and retry.'
-    status.value = 'Changes waiting to sync'
+    error.value = e.message || __('Changes could not sync. Keep this page open and retry.')
+    status.value = __('Changes waiting to sync')
     throw e
   }).finally(() => { inFlight = null })
   return inFlight
@@ -71,7 +72,7 @@ async function flush() {
   await synchronize()
   // Fetch/merge can introduce a new state, so persist it before leaving.
   for (let attempt = 0; dirty && attempt < 5; attempt++) await synchronize()
-  if (dirty) throw new Error('The page is still syncing. Please try again in a moment.')
+  if (dirty) throw new Error(__('The page is still syncing. Please try again in a moment.'))
 }
 function preventLoss(event) { if (dirty || inFlight) { event.preventDefault(); event.returnValue = '' } }
 onMounted(async () => {

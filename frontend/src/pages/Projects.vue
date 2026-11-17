@@ -3,84 +3,84 @@
 <template>
   <div class="projects-page">
     <header class="page-heading">
-      <div><h1>Projects</h1><p class="text-muted">Your team's projects and client work.</p></div>
-      <button @click="openEntity('Project')" class="btn-primary"><Plus class="w-3.5 h-3.5" /> New project</button>
+      <div><h1>{{ __('Projects') }}</h1><p class="text-muted">{{ __('Your team\'s projects and client work.') }}</p></div>
+      <button @click="openEntity('Project')" class="btn-primary"><Plus class="w-3.5 h-3.5" /> {{ __('New project') }}</button>
     </header>
 
-    <details class="delivery-create"><summary class="btn-ghost">Create delivery work from CRM or sales…</summary><DeliveryHandoff @created="reload" /></details>
+    <details class="delivery-create"><summary class="btn-ghost">{{ __('Create delivery work from CRM or sales…') }}</summary><DeliveryHandoff @created="reload" /></details>
 
-    <nav class="project-tabs" aria-label="Project views">
-      <button :class="{ selected: activeTab === 'projects' }" :aria-current="activeTab === 'projects' ? 'page' : undefined" @click="chooseTab('projects')">All projects <span>{{ projects.length }}</span></button>
-      <button :class="{ selected: activeTab === 'templates' }" :aria-current="activeTab === 'templates' ? 'page' : undefined" @click="chooseTab('templates')">Templates <span>{{ templateCount }}</span></button>
-      <button :class="{ selected: activeTab === 'workload' }" :aria-current="activeTab === 'workload' ? 'page' : undefined" @click="chooseTab('workload')">Workload</button>
+    <nav class="project-tabs" :aria-label="__('Project views')">
+      <button :class="{ selected: activeTab === 'projects' }" :aria-current="activeTab === 'projects' ? 'page' : undefined" @click="chooseTab('projects')">{{ __('All projects') }} <span>{{ projects.length }}</span></button>
+      <button :class="{ selected: activeTab === 'templates' }" :aria-current="activeTab === 'templates' ? 'page' : undefined" @click="chooseTab('templates')">{{ __('Templates') }} <span>{{ templateCount }}</span></button>
+      <button :class="{ selected: activeTab === 'workload' }" :aria-current="activeTab === 'workload' ? 'page' : undefined" @click="chooseTab('workload')">{{ __('Workload') }}</button>
     </nav>
 
-    <div v-if="error" role="alert" class="error-notice">{{ error }} <button class="underline" @click="activeTab === 'workload' ? loadWorkload() : reload()">Retry</button></div>
+    <div v-if="error" role="alert" class="error-notice">{{ error }} <button class="underline" @click="activeTab === 'workload' ? loadWorkload() : reload()">{{ __('Retry') }}</button></div>
 
     <template v-if="activeTab !== 'workload'">
       <div class="project-toolbar">
-        <label class="search-field"><Search class="w-4 h-4" /><input v-model="search" type="search" placeholder="Search projects…" aria-label="Search projects by name, key, customer or order" /></label>
-        <select v-model="statusFilter" class="field status-filter" aria-label="Filter by project status"><option value="">All statuses</option><option v-for="status in statuses" :key="status">{{ status }}</option></select>
+        <label class="search-field"><Search class="w-4 h-4" /><input v-model="search" type="search" :placeholder="__('Search projects…')" :aria-label="__('Search projects by name, key, customer or order')" /></label>
+        <select v-model="statusFilter" class="field status-filter" :aria-label="__('Filter by project status')"><option value="">{{ __('All statuses') }}</option><option v-for="status in statuses" :key="status" :value="status">{{ __(status) }}</option></select>
       </div>
-      <p v-if="activeTab === 'templates'" class="section-hint">Start repeatable work from a template. Mark any project as a template in its business details.</p>
+      <p v-if="activeTab === 'templates'" class="section-hint">{{ __('Start repeatable work from a template. Mark any project as a template in its business details.') }}</p>
 
       <TaskTransfer v-if="transferProject" :key="transferProject.name" :project="transferProject" @close="transferProject = null" @changed="reload" />
       <ProjectTeam v-if="teamProject" :key="teamProject.name" :project="teamProject" @close="teamProject = null" />
       <form v-if="editing" class="project-editor" @submit.prevent="saveBusiness" @keydown.esc="editing = null">
-        <div class="editor-heading"><h2>{{ editing.project_name }} <span class="text-muted">/ Business details</span></h2><button type="button" class="icon-control" aria-label="Close business details" @click="editing = null"><X class="w-4 h-4" /></button></div>
+        <div class="editor-heading"><h2>{{ editing.project_name }} <span class="text-muted">/ {{ __('Business details') }}</span></h2><button type="button" class="icon-control" :aria-label="__('Close business details')" @click="editing = null"><X class="w-4 h-4" /></button></div>
         <div class="editor-fields">
-          <label>Customer<select v-model="customer" class="field" @change="salesOrder = ''; loadOptions()"><option value="">No customer</option><option v-for="c in options.customers" :key="c.name" :value="c.name">{{ c.customer_name }}</option></select></label>
-          <label>Sales order<select v-model="salesOrder" class="field"><option value="">No sales order</option><option v-for="o in options.orders" :key="o.name" :value="o.name">{{ o.name }}</option></select></label>
+          <label>{{ __('Customer') }}<select v-model="customer" class="field" @change="salesOrder = ''; loadOptions()"><option value="">{{ __('No customer') }}</option><option v-for="c in options.customers" :key="c.name" :value="c.name">{{ c.customer_name }}</option></select></label>
+          <label>{{ __('Sales order') }}<select v-model="salesOrder" class="field"><option value="">{{ __('No sales order') }}</option><option v-for="o in options.orders" :key="o.name" :value="o.name">{{ o.name }}</option></select></label>
         </div>
-        <label class="template-check"><input v-model="isTemplate" type="checkbox" /> Use this project as a reusable template</label>
-        <div class="editor-actions"><button type="button" class="btn-ghost" @click="editing = null">Cancel</button><button class="btn-primary" :disabled="busy">{{ busy ? 'Saving…' : 'Save details' }}</button></div>
+        <label class="template-check"><input v-model="isTemplate" type="checkbox" /> {{ __('Use this project as a reusable template') }}</label>
+        <div class="editor-actions"><button type="button" class="btn-ghost" @click="editing = null">{{ __('Cancel') }}</button><button class="btn-primary" :disabled="busy">{{ busy ? __('Saving…') : __('Save details') }}</button></div>
       </form>
       <form v-if="cloning" class="project-editor" @submit.prevent="cloneProject" @keydown.esc="cloning = null">
-        <div class="editor-heading"><h2>Create from {{ cloning.project_name }}</h2><button type="button" class="icon-control" aria-label="Close template form" @click="cloning = null"><X class="w-4 h-4" /></button></div>
-        <p class="text-sm text-muted mb-4">Copies tasks, hierarchy, dependencies and checklists. Completion, assignments and time entries start fresh.</p>
-        <label class="block text-sm">New project name<input v-model="cloneName" required class="field mt-1" placeholder="e.g. September client onboarding" /></label>
-        <div class="editor-actions"><button type="button" class="btn-ghost" @click="cloning = null">Cancel</button><button class="btn-primary" :disabled="busy || !cloneName.trim()">{{ busy ? 'Creating…' : 'Create project' }}</button></div>
+        <div class="editor-heading"><h2>{{ __('Create from {0}', [cloning.project_name]) }}</h2><button type="button" class="icon-control" :aria-label="__('Close template form')" @click="cloning = null"><X class="w-4 h-4" /></button></div>
+        <p class="text-sm text-muted mb-4">{{ __('Copies tasks, hierarchy, dependencies and checklists. Completion, assignments and time entries start fresh.') }}</p>
+        <label class="block text-sm">{{ __('New project name') }}<input v-model="cloneName" required class="field mt-1" :placeholder="__('e.g. September client onboarding')" /></label>
+        <div class="editor-actions"><button type="button" class="btn-ghost" @click="cloning = null">{{ __('Cancel') }}</button><button class="btn-primary" :disabled="busy || !cloneName.trim()">{{ busy ? __('Creating…') : __('Create project') }}</button></div>
       </form>
 
-      <div v-if="loading" class="project-list" aria-label="Loading projects"><div v-for="n in 5" :key="n" class="loading-row"><Skeleton width="35%" height="16px" /><Skeleton width="15%" height="14px" /></div></div>
+      <div v-if="loading" class="project-list" :aria-label="__('Loading projects')"><div v-for="n in 5" :key="n" class="loading-row"><Skeleton width="35%" height="16px" /><Skeleton width="15%" height="14px" /></div></div>
       <div v-else-if="filteredProjects.length" class="project-list">
-        <div class="list-heading" aria-hidden="true"><span>Project</span><span>Customer</span><span>Status</span><span>Tasks</span><span></span></div>
+        <div class="list-heading" aria-hidden="true"><span>{{ __('Project') }}</span><span>{{ __('Customer') }}</span><span>{{ __('Status') }}</span><span>{{ __('Tasks') }}</span><span></span></div>
         <article v-for="p in filteredProjects" :key="p.name" class="project-row">
-          <div class="project-identity"><span class="project-mark">{{ (p.project_name || p.name).slice(0, 1).toUpperCase() }}</span><div class="min-w-0"><button class="project-title" @click="goBoard(p.name)">{{ p.project_name || p.name }}</button><div class="project-subtitle"><span v-if="p.pulse_project_key">{{ p.pulse_project_key }}</span><span v-if="p.pulse_is_template" class="template-label">Template</span><span v-if="!p.pulse_project_key && !p.pulse_is_template">{{ p.name }}</span></div></div></div>
+          <div class="project-identity"><span class="project-mark">{{ (p.project_name || p.name).slice(0, 1).toUpperCase() }}</span><div class="min-w-0"><button class="project-title" @click="goBoard(p.name)">{{ p.project_name || p.name }}</button><div class="project-subtitle"><span v-if="p.pulse_project_key">{{ p.pulse_project_key }}</span><span v-if="p.pulse_is_template" class="template-label">{{ __('Template') }}</span><span v-if="!p.pulse_project_key && !p.pulse_is_template">{{ p.name }}</span></div></div></div>
           <div class="project-customer"><span>{{ p.customer || '—' }}</span><small v-if="p.sales_order">{{ p.sales_order }}</small></div>
           <div class="project-status"><StatusPill v-if="p.status" :value="p.status" /></div>
-          <span class="task-count tnum">{{ p.taskCount }}<span class="mobile-task-label"> tasks</span></span>
+          <span class="task-count tnum">{{ p.taskCount }}<span class="mobile-task-label"> {{ __('tasks') }}</span></span>
           <div class="project-actions">
-            <details class="context-menu" @keydown.esc="closeMenu"><summary class="icon-control" :aria-label="`Actions for ${p.project_name || p.name}`"><MoreHorizontal class="w-4 h-4" /></summary><div class="menu-items">
+            <details class="context-menu" @keydown.esc="closeMenu"><summary class="icon-control" :aria-label="__('Actions for {0}', [p.project_name || p.name])"><MoreHorizontal class="w-4 h-4" /></summary><div class="menu-items">
               <PersonalControls class="menu-personal" doctype="Project" :name="p.name" :record-recent="false" />
-              <button @click="goBoard(p.name); closeMenu($event)">Open tasks</button>
-              <button @click="openEntity('Project', p.name); closeMenu($event)">Project details</button>
-              <button v-if="p.can_write" @click="editBusiness(p); closeMenu($event)">Business details</button>
-              <button v-if="p.can_write" @click="transferProject = p; teamProject = null; closeMenu($event)">Import / export tasks</button>
-              <button v-if="p.can_manage_team" @click="teamProject = p; transferProject = null; closeMenu($event)">Manage team</button>
-              <button v-if="p.pulse_is_template" @click="useTemplate(p); closeMenu($event)">Use template</button>
+              <button @click="goBoard(p.name); closeMenu($event)">{{ __('Open tasks') }}</button>
+              <button @click="openEntity('Project', p.name); closeMenu($event)">{{ __('Project details') }}</button>
+              <button v-if="p.can_write" @click="editBusiness(p); closeMenu($event)">{{ __('Business details') }}</button>
+              <button v-if="p.can_write" @click="transferProject = p; teamProject = null; closeMenu($event)">{{ __('Import / export tasks') }}</button>
+              <button v-if="p.can_manage_team" @click="teamProject = p; transferProject = null; closeMenu($event)">{{ __('Manage team') }}</button>
+              <button v-if="p.pulse_is_template" @click="useTemplate(p); closeMenu($event)">{{ __('Use template') }}</button>
             </div></details>
           </div>
         </article>
       </div>
-      <div v-else class="empty-state"><Folder class="w-7 h-7 text-muted" /><h2>{{ search || statusFilter ? 'No matching projects' : activeTab === 'templates' ? 'No templates yet' : 'Your projects start here' }}</h2><p>{{ search || statusFilter ? 'Try another search or clear the status filter.' : activeTab === 'templates' ? 'Open a project’s business details and enable reusable template.' : 'Create a project to organize tasks and bring your team together.' }}</p><button v-if="search || statusFilter" class="btn-ghost" @click="search = ''; statusFilter = ''">Clear filters</button><button v-else-if="activeTab === 'projects'" class="btn-ghost" @click="openEntity('Project')">Create your first project</button></div>
+      <div v-else class="empty-state"><Folder class="w-7 h-7 text-muted" /><h2>{{ search || statusFilter ? __('No matching projects') : activeTab === 'templates' ? __('No templates yet') : __('Your projects start here') }}</h2><p>{{ search || statusFilter ? __('Try another search or clear the status filter.') : activeTab === 'templates' ? __('Open a project’s business details and enable reusable template.') : __('Create a project to organize tasks and bring your team together.') }}</p><button v-if="search || statusFilter" class="btn-ghost" @click="search = ''; statusFilter = ''">{{ __('Clear filters') }}</button><button v-else-if="activeTab === 'projects'" class="btn-ghost" @click="openEntity('Project')">{{ __('Create your first project') }}</button></div>
     </template>
 
     <section v-else class="workload-panel">
-      <div class="workload-heading"><div><h2>Team capacity</h2><p class="text-sm text-muted mt-1">Compare estimated work with allocations and approved leave.</p></div><div class="flex gap-2"><button class="btn-ghost" @click="openEntity('Pulse Allocation')">Add allocation</button><button class="btn-ghost" @click="openEntity('Pulse Leave')">Add leave</button></div></div>
+      <div class="workload-heading"><div><h2>{{ __('Team capacity') }}</h2><p class="text-sm text-muted mt-1">{{ __('Compare estimated work with allocations and approved leave.') }}</p></div><div class="flex gap-2"><button class="btn-ghost" @click="openEntity('Pulse Allocation')">{{ __('Add allocation') }}</button><button class="btn-ghost" @click="openEntity('Pulse Leave')">{{ __('Add leave') }}</button></div></div>
       <form class="workload-filters" @submit.prevent="loadWorkload">
-        <label>From<input v-model="start" type="date" required class="field" /></label>
-        <label>To<input v-model="end" type="date" required class="field" /></label>
-        <label>Project<select v-model="workProject" class="field"><option value="">All accessible projects</option><option v-for="p in projects" :key="p.name" :value="p.name">{{ p.project_name }}</option></select></label>
-        <button class="btn-primary" :disabled="workLoading">{{ workLoading ? 'Calculating…' : 'Calculate workload' }}</button>
+        <label>{{ __('From') }}<input v-model="start" type="date" required class="field" /></label>
+        <label>{{ __('To') }}<input v-model="end" type="date" required class="field" /></label>
+        <label>{{ __('Project') }}<select v-model="workProject" class="field"><option value="">{{ __('All accessible projects') }}</option><option v-for="p in projects" :key="p.name" :value="p.name">{{ p.project_name }}</option></select></label>
+        <button class="btn-primary" :disabled="workLoading">{{ workLoading ? __('Calculating…') : __('Calculate workload') }}</button>
       </form>
       <template v-if="work">
-        <div class="overflow-x-auto"><table class="workload-table"><thead><tr><th>Team member</th><th>Estimated hours</th><th>Available hours</th><th>Capacity</th></tr></thead><tbody><tr v-for="r in work.rows" :key="r.user"><td>{{ r.user }}</td><td class="tnum">{{ r.estimated_hours }}</td><td class="tnum">{{ r.available_hours }}</td><td class="tnum" :class="{ 'over-capacity': r.over_hours }">{{ r.over_hours ? `${r.over_hours} h over` : 'Within capacity' }}</td></tr></tbody></table></div>
-        <p v-if="!work.rows.length" class="text-sm text-muted py-6">No active allocations or assigned open tasks in this period.</p>
-        <p class="text-sm mt-4">Unassigned estimates: <strong class="font-medium">{{ work.unassigned_hours }} hours</strong></p>
-        <details class="calculation-note"><summary>How capacity is calculated</summary><p>{{ work.basis }}</p></details>
+        <div class="overflow-x-auto"><table class="workload-table"><thead><tr><th>{{ __('Team member') }}</th><th>{{ __('Estimated hours') }}</th><th>{{ __('Available hours') }}</th><th>{{ __('Capacity') }}</th></tr></thead><tbody><tr v-for="r in work.rows" :key="r.user"><td>{{ r.user }}</td><td class="tnum">{{ r.estimated_hours }}</td><td class="tnum">{{ r.available_hours }}</td><td class="tnum" :class="{ 'over-capacity': r.over_hours }">{{ r.over_hours ? __('{0} h over', [r.over_hours]) : __('Within capacity') }}</td></tr></tbody></table></div>
+        <p v-if="!work.rows.length" class="text-sm text-muted py-6">{{ __('No active allocations or assigned open tasks in this period.') }}</p>
+        <p class="text-sm mt-4">{{ __('Unassigned estimates:') }} <strong class="font-medium">{{ __('{0} hours', [work.unassigned_hours]) }}</strong></p>
+        <details class="calculation-note"><summary>{{ __('How capacity is calculated') }}</summary><p>{{ work.basis }}</p></details>
       </template>
-      <div v-else class="workload-placeholder"><p>Select a date range and project, then calculate workload.</p><p class="text-sm mt-1">Availability uses active allocations and approved leave.</p></div>
+      <div v-else class="workload-placeholder"><p>{{ __('Select a date range and project, then calculate workload.') }}</p><p class="text-sm mt-1">{{ __('Availability uses active allocations and approved leave.') }}</p></div>
     </section>
   </div>
 </template>
@@ -100,6 +100,7 @@ import Search from '~icons/lucide/search'
 import MoreHorizontal from '~icons/lucide/more-horizontal'
 import Folder from '~icons/lucide/folder'
 import X from '~icons/lucide/x'
+import { __ } from '@/translation'
 
 const router = useRouter()
 const teamProject = ref(null), transferProject = ref(null)
@@ -127,7 +128,7 @@ const options = ref({ customers: [], orders: [] })
 const start = ref(new Date().toISOString().slice(0, 10))
 const end = ref(new Date(Date.now() + 13 * 86400000).toISOString().slice(0, 10))
 const workProject = ref(''), work = ref(null), workLoading = ref(false)
-function fail(e) { error.value = e.messages?.join(' ') || e.message || 'Unable to complete this action. Try again.' }
+function fail(e) { error.value = e.messages?.join(' ') || e.message || __('Unable to complete this action. Try again.') }
 async function loadOptions() {
   try { options.value = await call('pulse.api.business.commercial_options', { customer: customer.value }) } catch (e) { fail(e) }
 }

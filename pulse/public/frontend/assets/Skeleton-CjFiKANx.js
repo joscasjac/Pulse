@@ -1,0 +1,2 @@
+import{_ as e}from"./_plugin-vue_export-helper-DlAUqK2U.js";import{o as a,b as r,H as i}from"./index-TYFazFep.js";const s={__name:"Skeleton",props:{width:{type:String,default:"100%"},height:{type:String,default:"14px"},radius:{type:String,default:"6px"}},setup(t){return(n,o)=>(a(),r("span",{class:"sk",style:i({width:t.width,height:t.height,borderRadius:t.radius}),"aria-hidden":"true"},null,4))}},c=e(s,[["__scopeId","data-v-176d6208"]]);export{c as S};
+//# sourceMappingURL=Skeleton-CjFiKANx.js.map

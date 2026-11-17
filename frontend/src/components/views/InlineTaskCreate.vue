@@ -1,13 +1,14 @@
 <template>
   <form ref="formElement" class="inline-create" :class="`variant-${variant}`" @submit.prevent="submit" @keydown.esc.stop.prevent="cancel">
-    <label v-if="!project" class="project-choice"><span class="sr-only">Project for new task</span><select v-model="selectedProject" required :disabled="pending" aria-label="Project for new task"><option value="" disabled>Choose project</option><option v-for="item in projects" :key="item.name" :value="item.name">{{ item.project_name || item.name }}</option></select></label>
-    <div class="title-line"><span v-if="projectKey" class="task-prefix">{{ projectKey }}</span><input ref="titleInput" v-model="subject" :disabled="pending" aria-label="New task title" placeholder="Work item title" autocomplete="off" maxlength="140" required /><button type="submit" :disabled="pending || !subject.trim() || !(project || selectedProject)" :aria-label="pending ? 'Creating task' : 'Create task'">{{ pending ? '…' : '↵' }}</button><button type="button" aria-label="Cancel task creation" :disabled="pending" @click="cancel">×</button></div>
-    <p v-if="error" role="alert" class="inline-error">{{ error }}</p><p v-else-if="variant === 'table'" class="inline-hint">Press Enter to create another work item · Esc to cancel</p>
+    <label v-if="!project" class="project-choice"><span class="sr-only">{{ __('Project for new task') }}</span><select v-model="selectedProject" required :disabled="pending" :aria-label="__('Project for new task')"><option value="" disabled>{{ __('Choose project') }}</option><option v-for="item in projects" :key="item.name" :value="item.name">{{ item.project_name || item.name }}</option></select></label>
+    <div class="title-line"><span v-if="projectKey" class="task-prefix">{{ projectKey }}</span><input ref="titleInput" v-model="subject" :disabled="pending" :aria-label="__('New task title')" :placeholder="__('Work item title')" autocomplete="off" maxlength="140" required /><button type="submit" :disabled="pending || !subject.trim() || !(project || selectedProject)" :aria-label="pending ? __('Creating task') : __('Create task')">{{ pending ? '…' : '↵' }}</button><button type="button" :aria-label="__('Cancel task creation')" :disabled="pending" @click="cancel">×</button></div>
+    <p v-if="error" role="alert" class="inline-error">{{ error }}</p><p v-else-if="variant === 'table'" class="inline-hint">{{ __('Press Enter to create another work item · Esc to cancel') }}</p>
   </form>
 </template>
 <script setup>
 import { ref, computed, watch, onMounted, onBeforeUnmount, nextTick } from 'vue'
 import { call } from 'frappe-ui'
+import { __ } from '@/translation'
 const props=defineProps({ variant:{type:String,default:'calendar'}, createTask:{type:Function,required:true}, project:{type:String,default:null}, projects:{type:Array,default:()=>[]}, date:{type:String,default:null}, autofocus:{type:Boolean,default:true} })
 const emit=defineEmits(['cancel','created'])
 const resolvedKey=ref(''),formElement=ref(null)
@@ -15,7 +16,7 @@ const projectKey=computed(()=>props.projects.find(item=>item.name===(props.proje
 const subject=ref(''),selectedProject=ref(''),pending=ref(false),error=ref(''),titleInput=ref(null)
 watch(()=>props.project || selectedProject.value,async project=>{resolvedKey.value='';if(!project || props.projects.some(item=>item.name===project && item.pulse_project_key))return;try{const value=await call('frappe.client.get_value',{doctype:'Project',filters:{name:project},fieldname:'pulse_project_key'});if(project===(props.project || selectedProject.value))resolvedKey.value=value?.pulse_project_key || ''}catch{/* Creation errors remain visible in the form. */}},{immediate:true})
 function cancel(){if(!pending.value)emit('cancel')}
-async function submit(){if(pending.value || !subject.value.trim())return; const project=props.project || selectedProject.value;if(!project){error.value='Choose a project first.';return}pending.value=true;error.value='';try{const result=await props.createTask({subject:subject.value.trim(),project,date:props.date});subject.value='';emit('created',result)}catch(e){error.value=e?.messages?.[0] || e.message || 'Task could not be created. Your title is kept; try again.'}finally{pending.value=false;await nextTick();titleInput.value?.focus()}}
+async function submit(){if(pending.value || !subject.value.trim())return; const project=props.project || selectedProject.value;if(!project){error.value=__('Choose a project first.');return}pending.value=true;error.value='';try{const result=await props.createTask({subject:subject.value.trim(),project,date:props.date});subject.value='';emit('created',result)}catch(e){error.value=e?.messages?.[0] || e.message || __('Task could not be created. Your title is kept; try again.')}finally{pending.value=false;await nextTick();titleInput.value?.focus()}}
 function dismissOutside(event){if(formElement.value && !formElement.value.contains(event.target))cancel()}
 onMounted(()=>{document.addEventListener('pointerdown',dismissOutside,true);if(props.autofocus)titleInput.value?.focus()})
 onBeforeUnmount(()=>document.removeEventListener('pointerdown',dismissOutside,true))

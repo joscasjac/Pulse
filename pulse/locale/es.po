@@ -1,0 +1,5341 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: pulse\n"
+"PO-Revision-Date: 2026-11-17 00:00+0000\n"
+"Last-Translator: \n"
+"Language-Team: Spanish\n"
+"Language: es\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgid "(optional)"
+msgstr "(opcional)"
+
+msgid "* required in {0}"
+msgstr "* obligatorio en {0}"
+
+msgid "+ Add task on a date"
+msgstr "+ Agregar tarea en una fecha"
+
+msgid "+ Add widget"
+msgstr "+ Agregar widget"
+
+msgid "+ Add work item"
+msgstr "+ Agregar elemento de trabajo"
+
+msgid "+ New request"
+msgstr "+ Nueva solicitud"
+
+msgid "+ assign"
+msgstr "+ asignar"
+
+msgid "1 assignee"
+msgstr "1 responsable"
+
+msgid "1 task"
+msgstr "1 tarea"
+
+msgid "1-Negligible"
+msgstr "1-Insignificante"
+
+msgid "1-Very Low"
+msgstr "1-Muy baja"
+
+msgid "2-Low"
+msgstr "2-Baja"
+
+msgid "2-Minor"
+msgstr "2-Menor"
+
+msgid "3-Medium"
+msgstr "3-Media"
+
+msgid "3-Moderate"
+msgstr "3-Moderado"
+
+msgid "4-High"
+msgstr "4-Alta"
+
+msgid "4-Major"
+msgstr "4-Mayor"
+
+msgid "4Ls"
+msgstr "4Ls"
+
+msgid "5-Catastrophic"
+msgstr "5-Catastrófico"
+
+msgid "5-Very High"
+msgstr "5-Muy alta"
+
+msgid "A little quiet here"
+msgstr "Todo tranquilo por aquí"
+
+msgid "A new task lands in {0} {1} — it won't get buried in the backlog. Status above is ignored for recurring tasks."
+msgstr "Una nueva tarea llega a {0} {1}; no quedará enterrada en el backlog. El estado de arriba se ignora en las tareas recurrentes."
+
+msgid "A reminder email was added to Email Queue. This is not confirmation of delivery."
+msgstr "Se agregó un correo de recordatorio a la cola de correo. Esto no confirma su entrega."
+
+msgid "A task cannot depend on itself."
+msgstr "Una tarea no puede depender de sí misma."
+
+msgid "A timer is running on {0}."
+msgstr "Hay un temporizador en marcha en {0}."
+
+msgid "Accent Color"
+msgstr "Color de acento"
+
+msgid "Accept and create task"
+msgstr "Aceptar y crear tarea"
+
+msgid "Accepted"
+msgstr "Aceptada"
+
+msgid "Accepted task"
+msgstr "Tarea aceptada"
+
+msgid "Access key"
+msgstr "Clave de acceso"
+
+msgid "Access revoked."
+msgstr "Acceso revocado."
+
+msgid "Account disabled. {0} assignments handed off across {1} projects."
+msgstr "Cuenta desactivada. Se traspasaron {0} asignaciones en {1} proyectos."
+
+msgid "Action"
+msgstr "Acción"
+
+msgid "Action Items"
+msgstr "Acciones pendientes"
+
+msgid "Actions for {0}"
+msgstr "Acciones para {0}"
+
+msgid "Active"
+msgstr "Activo"
+
+msgid "Active sprint"
+msgstr "Sprint activo"
+
+msgid "Activity"
+msgstr "Actividad"
+
+msgid "Activity & comments"
+msgstr "Actividad y comentarios"
+
+msgid "Activity Feed"
+msgstr "Actividad reciente"
+
+msgid "Activity Type"
+msgstr "Tipo de actividad"
+
+msgid "Actual End Date"
+msgstr "Fecha de fin real"
+
+msgid "Actual Start Date"
+msgstr "Fecha de inicio real"
+
+msgid "Add"
+msgstr "Agregar"
+
+msgid "Add a blocker (search tasks)…"
+msgstr "Agregar un bloqueo (buscar tareas)…"
+
+msgid "Add a comment or @mention a teammate"
+msgstr "Agrega un comentario o @menciona a un compañero"
+
+msgid "Add a file"
+msgstr "Agrega un archivo"
+
+msgid "Add a widget"
+msgstr "Agregar un widget"
+
+msgid "Add allocation"
+msgstr "Agregar asignación"
+
+msgid "Add an existing team member"
+msgstr "Agregar un miembro existente del equipo"
+
+msgid "Add assignee"
+msgstr "Agregar responsable"
+
+msgid "Add context for your decision…"
+msgstr "Agrega contexto a tu decisión…"
+
+msgid "Add dependency"
+msgstr "Agregar dependencia"
+
+msgid "Add detail, acceptance criteria…"
+msgstr "Agrega detalles, criterios de aceptación…"
+
+msgid "Add existing tasks"
+msgstr "Agregar tareas existentes"
+
+msgid "Add field"
+msgstr "Agregar campo"
+
+msgid "Add group"
+msgstr "Agregar grupo"
+
+msgid "Add item..."
+msgstr "Agregar elemento..."
+
+msgid "Add label"
+msgstr "Agregar etiqueta"
+
+msgid "Add labels"
+msgstr "Agregar etiquetas"
+
+msgid "Add leave"
+msgstr "Agregar ausencia"
+
+msgid "Add member"
+msgstr "Agregar miembro"
+
+msgid "Add module"
+msgstr "Agregar módulo"
+
+msgid "Add or import tasks"
+msgstr "Agrega o importa tareas"
+
+msgid "Add project"
+msgstr "Agregar proyecto"
+
+msgid "Add project field"
+msgstr "Agregar campo del proyecto"
+
+msgid "Add rule"
+msgstr "Agregar regla"
+
+msgid "Add selected"
+msgstr "Agregar seleccionadas"
+
+msgid "Add selected tasks"
+msgstr "Agregar tareas seleccionadas"
+
+msgid "Add selected tasks ({0})"
+msgstr "Agregar tareas seleccionadas ({0})"
+
+msgid "Add status"
+msgstr "Agregar estado"
+
+msgid "Add sub-task…"
+msgstr "Agregar subtarea…"
+
+msgid "Add task"
+msgstr "Agregar tarea"
+
+msgid "Add task on {0}"
+msgstr "Agregar tarea el {0}"
+
+msgid "Add task to module"
+msgstr "Agregar tarea al módulo"
+
+msgid "Add task to {0}"
+msgstr "Agregar tarea a {0}"
+
+msgid "Add tasks from the backlog to plan this sprint."
+msgstr "Agrega tareas del backlog para planificar este sprint."
+
+msgid "Add tasks to start tracking this module’s progress."
+msgstr "Agrega tareas para empezar a seguir el progreso de este módulo."
+
+msgid "Add tasks to {0}"
+msgstr "Agregar tareas al {0}"
+
+msgid "Add time"
+msgstr "Agregar tiempo"
+
+msgid "Add to module"
+msgstr "Agregar al módulo"
+
+msgid "Add work item"
+msgstr "Agregar elemento de trabajo"
+
+msgid "Add {0} selected"
+msgstr "Agregar {0} seleccionadas"
+
+msgid "Added during sprint"
+msgstr "Agregado durante el sprint"
+
+msgid "Added label: {0}"
+msgstr "Etiqueta agregada: {0}"
+
+msgid "Added {0} entry"
+msgstr "Entrada de {0} agregada"
+
+msgid "Adding tasks…"
+msgstr "Agregando tareas…"
+
+msgid "Adjust your filters or create a task to start planning."
+msgstr "Ajusta tus filtros o crea una tarea para empezar a planificar."
+
+msgid "Administrators configure reminder days and email notifications in Pulse Settings. Delivery also needs a working ERP outgoing account, scheduler, workers, and the recipient’s notification preferences. Quest Automations can create and update work through permission-checked Pulse actions; inspect failed runs before retrying."
+msgstr "Los administradores configuran los días de recordatorio y las notificaciones por correo en la Configuración de Pulse. El envío también requiere una cuenta de correo saliente del ERP que funcione, el programador, los workers y las preferencias de notificación del destinatario. Quest Automations puede crear y actualizar trabajo mediante acciones de Pulse con verificación de permisos; revisa las ejecuciones fallidas antes de reintentar."
+
+msgid "Advanced filters"
+msgstr "Filtros avanzados"
+
+msgid "Agenda"
+msgstr "Agenda"
+
+msgid "Agenda & Notes"
+msgstr "Agenda y notas"
+
+msgid "Agile & Delivery Analytics"
+msgstr "Analítica ágil y de entrega"
+
+msgid "Agile Details"
+msgstr "Detalles ágiles"
+
+msgid "All"
+msgstr "Todas"
+
+msgid "All accessible projects"
+msgstr "Todos los proyectos accesibles"
+
+msgid "All modules"
+msgstr "Todos los módulos"
+
+msgid "All pages"
+msgstr "Todas las páginas"
+
+msgid "All priorities"
+msgstr "Todas las prioridades"
+
+msgid "All projects"
+msgstr "Todos los proyectos"
+
+msgid "All projects in Pulse"
+msgstr "Todos los proyectos en Pulse"
+
+msgid "All projects’ backlog"
+msgstr "Backlog de todos los proyectos"
+
+msgid "All requests"
+msgstr "Todas las solicitudes"
+
+msgid "All shared changes saved"
+msgstr "Todos los cambios compartidos guardados"
+
+msgid "All sprints"
+msgstr "Todos los sprints"
+
+msgid "All statuses"
+msgstr "Todos los estados"
+
+msgid "All tasks"
+msgstr "Todas las tareas"
+
+msgid "All tasks are included. Add a rule to narrow this view."
+msgstr "Se incluyen todas las tareas. Agrega una regla para acotar esta vista."
+
+msgid "All types"
+msgstr "Todos los tipos"
+
+msgid "All updates"
+msgstr "Todas las novedades"
+
+msgid "All work"
+msgstr "Todo el trabajo"
+
+msgid "Allocation Percentage"
+msgstr "Porcentaje de asignación"
+
+msgid "Allowed task types"
+msgstr "Tipos de tarea permitidos"
+
+msgid "An epic is a task of type {0}; link work to it from a task's Epic field. Progress is task count."
+msgstr "Una épica es una tarea de tipo {0}; vincula trabajo a ella desde el campo Épica de una tarea. El progreso se mide por número de tareas."
+
+msgid "Analytics"
+msgstr "Analítica"
+
+msgid "Anyone"
+msgstr "Cualquiera"
+
+msgid "Anyone with the enabled link can submit a request. Only the title and instructions below appear publicly."
+msgstr "Cualquier persona con el enlace habilitado puede enviar una solicitud. Solo el título y las instrucciones de abajo se muestran públicamente."
+
+msgid "Apply"
+msgstr "Aplicar"
+
+msgid "Apply changes"
+msgstr "Aplicar cambios"
+
+msgid "Apply filters"
+msgstr "Aplicar filtros"
+
+msgid "Applying handoff…"
+msgstr "Aplicando traspaso…"
+
+msgid "Approval decision saved."
+msgstr "Decisión de aprobación guardada."
+
+msgid "Approval requested."
+msgstr "Aprobación solicitada."
+
+msgid "Approvals"
+msgstr "Aprobaciones"
+
+msgid "Approvals apply to the task's current title, description, dates, estimates, labels, assignments and configured project fields. Editing them requires a new approval."
+msgstr "Las aprobaciones se aplican al título, la descripción, las fechas, las estimaciones, las etiquetas, las asignaciones y los campos del proyecto configurados actuales de la tarea. Editarlos requiere una nueva aprobación."
+
+msgid "Approve current version"
+msgstr "Aprobar versión actual"
+
+msgid "Approved"
+msgstr "Aprobado"
+
+msgid "Approved By"
+msgstr "Aprobado por"
+
+msgid "Approved content version"
+msgstr "Versión de contenido aprobada"
+
+msgid "Approver"
+msgstr "Aprobador"
+
+msgid "Archive"
+msgstr "Archivar"
+
+msgid "Archive task"
+msgstr "Archivar tarea"
+
+msgid "Archived"
+msgstr "Archivada"
+
+msgid "Ascending"
+msgstr "Ascendente"
+
+msgid "Assessment"
+msgstr "Evaluación"
+
+msgid "Assign"
+msgstr "Asignar"
+
+msgid "Assign To"
+msgstr "Asignar a"
+
+msgid "Assign selected"
+msgstr "Asignar seleccionadas"
+
+msgid "Assign task"
+msgstr "Asignar tarea"
+
+msgid "Assign to…"
+msgstr "Asignar a…"
+
+msgid "Assigned To"
+msgstr "Asignada a"
+
+msgid "Assigned tasks could not load. Open a task directly to record time."
+msgstr "No se pudieron cargar las tareas asignadas. Abre una tarea directamente para registrar tiempo."
+
+msgid "Assigned to you"
+msgstr "Asignado a ti"
+
+msgid "Assigned {0}"
+msgstr "Asignada a {0}"
+
+msgid "Assignee"
+msgstr "Responsable"
+
+msgid "Assignee removed"
+msgstr "Responsable quitado"
+
+msgid "Assignees"
+msgstr "Responsables"
+
+msgid "Assignees for {0}"
+msgstr "Responsables de {0}"
+
+msgid "Assignment"
+msgstr "Asignación"
+
+msgid "Assignment Changed"
+msgstr "Asignación cambiada"
+
+msgid "Assignment Not Allowed"
+msgstr "Asignación no permitida"
+
+msgid "Assignment not allowed"
+msgstr "Asignación no permitida"
+
+msgid "Assignments, mentions, and updates to the work you follow."
+msgstr "Asignaciones, menciones y novedades del trabajo que sigues."
+
+msgid "At"
+msgstr "En"
+
+msgid "At Risk"
+msgstr "En riesgo"
+
+msgid "Attach"
+msgstr "Adjuntar"
+
+msgid "Attachment Added"
+msgstr "Adjunto agregado"
+
+msgid "Attachments"
+msgstr "Adjuntos"
+
+msgid "Attendees"
+msgstr "Asistentes"
+
+msgid "Audit Logs"
+msgstr "Registros de auditoría"
+
+msgid "Audit log"
+msgstr "Registro de auditoría"
+
+msgid "Author"
+msgstr "Autor"
+
+msgid "Availability uses active allocations and approved leave."
+msgstr "La disponibilidad usa las asignaciones activas y las ausencias aprobadas."
+
+msgid "Available hours"
+msgstr "Horas disponibles"
+
+msgid "Average Hours per Entry"
+msgstr "Promedio de horas por registro"
+
+msgid "Average Time Spent on Work"
+msgstr "Tiempo promedio dedicado al trabajo"
+
+msgid "Backlog"
+msgstr "Backlog"
+
+msgid "Bar"
+msgstr "Barras"
+
+msgid "Base Topic"
+msgstr "Tema base"
+
+msgid "Base topic. Each user is notified on <base>-<username> (e.g. pulse-alice)."
+msgstr "Tema base. Cada usuario recibe notificaciones en <base>-<username> (p. ej., pulse-alice)."
+
+msgid "Bearer token for a self-hosted, access-controlled ntfy server (optional)."
+msgstr "Token Bearer para un servidor ntfy autoalojado con control de acceso (opcional)."
+
+msgid "Billable"
+msgstr "Facturable"
+
+msgid "Billable time"
+msgstr "Tiempo facturable"
+
+msgid "Billing"
+msgstr "Facturación"
+
+msgid "Blank page"
+msgstr "Página en blanco"
+
+msgid "Blocked"
+msgstr "Bloqueada"
+
+msgid "Blocked by"
+msgstr "Bloqueada por"
+
+msgid "Board"
+msgstr "Tablero"
+
+msgid "Board Type"
+msgstr "Tipo de tablero"
+
+msgid "Breadcrumb"
+msgstr "Ruta de navegación"
+
+msgid "Bring in your team"
+msgstr "Suma a tu equipo"
+
+msgid "Broken"
+msgstr "Rota"
+
+msgid "Browse all →"
+msgstr "Explorar todo →"
+
+msgid "Browse projects"
+msgstr "Explorar proyectos"
+
+msgid "Browse projects →"
+msgstr "Explorar proyectos →"
+
+msgid "Browse your projects to find work, or create a task to get started."
+msgstr "Explora tus proyectos para encontrar trabajo o crea una tarea para empezar."
+
+msgid "Budget"
+msgstr "Presupuesto"
+
+msgid "Bug"
+msgstr "Error"
+
+msgid "Bulk priority"
+msgstr "Prioridad en lote"
+
+msgid "Bulk status"
+msgstr "Estado en lote"
+
+msgid "Burndown"
+msgstr "Burndown"
+
+msgid "Business details"
+msgstr "Detalles del negocio"
+
+msgid "By"
+msgstr "Por"
+
+msgid "CRM Deal"
+msgstr "Trato de CRM"
+
+msgid "CRM task"
+msgstr "Tarea del CRM"
+
+msgid "CRM tasks"
+msgstr "Tareas del CRM"
+
+msgid "CRM tasks could not be loaded. Please try again."
+msgstr "No se pudieron cargar las tareas del CRM. Intenta de nuevo."
+
+msgid "Calculate workload"
+msgstr "Calcular carga de trabajo"
+
+msgid "Calculating…"
+msgstr "Calculando…"
+
+msgid "Calendar"
+msgstr "Calendario"
+
+msgid "Cancel"
+msgstr "Cancelar"
+
+msgid "Cancel new task"
+msgstr "Cancelar nueva tarea"
+
+msgid "Cancel task creation"
+msgstr "Cancelar creación de tarea"
+
+msgid "Canceled"
+msgstr "Cancelada"
+
+msgid "Cancelled"
+msgstr "Cancelada"
+
+msgid "Capacity"
+msgstr "Capacidad"
+
+msgid "Category"
+msgstr "Categoría"
+
+msgid "Category for {0}"
+msgstr "Categoría de {0}"
+
+msgid "Cb1"
+msgstr "Cb1"
+
+msgid "Cb2"
+msgstr "Cb2"
+
+msgid "Cb3"
+msgstr "Cb3"
+
+msgid "Change Request"
+msgstr "Solicitud de cambio"
+
+msgid "Change priority"
+msgstr "Cambiar prioridad"
+
+msgid "Change status: {0}"
+msgstr "Cambiar estado: {0}"
+
+msgid "Changed By"
+msgstr "Cambiado por"
+
+msgid "Changed On"
+msgstr "Cambiado el"
+
+msgid "Changes could not sync. Keep this page open and retry."
+msgstr "No se pudieron sincronizar los cambios. Mantén esta página abierta y reintenta."
+
+msgid "Changes waiting to sync"
+msgstr "Cambios pendientes de sincronizar"
+
+msgid "Chart"
+msgstr "Gráfico"
+
+msgid "Chart Type"
+msgstr "Tipo de gráfico"
+
+msgid "Check"
+msgstr "Casilla"
+
+msgid "Check-in Date"
+msgstr "Fecha de seguimiento"
+
+msgid "Checking every 30 seconds"
+msgstr "Revisando cada 30 segundos"
+
+msgid "Checklist"
+msgstr "Lista de verificación"
+
+msgid "Checklist Item"
+msgstr "Elemento de lista de verificación"
+
+msgid "Choices, one per line"
+msgstr "Opciones, una por línea"
+
+msgid "Choose CSV file"
+msgstr "Elegir archivo CSV"
+
+msgid "Choose a CSV file smaller than 2 MB."
+msgstr "Elige un archivo CSV de menos de 2 MB."
+
+msgid "Choose a change to apply"
+msgstr "Elige un cambio para aplicar"
+
+msgid "Choose a field"
+msgstr "Elige un campo"
+
+msgid "Choose a project"
+msgstr "Elige un proyecto"
+
+msgid "Choose a project first."
+msgstr "Elige un proyecto primero."
+
+msgid "Choose a project for this task."
+msgstr "Elige un proyecto para esta tarea."
+
+msgid "Choose a project with task statuses first."
+msgstr "Primero elige un proyecto con estados de tarea."
+
+msgid "Choose a replacement"
+msgstr "Elige un reemplazo"
+
+msgid "Choose a reviewer"
+msgstr "Elige un revisor"
+
+msgid "Choose a user"
+msgstr "Elige un usuario"
+
+msgid "Choose a website user"
+msgstr "Elige un usuario del sitio web"
+
+msgid "Choose a week"
+msgstr "Elige una semana"
+
+msgid "Choose an enabled user for this assignment."
+msgstr "Elige un usuario habilitado para esta asignación."
+
+msgid "Choose an existing member"
+msgstr "Elige un miembro existente"
+
+msgid "Choose existing tasks to schedule on this day."
+msgstr "Elige tareas existentes para programarlas este día."
+
+msgid "Choose fields for this project's task form. Required fields are enforced when tasks enter or remain in the selected statuses."
+msgstr "Elige los campos del formulario de tareas de este proyecto. Los campos obligatorios se exigen cuando las tareas entran o permanecen en los estados seleccionados."
+
+msgid "Choose from the list or create a new page."
+msgstr "Elige de la lista o crea una página nueva."
+
+msgid "Choose how you work"
+msgstr "Elige cómo trabajas"
+
+msgid "Choose prerequisite"
+msgstr "Elige un requisito previo"
+
+msgid "Choose project"
+msgstr "Elige un proyecto"
+
+msgid "Choose task"
+msgstr "Elige una tarea"
+
+msgid "Choose tasks"
+msgstr "Elige tareas"
+
+msgid "Choose {0}"
+msgstr "Elige {0}"
+
+msgid "Choose…"
+msgstr "Elige…"
+
+msgid "Clear filters"
+msgstr "Limpiar filtros"
+
+msgid "Clear search"
+msgstr "Borrar búsqueda"
+
+msgid "Clear selection"
+msgstr "Limpiar selección"
+
+msgid "Clear visible selection"
+msgstr "Quitar selección visible"
+
+msgid "Cloned for a user the first time they open their dashboard"
+msgstr "Se clona para cada usuario la primera vez que abre su panel"
+
+msgid "Close"
+msgstr "Cerrar"
+
+msgid "Close business details"
+msgstr "Cerrar detalles del negocio"
+
+msgid "Close display preferences"
+msgstr "Cerrar preferencias de visualización"
+
+msgid "Close entry"
+msgstr "Cerrar registro"
+
+msgid "Close filters"
+msgstr "Cerrar filtros"
+
+msgid "Close form"
+msgstr "Cerrar formulario"
+
+msgid "Close module form"
+msgstr "Cerrar formulario del módulo"
+
+msgid "Close navigation"
+msgstr "Cerrar navegación"
+
+msgid "Close new task"
+msgstr "Cerrar nueva tarea"
+
+msgid "Close property picker"
+msgstr "Cerrar selector de propiedad"
+
+msgid "Close search"
+msgstr "Cerrar búsqueda"
+
+msgid "Close sprint"
+msgstr "Cerrar sprint"
+
+msgid "Close task"
+msgstr "Cerrar tarea"
+
+msgid "Close task picker"
+msgstr "Cerrar selector de tareas"
+
+msgid "Close template form"
+msgstr "Cerrar formulario de plantilla"
+
+msgid "Close unscheduled tasks"
+msgstr "Cerrar tareas sin programar"
+
+msgid "Close {0}"
+msgstr "Cerrar {0}"
+
+msgid "Closed"
+msgstr "Cerrada"
+
+msgid "Closed At"
+msgstr "Cerrada el"
+
+msgid "Closed Date"
+msgstr "Fecha de cierre"
+
+msgid "Closed without completing"
+msgstr "Cerrados sin completar"
+
+msgid "Closing…"
+msgstr "Cerrando…"
+
+msgid "Closure Summary"
+msgstr "Resumen de cierre"
+
+msgid "Collab Sequence"
+msgstr "Secuencia de colaboración"
+
+msgid "Collab Updates"
+msgstr "Actualizaciones de colaboración"
+
+msgid "Collapse column"
+msgstr "Contraer columna"
+
+msgid "Collapse {0}"
+msgstr "Contraer {0}"
+
+msgid "Color"
+msgstr "Color"
+
+msgid "Color for {0}"
+msgstr "Color de {0}"
+
+msgid "Column Settings JSON"
+msgstr "JSON de configuración de columnas"
+
+msgid "Combine rules to narrow the work in this view."
+msgstr "Combina reglas para acotar el trabajo de esta vista."
+
+msgid "Comma-separated days, from 0 to 365. For example: 3, 1, 0 sends three days before, one day before, and on the due date."
+msgstr "Días separados por comas, de 0 a 365. Por ejemplo: 3, 1, 0 envía tres días antes, un día antes y en la fecha de vencimiento."
+
+msgid "Comma-separated values"
+msgstr "Valores separados por comas"
+
+msgid "Comment"
+msgstr "Comentario"
+
+msgid "Comment Added"
+msgstr "Comentario agregado"
+
+msgid "Comments"
+msgstr "Comentarios"
+
+msgid "Comments here are visible to everyone this task is shared with."
+msgstr "Los comentarios aquí son visibles para todas las personas con quienes se comparte esta tarea."
+
+msgid "Company"
+msgstr "Empresa"
+
+msgid "Company field created. Save task fields to use it in this project."
+msgstr "Campo de la empresa creado. Guarda los campos de tarea para usarlo en este proyecto."
+
+msgid "Compare estimated work with allocations and approved leave."
+msgstr "Compara el trabajo estimado con las asignaciones y las ausencias aprobadas."
+
+msgid "Completed"
+msgstr "Completada"
+
+msgid "Completed At"
+msgstr "Completada el"
+
+msgid "Completed By"
+msgstr "Completada por"
+
+msgid "Completed Tasks"
+msgstr "Tareas completadas"
+
+msgid "Completed tasks"
+msgstr "Tareas completadas"
+
+msgid "Completed work"
+msgstr "Trabajo completado"
+
+msgid "Confidence"
+msgstr "Confianza"
+
+msgid "Confidence Change"
+msgstr "Cambio de confianza"
+
+msgid "Configuration"
+msgstr "Configuración"
+
+msgid "Connecting to shared page…"
+msgstr "Conectando con la página compartida…"
+
+msgid "Content"
+msgstr "Contenido"
+
+msgid "Contingency Plan"
+msgstr "Plan de contingencia"
+
+msgid "Copies tasks, hierarchy, dependencies and checklists. Completion, assignments and time entries start fresh."
+msgstr "Copia tareas, jerarquía, dependencias y listas de verificación. El avance, las asignaciones y los registros de tiempo empiezan desde cero."
+
+msgid "Copy link"
+msgstr "Copiar enlace"
+
+msgid "Could not change the assignment. Try again."
+msgstr "No se pudo cambiar la asignación. Inténtalo de nuevo."
+
+msgid "Could not complete task"
+msgstr "No se pudo completar la tarea"
+
+msgid "Could not copy the task link. Please allow clipboard access and retry."
+msgstr "No se pudo copiar el enlace de la tarea. Permite el acceso al portapapeles e inténtalo de nuevo."
+
+msgid "Could not create company field."
+msgstr "No se pudo crear el campo de la empresa."
+
+msgid "Could not create issue"
+msgstr "No se pudo crear la tarea"
+
+msgid "Could not delete"
+msgstr "No se pudo eliminar"
+
+msgid "Could not discard your timer. Try again."
+msgstr "No se pudo descartar tu temporizador. Intenta de nuevo."
+
+msgid "Could not generate task"
+msgstr "No se pudo generar la tarea"
+
+msgid "Could not generate this report."
+msgstr "No se pudo generar este informe."
+
+msgid "Could not load activity."
+msgstr "No se pudo cargar la actividad."
+
+msgid "Could not load attachments."
+msgstr "No se pudieron cargar los adjuntos."
+
+msgid "Could not load form"
+msgstr "No se pudo cargar el formulario"
+
+msgid "Could not load modules."
+msgstr "No se pudieron cargar los módulos."
+
+msgid "Could not load personal controls."
+msgstr "No se pudieron cargar los controles personales."
+
+msgid "Could not load project choices. Retry to create your task."
+msgstr "No se pudieron cargar los proyectos. Reintenta para crear tu tarea."
+
+msgid "Could not load project fields."
+msgstr "No se pudieron cargar los campos del proyecto."
+
+msgid "Could not load project leads."
+msgstr "No se pudieron cargar los líderes del proyecto."
+
+msgid "Could not load project task settings. Select the project again to retry."
+msgstr "No se pudo cargar la configuración de tareas del proyecto. Vuelve a seleccionar el proyecto para reintentar."
+
+msgid "Could not load task approvals."
+msgstr "No se pudieron cargar las aprobaciones de la tarea."
+
+msgid "Could not load task details."
+msgstr "No se pudieron cargar los detalles de la tarea."
+
+msgid "Could not load task fields."
+msgstr "No se pudieron cargar los campos de tarea."
+
+msgid "Could not load task settings."
+msgstr "No se pudo cargar la configuración de tareas."
+
+msgid "Could not load tasks."
+msgstr "No se pudieron cargar las tareas."
+
+msgid "Could not load time entries. Check your access and retry."
+msgstr "No se pudieron cargar los registros de tiempo. Revisa tu acceso y vuelve a intentarlo."
+
+msgid "Could not load time. Check your access and try again."
+msgstr "No se pudo cargar el tiempo. Revisa tu acceso e inténtalo de nuevo."
+
+msgid "Could not move task"
+msgstr "No se pudo mover la tarea"
+
+msgid "Could not remove attachment. Please retry."
+msgstr "No se pudo quitar el adjunto. Inténtalo de nuevo."
+
+msgid "Could not restore your workspace preferences."
+msgstr "No se pudieron restaurar tus preferencias del espacio de trabajo."
+
+msgid "Could not save"
+msgstr "No se pudo guardar"
+
+msgid "Could not save approval. Refresh the task and try again."
+msgstr "No se pudo guardar la aprobación. Actualiza la tarea e inténtalo de nuevo."
+
+msgid "Could not save changes"
+msgstr "No se pudieron guardar los cambios"
+
+msgid "Could not save field rules. Save workflow status names first."
+msgstr "No se pudieron guardar las reglas de campos. Guarda primero los nombres de los estados del flujo de trabajo."
+
+msgid "Could not save label."
+msgstr "No se pudo guardar la etiqueta."
+
+msgid "Could not save project fields."
+msgstr "No se pudieron guardar los campos del proyecto."
+
+msgid "Could not save time. Check for overlapping entries and try again."
+msgstr "No se pudo guardar el tiempo. Revisa si hay registros superpuestos e inténtalo de nuevo."
+
+msgid "Could not save workflow. Check status names and categories."
+msgstr "No se pudo guardar el flujo de trabajo. Revisa los nombres y las categorías de los estados."
+
+msgid "Could not save. The task may have changed or your access changed. Cancel and refresh before trying again."
+msgstr "No se pudo guardar. Es posible que la tarea o tu acceso hayan cambiado. Cancela y actualiza antes de intentarlo de nuevo."
+
+msgid "Could not save. Try again."
+msgstr "No se pudo guardar. Inténtalo de nuevo."
+
+msgid "Could not update labels"
+msgstr "No se pudieron actualizar las etiquetas"
+
+msgid "Could not update module membership. Please retry."
+msgstr "No se pudo actualizar la pertenencia al módulo. Inténtalo de nuevo."
+
+msgid "Could not update selected tasks. No changes were applied."
+msgstr "No se pudieron actualizar las tareas seleccionadas. No se aplicó ningún cambio."
+
+msgid "Could not update this notification. Try again."
+msgstr "No se pudo actualizar esta notificación. Intenta de nuevo."
+
+msgid "Could not update this task. Try again."
+msgstr "No se pudo actualizar esta tarea. Inténtalo de nuevo."
+
+msgid "Create a company field"
+msgstr "Crear un campo de la empresa"
+
+msgid "Create a page or change your search."
+msgstr "Crea una página o cambia tu búsqueda."
+
+msgid "Create a project"
+msgstr "Crea un proyecto"
+
+msgid "Create a project to organize tasks and bring your team together."
+msgstr "Crea un proyecto para organizar tareas y reunir a tu equipo."
+
+msgid "Create a request"
+msgstr "Crear una solicitud"
+
+msgid "Create a system user with Projects User and Pulse Junior Developer roles, then send the ERP welcome email. Other ERP roles are managed in User settings."
+msgstr "Crea un usuario del sistema con los roles Projects User y Pulse Junior Developer y luego envía el correo de bienvenida del ERP. Los demás roles del ERP se gestionan en la configuración de usuarios."
+
+msgid "Create delivery project"
+msgstr "Crear proyecto de entrega"
+
+msgid "Create delivery work"
+msgstr "Crear trabajo de entrega"
+
+msgid "Create delivery work from CRM or sales…"
+msgstr "Crear trabajo de entrega desde CRM o ventas…"
+
+msgid "Create field"
+msgstr "Crear campo"
+
+msgid "Create from {0}"
+msgstr "Crear a partir de {0}"
+
+msgid "Create module"
+msgstr "Crear módulo"
+
+msgid "Create page"
+msgstr "Crear página"
+
+msgid "Create project"
+msgstr "Crear proyecto"
+
+msgid "Create project pages for briefs, specifications, and decisions. Link related tasks. Mark a project as a reusable template from its Business details to create a new project with its task structure."
+msgstr "Crea páginas de proyecto para resúmenes, especificaciones y decisiones. Vincula las tareas relacionadas. Marca un proyecto como plantilla reutilizable desde sus Detalles del negocio para crear un proyecto nuevo con su estructura de tareas."
+
+msgid "Create recurring"
+msgstr "Crear recurrente"
+
+msgid "Create task"
+msgstr "Crear tarea"
+
+msgid "Create this page before uploading images or files so attachments stay private and linked to it."
+msgstr "Crea esta página antes de subir imágenes o archivos para que los adjuntos queden privados y vinculados a ella."
+
+msgid "Create user and send invitation"
+msgstr "Crear usuario y enviar invitación"
+
+msgid "Create view"
+msgstr "Crear vista"
+
+msgid "Create your first project"
+msgstr "Crea tu primer proyecto"
+
+msgid "Created by"
+msgstr "Creado por"
+
+msgid "Created date"
+msgstr "Fecha de creación"
+
+msgid "Created {0}"
+msgstr "{0} creada"
+
+msgid "Creating task"
+msgstr "Creando tarea"
+
+msgid "Creating…"
+msgstr "Creando…"
+
+msgid "Critical"
+msgstr "Crítico"
+
+msgid "Currency"
+msgstr "Moneda"
+
+msgid "Current Value"
+msgstr "Valor actual"
+
+msgid "Currently open"
+msgstr "Abiertos actualmente"
+
+msgid "Custom Chart"
+msgstr "Gráfico personalizado"
+
+msgid "Custom dashboards"
+msgstr "Paneles personalizados"
+
+msgid "Customer"
+msgstr "Cliente"
+
+msgid "Customise"
+msgstr "Personalizar"
+
+msgid "Customize your widgets - drag sizes, add, remove, and save."
+msgstr "Personaliza tus widgets: ajusta tamaños, agrega, quita y guarda."
+
+msgid "Cycle Time (days)"
+msgstr "Tiempo de ciclo (días)"
+
+msgid "Cycle Time (working days)"
+msgstr "Tiempo de ciclo (días hábiles)"
+
+msgid "Dashboard"
+msgstr "Panel"
+
+msgid "Dashboard Name"
+msgstr "Nombre del panel"
+
+msgid "Dashboard saved"
+msgstr "Panel guardado"
+
+msgid "Dashboard statistics are scoped to the signed-in user."
+msgstr "Las estadísticas del panel se limitan al usuario que inició sesión."
+
+msgid "Data"
+msgstr "Datos"
+
+msgid "Date"
+msgstr "Fecha"
+
+msgid "Date Held"
+msgstr "Fecha de realización"
+
+msgid "Dates"
+msgstr "Fechas"
+
+msgid "Dates, estimates, labels & repeating tasks"
+msgstr "Fechas, estimaciones, etiquetas y tareas recurrentes"
+
+msgid "Dates, estimates, type & labels"
+msgstr "Fechas, estimaciones, tipo y etiquetas"
+
+msgid "Day"
+msgstr "Día"
+
+msgid "Days Before Due Date"
+msgstr "Días antes de la fecha de vencimiento"
+
+msgid "Deadline"
+msgstr "Fecha límite"
+
+msgid "Deal"
+msgstr "Trato"
+
+msgid "Decided By"
+msgstr "Decidido por"
+
+msgid "Decided at"
+msgstr "Decidido el"
+
+msgid "Decided by"
+msgstr "Decidido por"
+
+msgid "Decision"
+msgstr "Decisión"
+
+msgid "Decision Date"
+msgstr "Fecha de decisión"
+
+msgid "Decision note"
+msgstr "Nota de decisión"
+
+msgid "Decisions"
+msgstr "Decisiones"
+
+msgid "Default"
+msgstr "Predeterminada"
+
+msgid "Default Board Type"
+msgstr "Tipo de tablero predeterminado"
+
+msgid "Default Sprint Length (Days)"
+msgstr "Duración predeterminada del sprint (días)"
+
+msgid "Default Sprint Length (days)"
+msgstr "Duración predeterminada del sprint (días)"
+
+msgid "Deferred"
+msgstr "Aplazada"
+
+msgid "Define this project's workflow. Status order sets the board column order. Categories keep reporting consistent. Move tasks before removing a status or changing its category."
+msgstr "Define el flujo de trabajo de este proyecto. El orden de los estados define el orden de las columnas del tablero. Las categorías mantienen la coherencia de los reportes. Mueve las tareas antes de quitar un estado o cambiar su categoría."
+
+msgid "Delayed"
+msgstr "Retrasadas"
+
+msgid "Delete"
+msgstr "Eliminar"
+
+msgid "Delete recurring \"{0}\"? Tasks already generated are kept."
+msgstr "¿Eliminar la tarea recurrente \"{0}\"? Las tareas ya generadas se conservan."
+
+msgid "Delete this {0}?"
+msgstr "¿Eliminar este registro ({0})?"
+
+msgid "Deleted"
+msgstr "Eliminado"
+
+msgid "Deleted At"
+msgstr "Eliminado el"
+
+msgid "Delivery project created."
+msgstr "Proyecto de entrega creado."
+
+msgid "Departing user"
+msgstr "Usuario que se va"
+
+msgid "Dependencies"
+msgstr "Dependencias"
+
+msgid "Dependency Type"
+msgstr "Tipo de dependencia"
+
+msgid "Dependency added."
+msgstr "Dependencia agregada."
+
+msgid "Dependency could not be added."
+msgstr "No se pudo agregar la dependencia."
+
+msgid "Depends on"
+msgstr "Depende de"
+
+msgid "Descending"
+msgstr "Descendente"
+
+msgid "Describe the request and the outcome you need."
+msgstr "Describe la solicitud y el resultado que necesitas."
+
+msgid "Describe the work. Type @ to mention a teammate."
+msgstr "Describe el trabajo. Escribe @ para mencionar a un compañero."
+
+msgid "Description"
+msgstr "Descripción"
+
+msgid "Description could not be saved. Your text has been kept."
+msgstr "No se pudo guardar la descripción. Conservamos tu texto."
+
+msgid "Description saved"
+msgstr "Descripción guardada"
+
+msgid "Design"
+msgstr "Diseño"
+
+msgid "Destination sprint"
+msgstr "Sprint de destino"
+
+msgid "Detail"
+msgstr "Detalle"
+
+msgid "Details"
+msgstr "Detalles"
+
+msgid "Development"
+msgstr "Desarrollo"
+
+msgid "Direction"
+msgstr "Dirección"
+
+msgid "Disable account and hand off work"
+msgstr "Desactivar cuenta y traspasar trabajo"
+
+msgid "Disabling stops new submissions. Enabling again creates a new link."
+msgstr "Al deshabilitarlo se detienen los nuevos envíos. Al habilitarlo de nuevo se crea un enlace nuevo."
+
+msgid "Discard this timer without saving its elapsed time?"
+msgstr "¿Descartar este temporizador sin guardar el tiempo transcurrido?"
+
+msgid "Discard timer"
+msgstr "Descartar temporizador"
+
+msgid "Discard your unsaved page changes?"
+msgstr "¿Descartar los cambios no guardados de la página?"
+
+msgid "Discussion"
+msgstr "Discusión"
+
+msgid "Display"
+msgstr "Visualización"
+
+msgid "Display preferences"
+msgstr "Preferencias de visualización"
+
+msgid "DocType"
+msgstr "DocType"
+
+msgid "Document"
+msgstr "Documento"
+
+msgid "Document repeatable work"
+msgstr "Documenta el trabajo repetible"
+
+msgid "Documentation"
+msgstr "Documentación"
+
+msgid "Documents"
+msgstr "Documentos"
+
+msgid "Does not repeat (one-off)"
+msgstr "No se repite (única)"
+
+msgid "Done"
+msgstr "Hecha"
+
+msgid "Done From Date"
+msgstr "Hecha desde"
+
+msgid "Done On"
+msgstr "Hecha el"
+
+msgid "Done To Date"
+msgstr "Hecha hasta"
+
+msgid "Done {0}"
+msgstr "Hechas {0}"
+
+msgid "Donut"
+msgstr "Dona"
+
+msgid "Down"
+msgstr "Baja"
+
+msgid "Download template"
+msgstr "Descargar plantilla"
+
+msgid "Draft"
+msgstr "Borrador"
+
+msgid "Draft time saved"
+msgstr "Tiempo en borrador guardado"
+
+msgid "Drag a bar to move its dates. Drag either edge to resize, or focus an edge and use the arrow keys."
+msgstr "Arrastra una barra para mover sus fechas. Arrastra cualquiera de sus bordes para ajustarla, o enfoca un borde y usa las flechas."
+
+msgid "Drag onto a day, or choose a due date."
+msgstr "Arrastra a un día o elige una fecha de vencimiento."
+
+msgid "Drag to move or reorder task"
+msgstr "Arrastra para mover o reordenar la tarea"
+
+msgid "Drag work into a sprint, or use each task’s move button."
+msgstr "Arrastra trabajo a un sprint o usa el botón de mover de cada tarea."
+
+msgid "Drag {0} to move or reorder"
+msgstr "Arrastra {0} para moverla o reordenarla"
+
+msgid "Drop a task here"
+msgstr "Suelta una tarea aquí"
+
+msgid "Due"
+msgstr "Vencimiento"
+
+msgid "Due Date"
+msgstr "Fecha de vencimiento"
+
+msgid "Due Reminder"
+msgstr "Recordatorio de vencimiento"
+
+msgid "Due date"
+msgstr "Fecha de vencimiento"
+
+msgid "Due today"
+msgstr "Vencen hoy"
+
+msgid "Due {0}"
+msgstr "Vence {0}"
+
+msgid "Duplicate"
+msgstr "Duplicada"
+
+msgid "Duplicate of"
+msgstr "Duplicada de"
+
+msgid "Duplicate of {0}"
+msgstr "Duplicada de {0}"
+
+msgid "Duration"
+msgstr "Duración"
+
+msgid "Duration (minutes)"
+msgstr "Duración (minutos)"
+
+msgid "ERPNext status"
+msgstr "Estado en ERPNext"
+
+msgid "Earlier task version"
+msgstr "Versión anterior de la tarea"
+
+msgid "Edit dates"
+msgstr "Editar fechas"
+
+msgid "Edit dates and details"
+msgstr "Editar fechas y detalles"
+
+msgid "Edit module"
+msgstr "Editar módulo"
+
+msgid "Edit page"
+msgstr "Editar página"
+
+msgid "Edit {0}"
+msgstr "Editar {0}"
+
+msgid "Editable tasks"
+msgstr "Tareas editables"
+
+msgid "Editable tasks and accessible date controls"
+msgstr "Tareas editables y controles de fecha accesibles"
+
+msgid "Editing page"
+msgstr "Editando página"
+
+msgid "Email"
+msgstr "Correo electrónico"
+
+msgid "Enable Advance Task Reminders"
+msgstr "Habilitar recordatorios anticipados de tareas"
+
+msgid "Enable Email Notifications"
+msgstr "Habilitar notificaciones por correo"
+
+msgid "Enable Hierarchical Assignment"
+msgstr "Habilitar asignación jerárquica"
+
+msgid "Enable Scrum"
+msgstr "Habilitar Scrum"
+
+msgid "Enable assignment, completion and scheduled reminder emails through the ERP outgoing account. Reminders also respect each user’s Notification Settings email and event-reminder preferences."
+msgstr "Habilita los correos de asignación, finalización y recordatorios programados a través de la cuenta de salida del ERP. Los recordatorios también respetan las preferencias de correo y de recordatorio de eventos de la configuración de notificaciones de cada usuario."
+
+msgid "Enable ntfy Push"
+msgstr "Habilitar push de ntfy"
+
+msgid "Enable submissions"
+msgstr "Habilitar envíos"
+
+msgid "Enabled"
+msgstr "Habilitado"
+
+msgid "End Date"
+msgstr "Fecha de fin"
+
+msgid "Ended projects"
+msgstr "Proyectos terminados"
+
+msgid "Enter a value"
+msgstr "Ingresa un valor"
+
+msgid "Entered On"
+msgstr "Registrado el"
+
+msgid "Entries"
+msgstr "Registros"
+
+msgid "Epic"
+msgstr "Épica"
+
+msgid "Epics"
+msgstr "Épicas"
+
+msgid "Estimated hours"
+msgstr "Horas estimadas"
+
+msgid "Estimated workload: {0} hours · {1} points · {2} tasks"
+msgstr "Carga de trabajo estimada: {0} horas · {1} puntos · {2} tareas"
+
+msgid "Event"
+msgstr "Evento"
+
+msgid "Every"
+msgstr "Cada"
+
+msgid "Every task has a due date."
+msgstr "Todas las tareas tienen fecha de vencimiento."
+
+msgid "Everything assigned to you that isn't done — across all projects. Tick to complete."
+msgstr "Todo lo que tienes asignado y no está hecho, en todos los proyectos. Marca la casilla para completar."
+
+msgid "Existing accounts keep their roles. A Pulse contributor role is needed to use task details, labels and modules; administrators manage it in ERP User settings."
+msgstr "Las cuentas existentes conservan sus roles. Se necesita un rol de colaborador de Pulse para usar los detalles de tareas, las etiquetas y los módulos; los administradores lo gestionan en la configuración de usuarios del ERP."
+
+msgid "Existing external user"
+msgstr "Usuario externo existente"
+
+msgid "Existing template project ID"
+msgstr "ID de un proyecto plantilla existente"
+
+msgid "Exit expanded timeline"
+msgstr "Salir del cronograma ampliado"
+
+msgid "Expand column"
+msgstr "Expandir columna"
+
+msgid "Expand timeline"
+msgstr "Ampliar cronograma"
+
+msgid "Expand {0}"
+msgstr "Expandir {0}"
+
+msgid "Expected End Date"
+msgstr "Fecha de fin prevista"
+
+msgid "Expected Start Date"
+msgstr "Fecha de inicio prevista"
+
+msgid "Export accessible tasks"
+msgstr "Exportar tareas accesibles"
+
+msgid "Exported {0} accessible tasks."
+msgstr "Se exportaron {0} tareas accesibles."
+
+msgid "External"
+msgstr "Externo"
+
+msgid "External collaboration"
+msgstr "Colaboración externa"
+
+msgid "Extra Config (JSON)"
+msgstr "Configuración adicional (JSON)"
+
+msgid "Facilitator"
+msgstr "Facilitador"
+
+msgid "Favorite"
+msgstr "Favorito"
+
+msgid "Favorites and recently opened"
+msgstr "Favoritos y abiertos recientemente"
+
+msgid "Feature"
+msgstr "Funcionalidad"
+
+msgid "File attached"
+msgstr "Archivo adjuntado"
+
+msgid "Filter Name"
+msgstr "Nombre del filtro"
+
+msgid "Filter by assignee"
+msgstr "Filtrar por responsable"
+
+msgid "Filter by priority"
+msgstr "Filtrar por prioridad"
+
+msgid "Filter by project status"
+msgstr "Filtrar por estado del proyecto"
+
+msgid "Filter by type"
+msgstr "Filtrar por tipo"
+
+msgid "Filter combination"
+msgstr "Combinación de filtros"
+
+msgid "Filter field"
+msgstr "Campo del filtro"
+
+msgid "Filter operator"
+msgstr "Operador del filtro"
+
+msgid "Filter requests by status"
+msgstr "Filtrar solicitudes por estado"
+
+msgid "Filter tasks"
+msgstr "Filtrar tareas"
+
+msgid "Filter value"
+msgstr "Valor del filtro"
+
+msgid "Filters"
+msgstr "Filtros"
+
+msgid "Filters (JSON)"
+msgstr "Filtros (JSON)"
+
+msgid "Filters JSON"
+msgstr "JSON de filtros"
+
+msgid "Fingerprint"
+msgstr "Huella"
+
+msgid "Finish-to-Finish"
+msgstr "Fin a fin"
+
+msgid "Finish-to-Start"
+msgstr "Fin a inicio"
+
+msgid "First name"
+msgstr "Nombre"
+
+msgid "Fiscal Year"
+msgstr "Año fiscal"
+
+msgid "Flagged"
+msgstr "Marcadas"
+
+msgid "Float"
+msgstr "Decimal"
+
+msgid "Follow"
+msgstr "Seguir"
+
+msgid "Follow task"
+msgstr "Seguir tarea"
+
+msgid "Following"
+msgstr "Siguiendo"
+
+msgid "Formatting"
+msgstr "Formato"
+
+msgid "Frappe CRM is not installed on this site. CRM tasks will appear here when it is available."
+msgstr "Frappe CRM no está instalado en este sitio. Las tareas del CRM aparecerán aquí cuando esté disponible."
+
+msgid "Freeform"
+msgstr "Formato libre"
+
+msgid "Fri"
+msgstr "Vie"
+
+msgid "From"
+msgstr "Desde"
+
+msgid "From Date"
+msgstr "Desde"
+
+msgid "From State"
+msgstr "Estado de origen"
+
+msgid "From a project’s actions menu, choose Manage team. Administrators can add existing users, invite new team members, transfer ownership, and review offboarding. Removing project membership and disabling an ERP account are separate actions."
+msgstr "Desde el menú de acciones de un proyecto, elige Administrar equipo. Los administradores pueden agregar usuarios existentes, invitar a nuevos miembros, transferir la propiedad y revisar las bajas. Quitar a alguien del proyecto y desactivar una cuenta del ERP son acciones separadas."
+
+msgid "Gantt"
+msgstr "Gantt"
+
+msgid "General activity"
+msgstr "Actividad general"
+
+msgid "Generate a task now"
+msgstr "Generar una tarea ahora"
+
+msgid "Get started with Pulse"
+msgstr "Empieza a usar Pulse"
+
+msgid "Getting started · project setup, imports and team workflows →"
+msgstr "Primeros pasos · configuración de proyectos, importaciones y flujos de trabajo del equipo →"
+
+msgid "Glad/Sad/Mad"
+msgstr "Contento/Triste/Enojado"
+
+msgid "Goal"
+msgstr "Objetivo"
+
+msgid "Goal Title"
+msgstr "Título del objetivo"
+
+msgid "Goal Updated"
+msgstr "Objetivo actualizado"
+
+msgid "Good afternoon"
+msgstr "Buenas tardes"
+
+msgid "Good afternoon, {0}"
+msgstr "Buenas tardes, {0}"
+
+msgid "Good evening"
+msgstr "Buenas noches"
+
+msgid "Good evening, {0}"
+msgstr "Buenas noches, {0}"
+
+msgid "Good morning"
+msgstr "Buenos días"
+
+msgid "Good morning, {0}"
+msgstr "Buenos días, {0}"
+
+msgid "Grid X"
+msgstr "Cuadrícula X"
+
+msgid "Grid Y"
+msgstr "Cuadrícula Y"
+
+msgid "Group related tasks and track their progress together."
+msgstr "Agrupa tareas relacionadas y sigue su progreso en conjunto."
+
+msgid "Group related tasks into a feature, workstream, or milestone and track their completion."
+msgstr "Agrupa tareas relacionadas en una funcionalidad, línea de trabajo o hito y sigue su avance."
+
+msgid "Group tasks by"
+msgstr "Agrupar tareas por"
+
+msgid "Grouping and columns"
+msgstr "Agrupación y columnas"
+
+msgid "Hand off assignments to"
+msgstr "Traspasar asignaciones a"
+
+msgid "Hand work to"
+msgstr "Traspasar el trabajo a"
+
+msgid "Headers and record access checked. Import validates every task and saves the whole batch together. Preview shows the first ten rows."
+msgstr "Se verificaron los encabezados y el acceso a los registros. La importación valida cada tarea y guarda todo el lote a la vez. La vista previa muestra las primeras diez filas."
+
+msgid "Heatmap"
+msgstr "Mapa de calor"
+
+msgid "Height (rows)"
+msgstr "Alto (filas)"
+
+msgid "High"
+msgstr "Alta"
+
+msgid "Higher rank = more senior. Seeded on install; edit to match your org."
+msgstr "Rango más alto = más jerarquía. Se carga al instalar; edítalo para ajustarlo a tu organización."
+
+msgid "Higher rank = more senior. Users may assign work only to roles ranked at or below their own highest rank."
+msgstr "Rango más alto = más jerarquía. Los usuarios solo pueden asignar trabajo a roles con un rango igual o inferior a su rango más alto."
+
+msgid "History"
+msgstr "Historial"
+
+msgid "History Started At"
+msgstr "Historial iniciado el"
+
+msgid "Holiday"
+msgstr "Feriado"
+
+msgid "Home"
+msgstr "Inicio"
+
+msgid "Hours"
+msgstr "Horas"
+
+msgid "How capacity is calculated"
+msgstr "Cómo se calcula la capacidad"
+
+msgid "I reviewed this organization-wide handoff and account disablement."
+msgstr "Revisé este traspaso para toda la organización y la desactivación de la cuenta."
+
+msgid "Icon"
+msgstr "Icono"
+
+msgid "Icon Emoji"
+msgstr "Emoji del icono"
+
+msgid "Ideal"
+msgstr "Ideal"
+
+msgid "Impact"
+msgstr "Impacto"
+
+msgid "Impact Assessment"
+msgstr "Evaluación de impacto"
+
+msgid "Impact on Budget"
+msgstr "Impacto en el presupuesto"
+
+msgid "Impact on Schedule"
+msgstr "Impacto en el cronograma"
+
+msgid "Impact on Scope"
+msgstr "Impacto en el alcance"
+
+msgid "Implemented"
+msgstr "Implementada"
+
+msgid "Import / export tasks"
+msgstr "Importar / exportar tareas"
+
+msgid "Import failed. No changes were saved. Check row values and try again."
+msgstr "La importación falló. No se guardó ningún cambio. Revisa los valores de las filas e inténtalo de nuevo."
+
+msgid "Import preview"
+msgstr "Vista previa de la importación"
+
+msgid "Import {0} tasks"
+msgstr "Importar {0} tareas"
+
+msgid "Imported {0} new tasks and updated {1} tasks."
+msgstr "Se importaron {0} tareas nuevas y se actualizaron {1} tareas."
+
+msgid "Importing…"
+msgstr "Importando…"
+
+msgid "Improvement"
+msgstr "Mejora"
+
+msgid "In Progress"
+msgstr "En curso"
+
+msgid "In Review"
+msgstr "En revisión"
+
+msgid "In progress {0}"
+msgstr "En curso {0}"
+
+msgid "Inbox"
+msgstr "Bandeja de entrada"
+
+msgid "Incident"
+msgstr "Incidente"
+
+msgid "Include archived"
+msgstr "Incluir archivadas"
+
+msgid "Incoming"
+msgstr "Entrante"
+
+msgid "Insights"
+msgstr "Análisis"
+
+msgid "Int"
+msgstr "Entero"
+
+msgid "Intake"
+msgstr "Solicitudes"
+
+msgid "Invite a new ERP user"
+msgstr "Invitar a un nuevo usuario del ERP"
+
+msgid "Inviting…"
+msgstr "Invitando…"
+
+msgid "Is Active"
+msgstr "Está activo"
+
+msgid "Is Default Template"
+msgstr "Es la plantilla predeterminada"
+
+msgid "Is Epic"
+msgstr "Es épica"
+
+msgid "Is Lead"
+msgstr "Es líder"
+
+msgid "Is Milestone"
+msgstr "Es hito"
+
+msgid "Is Sub-task"
+msgstr "Es subtarea"
+
+msgid "Issue Key"
+msgstr "Clave de la incidencia"
+
+msgid "Issue Type"
+msgstr "Tipo de incidencia"
+
+msgid "Issue Type Name"
+msgstr "Nombre del tipo de incidencia"
+
+msgid "Issues"
+msgstr "Incidencias"
+
+msgid "Issues in Active Sprints"
+msgstr "Incidencias en sprints activos"
+
+msgid "Items"
+msgstr "Elementos"
+
+msgid "KPI Number"
+msgstr "Número KPI"
+
+msgid "KR Name"
+msgstr "Nombre del KR"
+
+msgid "KR Type"
+msgstr "Tipo de KR"
+
+msgid "Kanban"
+msgstr "Kanban"
+
+msgid "Keep at least one column visible."
+msgstr "Mantén al menos una columna visible."
+
+msgid "Keep in this completed sprint"
+msgstr "Mantener en este sprint completado"
+
+msgid "Keep priority"
+msgstr "Mantener prioridad"
+
+msgid "Keep project"
+msgstr "Mantener proyecto"
+
+msgid "Keep reminders and automations reliable"
+msgstr "Mantén confiables los recordatorios y las automatizaciones"
+
+msgid "Keep status"
+msgstr "Mantener estado"
+
+msgid "Keep this layout, grouping and filters for later."
+msgstr "Conserva este diseño, agrupación y filtros para después."
+
+msgid "Key Result"
+msgstr "Resultado clave"
+
+msgid "Key of the metric, report or query that feeds this widget"
+msgstr "Clave de la métrica, el informe o la consulta que alimenta este widget"
+
+msgid "Kind"
+msgstr "Clase"
+
+msgid "Label"
+msgstr "Etiqueta"
+
+msgid "Label Name"
+msgstr "Nombre de la etiqueta"
+
+msgid "Label name"
+msgstr "Nombre de la etiqueta"
+
+msgid "Labels"
+msgstr "Etiquetas"
+
+msgid "Lag Days"
+msgstr "Días de desfase"
+
+msgid "Last Generated"
+msgstr "Última generación"
+
+msgid "Last N Sprints"
+msgstr "Últimos N sprints"
+
+msgid "Last name"
+msgstr "Apellido"
+
+msgid "Last opened"
+msgstr "Última apertura"
+
+msgid "Later"
+msgstr "Más adelante"
+
+msgid "Layout (JSON)"
+msgstr "Diseño (JSON)"
+
+msgid "Layout preferences could not be saved."
+msgstr "No se pudieron guardar las preferencias de diseño."
+
+msgid "Lead"
+msgstr "Líder"
+
+msgid "Lead Time (days)"
+msgstr "Tiempo de entrega (días)"
+
+msgid "Lead Time (working days)"
+msgstr "Tiempo de entrega (días hábiles)"
+
+msgid "Leave Type"
+msgstr "Tipo de ausencia"
+
+msgid "Leave editing? Shared body changes are already saved. Unsaved title and task changes will be discarded."
+msgstr "¿Salir de la edición? Los cambios compartidos del contenido ya están guardados. Se descartarán los cambios no guardados del título y las tareas."
+
+msgid "Leave name blank to create a task. Use an exported task ID to update it. Only columns included in the CSV are changed. Formula-like export cells are prefixed with an apostrophe for spreadsheet safety."
+msgstr "Deja el nombre en blanco para crear una tarea. Usa un ID de tarea exportado para actualizarla. Solo cambian las columnas incluidas en el CSV. Las celdas exportadas que parecen fórmulas llevan un apóstrofo delante por seguridad en hojas de cálculo."
+
+msgid "Leave tasks unassigned"
+msgstr "Dejar las tareas sin asignar"
+
+msgid "Level"
+msgstr "Nivel"
+
+msgid "Line"
+msgstr "Líneas"
+
+msgid "Link"
+msgstr "Enlace"
+
+msgid "Link URL"
+msgstr "URL del enlace"
+
+msgid "Link a sales or CRM record to one delivery project. Repeating the handoff opens the existing project."
+msgstr "Vincula un registro de ventas o CRM a un proyecto de entrega. Si repites el traspaso, se abre el proyecto existente."
+
+msgid "Linked Projects"
+msgstr "Proyectos vinculados"
+
+msgid "Linked Tasks"
+msgstr "Tareas vinculadas"
+
+msgid "Linked tasks"
+msgstr "Tareas vinculadas"
+
+msgid "List"
+msgstr "Lista"
+
+msgid "Live"
+msgstr "En vivo"
+
+msgid "Live updates connected"
+msgstr "Actualizaciones en vivo conectadas"
+
+msgid "Load more tasks"
+msgstr "Cargar más tareas"
+
+msgid "Loading analytics..."
+msgstr "Cargando analítica..."
+
+msgid "Loading approvals…"
+msgstr "Cargando aprobaciones…"
+
+msgid "Loading dashboard..."
+msgstr "Cargando panel..."
+
+msgid "Loading fields…"
+msgstr "Cargando campos…"
+
+msgid "Loading form settings…"
+msgstr "Cargando configuración del formulario…"
+
+msgid "Loading form…"
+msgstr "Cargando formulario…"
+
+msgid "Loading modules…"
+msgstr "Cargando módulos…"
+
+msgid "Loading options…"
+msgstr "Cargando opciones…"
+
+msgid "Loading pages…"
+msgstr "Cargando páginas…"
+
+msgid "Loading people…"
+msgstr "Cargando personas…"
+
+msgid "Loading planning tasks…"
+msgstr "Cargando tareas de planificación…"
+
+msgid "Loading projects"
+msgstr "Cargando proyectos"
+
+msgid "Loading projects…"
+msgstr "Cargando proyectos…"
+
+msgid "Loading report…"
+msgstr "Cargando informe…"
+
+msgid "Loading requests…"
+msgstr "Cargando solicitudes…"
+
+msgid "Loading request…"
+msgstr "Cargando solicitud…"
+
+msgid "Loading shared work…"
+msgstr "Cargando trabajo compartido…"
+
+msgid "Loading sprints…"
+msgstr "Cargando sprints…"
+
+msgid "Loading tasks…"
+msgstr "Cargando tareas…"
+
+msgid "Loading team…"
+msgstr "Cargando equipo…"
+
+msgid "Loading time entries…"
+msgstr "Cargando registros de tiempo…"
+
+msgid "Loading updates…"
+msgstr "Cargando novedades…"
+
+msgid "Loading work…"
+msgstr "Cargando trabajo…"
+
+msgid "Loading your tasks…"
+msgstr "Cargando tus tareas…"
+
+msgid "Loading your time…"
+msgstr "Cargando tu tiempo…"
+
+msgid "Loading your workspace…"
+msgstr "Cargando tu espacio de trabajo…"
+
+msgid "Loading..."
+msgstr "Cargando..."
+
+msgid "Loading…"
+msgstr "Cargando…"
+
+msgid "Low"
+msgstr "Baja"
+
+msgid "Main navigation"
+msgstr "Navegación principal"
+
+msgid "Manage external access"
+msgstr "Gestionar acceso externo"
+
+msgid "Manage project membership and hand off assigned work."
+msgstr "Gestiona los miembros del proyecto y traspasa el trabajo asignado."
+
+msgid "Manage team"
+msgstr "Administrar equipo"
+
+msgid "Manage timesheets"
+msgstr "Administrar hojas de horas"
+
+msgid "Manual rank"
+msgstr "Orden manual"
+
+msgid "Mark done"
+msgstr "Marcar como hecha"
+
+msgid "Mark read"
+msgstr "Marcar como leída"
+
+msgid "Mark unread"
+msgstr "Marcar como no leída"
+
+msgid "Marked completed"
+msgstr "Marcados como completados"
+
+msgid "Match"
+msgstr "Coincidir con"
+
+msgid "Measure progress by"
+msgstr "Medir el progreso por"
+
+msgid "Measured in Super Productivity and synced — not entered by hand."
+msgstr "Medido en Super Productivity y sincronizado, no ingresado a mano."
+
+msgid "Measured in task count — Pulse doesn't use story points."
+msgstr "Medido por número de tareas: Pulse no usa puntos de historia."
+
+msgid "Medium"
+msgstr "Media"
+
+msgid "Meeting"
+msgstr "Reunión"
+
+msgid "Meeting notes"
+msgstr "Notas de reunión"
+
+msgid "Meetings"
+msgstr "Reuniones"
+
+msgid "Member removed. {0} task assignments updated."
+msgstr "Miembro quitado. Se actualizaron {0} asignaciones de tareas."
+
+msgid "Mention"
+msgstr "Mención"
+
+msgid "Mentioned Users JSON"
+msgstr "JSON de usuarios mencionados"
+
+msgid "Message"
+msgstr "Mensaje"
+
+msgid "Metric"
+msgstr "Métrica"
+
+msgid "Metric / Data Source"
+msgstr "Métrica / fuente de datos"
+
+msgid "Metrics"
+msgstr "Métricas"
+
+msgid "Milestone"
+msgstr "Hito"
+
+msgid "Minimize task view"
+msgstr "Minimizar vista de tarea"
+
+msgid "Mitigated"
+msgstr "Mitigado"
+
+msgid "Mitigation"
+msgstr "Mitigación"
+
+msgid "Mitigation Plan"
+msgstr "Plan de mitigación"
+
+msgid "Module"
+msgstr "Módulo"
+
+msgid "Module Membership Changed"
+msgstr "Pertenencia al módulo cambiada"
+
+msgid "Module could not be saved. Please try again."
+msgstr "No se pudo guardar el módulo. Intenta de nuevo."
+
+msgid "Module name"
+msgstr "Nombre del módulo"
+
+msgid "Module: {0}"
+msgstr "Módulo: {0}"
+
+msgid "Modules"
+msgstr "Módulos"
+
+msgid "Mon"
+msgstr "Lun"
+
+msgid "Month"
+msgstr "Mes"
+
+msgid "Month layout"
+msgstr "Vista mensual"
+
+msgid "More"
+msgstr "Más"
+
+msgid "More options"
+msgstr "Más opciones"
+
+msgid "More properties"
+msgstr "Más propiedades"
+
+msgid "More task actions"
+msgstr "Más acciones de tareas"
+
+msgid "More tasks could not be loaded."
+msgstr "No se pudieron cargar más tareas."
+
+msgid "Move selected to project"
+msgstr "Mover seleccionadas a un proyecto"
+
+msgid "Move tasks with a UTF-8 CSV file. Import up to 500 rows at a time."
+msgstr "Mueve tareas con un archivo CSV en UTF-8. Importa hasta 500 filas a la vez."
+
+msgid "Move to another sprint"
+msgstr "Mover a otro sprint"
+
+msgid "Move {0} down"
+msgstr "Bajar {0}"
+
+msgid "Move {0} earlier"
+msgstr "Mover {0} antes"
+
+msgid "Move {0} later"
+msgstr "Mover {0} después"
+
+msgid "Move {0} up"
+msgstr "Subir {0}"
+
+msgid "Moving task…"
+msgstr "Moviendo tarea…"
+
+msgid "My Dashboard"
+msgstr "Mi panel"
+
+msgid "My Tasks"
+msgstr "Mis tareas"
+
+msgid "My Tasks list"
+msgstr "Lista de mis tareas"
+
+msgid "My work"
+msgstr "Mi trabajo"
+
+msgid "Narrower"
+msgstr "Más angosto"
+
+msgid "Navigate"
+msgstr "Navegar"
+
+msgid "New Value"
+msgstr "Valor nuevo"
+
+msgid "New epic"
+msgstr "Nueva épica"
+
+msgid "New label color"
+msgstr "Color de la nueva etiqueta"
+
+msgid "New label name"
+msgstr "Nombre de la nueva etiqueta"
+
+msgid "New page"
+msgstr "Nueva página"
+
+msgid "New project"
+msgstr "Nuevo proyecto"
+
+msgid "New project name"
+msgstr "Nombre del nuevo proyecto"
+
+msgid "New recurring task"
+msgstr "Nueva tarea recurrente"
+
+msgid "New request"
+msgstr "Nueva solicitud"
+
+msgid "New requests will appear here for review."
+msgstr "Las nuevas solicitudes aparecerán aquí para revisión."
+
+msgid "New sprint"
+msgstr "Nuevo sprint"
+
+msgid "New task"
+msgstr "Nueva tarea"
+
+msgid "New task title"
+msgstr "Título de la nueva tarea"
+
+msgid "New updates will appear here as your team makes progress."
+msgstr "Las novedades aparecerán aquí a medida que tu equipo avance."
+
+msgid "New work item"
+msgstr "Nuevo elemento de trabajo"
+
+msgid "New work item title"
+msgstr "Título del nuevo elemento de trabajo"
+
+msgid "New {0}"
+msgstr "Crear {0}"
+
+msgid "Next Run"
+msgstr "Próxima ejecución"
+
+msgid "Next date a task will be generated."
+msgstr "Próxima fecha en que se generará una tarea."
+
+msgid "Next month"
+msgstr "Mes siguiente"
+
+msgid "Next period"
+msgstr "Período siguiente"
+
+msgid "Next week"
+msgstr "Semana siguiente"
+
+msgid "No"
+msgstr "No"
+
+msgid "No Company is configured. Complete ERPNext setup "
+msgstr "No hay ninguna empresa configurada. Completa la configuración de ERPNext "
+
+msgid "No Company is configured. Complete ERPNext setup (create a Company) before adding projects."
+msgstr "No hay ninguna empresa configurada. Completa la configuración de ERPNext (crea una empresa) antes de agregar proyectos."
+
+msgid "No active allocations or assigned open tasks in this period."
+msgstr "No hay asignaciones activas ni tareas abiertas asignadas en este periodo."
+
+msgid "No active projects."
+msgstr "No hay proyectos activos."
+
+msgid "No approval requests yet."
+msgstr "Aún no hay solicitudes de aprobación."
+
+msgid "No audit entries."
+msgstr "No hay entradas de auditoría."
+
+msgid "No available tasks match."
+msgstr "No hay tareas disponibles que coincidan."
+
+msgid "No changes recorded yet."
+msgstr "Aún no hay cambios registrados."
+
+msgid "No completed tasks yet"
+msgstr "Aún no hay tareas completadas"
+
+msgid "No customer"
+msgstr "Sin cliente"
+
+msgid "No data"
+msgstr "Sin datos"
+
+msgid "No data for this report yet. Sprint reports need a sprint with dates and tasks."
+msgstr "Aún no hay datos para este informe. Los informes de sprint necesitan un sprint con fechas y tareas."
+
+msgid "No date"
+msgstr "Sin fecha"
+
+msgid "No dates"
+msgstr "Sin fechas"
+
+msgid "No dates set"
+msgstr "Sin fechas"
+
+msgid "No description provided."
+msgstr "Sin descripción."
+
+msgid "No due date"
+msgstr "Sin fecha de vencimiento"
+
+msgid "No editable tasks are available."
+msgstr "No hay tareas editables disponibles."
+
+msgid "No end date"
+msgstr "Sin fecha de fin"
+
+msgid "No epics yet. Create a task of type {0} to group work."
+msgstr "Aún no hay épicas. Crea una tarea de tipo {0} para agrupar trabajo."
+
+msgid "No files attached."
+msgstr "No hay archivos adjuntos."
+
+msgid "No grouping"
+msgstr "Sin agrupación"
+
+msgid "No items"
+msgstr "Sin elementos"
+
+msgid "No linked tasks. Edit this page to connect it to your work."
+msgstr "No hay tareas vinculadas. Edita esta página para conectarla con tu trabajo."
+
+msgid "No longer available in this project"
+msgstr "Ya no está disponible en este proyecto"
+
+msgid "No matching labels. Add labels in project task settings."
+msgstr "No hay etiquetas que coincidan. Agrega etiquetas en la configuración de tareas del proyecto."
+
+msgid "No matching people."
+msgstr "No hay personas que coincidan."
+
+msgid "No matching projects"
+msgstr "No hay proyectos que coincidan"
+
+msgid "No matching tasks"
+msgstr "No hay tareas que coincidan"
+
+msgid "No matching tasks, projects or pages."
+msgstr "No hay tareas, proyectos ni páginas que coincidan."
+
+msgid "No modules yet"
+msgstr "Aún no hay módulos"
+
+msgid "No open tasks assigned to you"
+msgstr "No tienes tareas abiertas asignadas"
+
+msgid "No other enabled user can review this task yet. Ask a project administrator to add a reviewer with task write access."
+msgstr "Aún no hay otro usuario habilitado que pueda revisar esta tarea. Pide a un administrador del proyecto que agregue un revisor con permiso de escritura en tareas."
+
+msgid "No pages found."
+msgstr "No se encontraron páginas."
+
+msgid "No priority"
+msgstr "Sin prioridad"
+
+msgid "No project members yet. Add an existing ERP user below."
+msgstr "Aún no hay miembros en el proyecto. Agrega abajo un usuario existente del ERP."
+
+msgid "No projects are available. Create a project or ask for access first."
+msgstr "No hay proyectos disponibles. Crea un proyecto o solicita acceso primero."
+
+msgid "No projects yet"
+msgstr "Aún no hay proyectos"
+
+msgid "No recorded activity yet."
+msgstr "Aún no hay actividad registrada."
+
+msgid "No records yet. Create your first {0}."
+msgstr "Aún no hay registros. Crea el primero ({0})."
+
+msgid "No recurring tasks yet. Create one so routine work never rots in the backlog."
+msgstr "Aún no hay tareas recurrentes. Crea una para que el trabajo rutinario nunca se estanque en el backlog."
+
+msgid "No releases yet. Set a release on a task to start grouping."
+msgstr "Aún no hay versiones. Asigna una versión a una tarea para empezar a agrupar."
+
+msgid "No requests"
+msgstr "No hay solicitudes"
+
+msgid "No sales order"
+msgstr "Sin orden de venta"
+
+msgid "No saved revisions yet."
+msgstr "Aún no hay revisiones guardadas."
+
+msgid "No selection allows all task types."
+msgstr "Sin selección se permiten todos los tipos de tarea."
+
+msgid "No sprints yet. Create a sprint to plan your first cycle."
+msgstr "Aún no hay sprints. Crea un sprint para planificar tu primer ciclo."
+
+msgid "No sprints."
+msgstr "No hay sprints."
+
+msgid "No start date"
+msgstr "Sin fecha de inicio"
+
+msgid "No task found for '{0}'"
+msgstr "No se encontró ninguna tarea para '{0}'"
+
+msgid "No tasks have been shared with you."
+msgstr "No se han compartido tareas contigo."
+
+msgid "No tasks in this release."
+msgstr "No hay tareas en esta versión."
+
+msgid "No tasks linked to this epic yet."
+msgstr "Aún no hay tareas vinculadas a esta épica."
+
+msgid "No tasks match this view. Choose a date above to add one."
+msgstr "Ninguna tarea coincide con esta vista. Elige una fecha arriba para agregar una."
+
+msgid "No tasks match your search."
+msgstr "Ninguna tarea coincide con tu búsqueda."
+
+msgid "No templates yet"
+msgstr "Aún no hay plantillas"
+
+msgid "No time entries"
+msgstr "No hay registros de tiempo"
+
+msgid "No time recorded. Start a timer or add an entry."
+msgstr "No hay tiempo registrado. Inicia un temporizador o agrega un registro."
+
+msgid "No unplanned tasks in this project."
+msgstr "No hay tareas sin planificar en este proyecto."
+
+msgid "No upcoming meetings."
+msgstr "No hay reuniones próximas."
+
+msgid "No {0} requests"
+msgstr "No hay solicitudes con estado {0}"
+
+msgid "Nonbillable"
+msgstr "No facturable"
+
+msgid "None"
+msgstr "Ninguno"
+
+msgid "Not allowed"
+msgstr "No permitido"
+
+msgid "Not scheduled"
+msgstr "Sin programar"
+
+msgid "Note"
+msgstr "Nota"
+
+msgid "Notes"
+msgstr "Notas"
+
+msgid "Nothing assigned to you right now."
+msgstr "No tienes nada asignado en este momento."
+
+msgid "Nothing assigned yet."
+msgstr "Aún no hay nada asignado."
+
+msgid "Nothing overdue"
+msgstr "Nada vencido"
+
+msgid "Nothing to edit."
+msgstr "No hay nada que editar."
+
+msgid "Notification filter"
+msgstr "Filtro de notificaciones"
+
+msgid "Notifications"
+msgstr "Notificaciones"
+
+msgid "Notifications could not load."
+msgstr "No se pudieron cargar las notificaciones."
+
+msgid "Notify assigned users before tasks are due and on their due date. Email follows each user’s Frappe notification settings."
+msgstr "Notifica a los usuarios asignados antes del vencimiento de las tareas y en su fecha de vencimiento. El correo sigue la configuración de notificaciones de Frappe de cada usuario."
+
+msgid "Now blocked by {0}"
+msgstr "Ahora bloqueada por {0}"
+
+msgid "Number Card"
+msgstr "Tarjeta numérica"
+
+msgid "Number of tasks committed to this sprint."
+msgstr "Número de tareas comprometidas en este sprint."
+
+msgid "Number of tasks completed in this sprint."
+msgstr "Número de tareas completadas en este sprint."
+
+msgid "OKR Progress"
+msgstr "Progreso de OKR"
+
+msgid "OKRs"
+msgstr "OKR"
+
+msgid "Objective"
+msgstr "Objetivo"
+
+msgid "Objective Name"
+msgstr "Nombre del objetivo"
+
+msgid "Occurred At"
+msgstr "Ocurrió el"
+
+msgid "Off Track"
+msgstr "Desviado"
+
+msgid "Offboard an ERP account"
+msgstr "Dar de baja una cuenta del ERP"
+
+msgid "Offboarding preview"
+msgstr "Vista previa de la baja"
+
+msgid "Old Value"
+msgstr "Valor anterior"
+
+msgid "On Track"
+msgstr "En camino"
+
+msgid "One project task status per line. Empty means optional."
+msgstr "Un estado de tarea del proyecto por línea. Vacío significa opcional."
+
+msgid "Only Pulse Admins or Managers can create shared dashboards."
+msgstr "Solo los administradores o gerentes de Pulse pueden crear paneles compartidos."
+
+msgid "Only Pulse Admins or Managers can set the default dashboard."
+msgstr "Solo los administradores o gerentes de Pulse pueden definir el panel predeterminado."
+
+msgid "Only one sprint per project may be Active at a time."
+msgstr "Solo puede haber un sprint activo por proyecto a la vez."
+
+msgid "Open"
+msgstr "Abierta"
+
+msgid "Open Pages →"
+msgstr "Abrir Páginas →"
+
+msgid "Open Projects and choose New project. Give it a clear name and a short project key. To start from a sale, expand Create delivery work from CRM or sales and select an existing submitted Sales Order, CRM Deal, or Opportunity."
+msgstr "Abre Proyectos y elige Nuevo proyecto. Dale un nombre claro y una clave de proyecto corta. Para empezar desde una venta, expande Crear trabajo de entrega desde CRM o ventas y selecciona una Orden de venta, un Trato de CRM o una Oportunidad existente y validada."
+
+msgid "Open Projects →"
+msgstr "Abrir Proyectos →"
+
+msgid "Open Pulse App"
+msgstr "Abrir la app Pulse"
+
+msgid "Open Pulse Settings →"
+msgstr "Abrir Configuración de Pulse →"
+
+msgid "Open a project’s business details and enable reusable template."
+msgstr "Abre los detalles del negocio de un proyecto y habilita la plantilla reutilizable."
+
+msgid "Open a task, project, or page and you can return to it here."
+msgstr "Abre una tarea, un proyecto o una página y podrás volver a ellos desde aquí."
+
+msgid "Open a task’s External collaboration section and grant an existing external account access. External users receive a separate shared-work page with task title, status, dates, and an external discussion. Internal descriptions, attachments, and comments stay in the team workspace."
+msgstr "Abre la sección Colaboración externa de una tarea y da acceso a una cuenta externa existente. Los usuarios externos reciben una página de trabajo compartido aparte con el título, el estado, las fechas y una conversación externa de la tarea. Las descripciones, los adjuntos y los comentarios internos se quedan en el espacio de trabajo del equipo."
+
+msgid "Open all task views →"
+msgstr "Abrir todas las vistas de tareas →"
+
+msgid "Open details for {0}"
+msgstr "Abrir detalles de {0}"
+
+msgid "Open inbox"
+msgstr "Abrir bandeja de entrada"
+
+msgid "Open meetings"
+msgstr "Abrir reuniones"
+
+msgid "Open navigation"
+msgstr "Abrir navegación"
+
+msgid "Open pages"
+msgstr "Abrir páginas"
+
+msgid "Open project"
+msgstr "Abrir proyecto"
+
+msgid "Open projects →"
+msgstr "Abrir proyectos →"
+
+msgid "Open record ↗"
+msgstr "Abrir registro ↗"
+
+msgid "Open saved views →"
+msgstr "Abrir vistas guardadas →"
+
+msgid "Open shared work portal"
+msgstr "Abrir portal de trabajo compartido"
+
+msgid "Open task assignments will be handed off or left unassigned. The ERP account stays active. ERPNext removes project shares; separate task shares may still provide access."
+msgstr "Las asignaciones de tareas abiertas se traspasarán o quedarán sin asignar. La cuenta del ERP sigue activa. ERPNext elimina los accesos compartidos del proyecto; los accesos compartidos de tareas individuales aún pueden dar acceso."
+
+msgid "Open task in fullscreen"
+msgstr "Abrir tarea en pantalla completa"
+
+msgid "Open task {0} →"
+msgstr "Abrir tarea {0} →"
+
+msgid "Open tasks"
+msgstr "Abrir tareas"
+
+msgid "Open the project and use New work item to add titles inline. Open a task for its description, dates, assignees, and other details. For a CSV file, choose Import / export tasks from the project’s actions menu, download the template, then preview your file before importing. A blank name creates a task; an existing task ID updates it."
+msgstr "Abre el proyecto y usa Nuevo elemento de trabajo para agregar títulos en línea. Abre una tarea para ver su descripción, fechas, responsables y otros detalles. Para un archivo CSV, elige Importar / exportar tareas en el menú de acciones del proyecto, descarga la plantilla y previsualiza tu archivo antes de importarlo. Un nombre vacío crea una tarea; un ID de tarea existente la actualiza."
+
+msgid "Open timesheet {0}"
+msgstr "Abrir hoja de horas {0}"
+
+msgid "Open views"
+msgstr "Abrir vistas"
+
+msgid "Open {0}"
+msgstr "Abrir {0}"
+
+msgid "Operational"
+msgstr "Operativo"
+
+msgid "Opportunity"
+msgstr "Oportunidad"
+
+msgid "Optional"
+msgstr "Opcional"
+
+msgid "Optional full grid-layout snapshot maintained by the SPA"
+msgstr "Instantánea opcional del diseño de cuadrícula completo mantenida por la SPA"
+
+msgid "Optional icon identifier used by the Pulse UI"
+msgstr "Identificador de icono opcional que usa la interfaz de Pulse"
+
+msgid "Options"
+msgstr "Opciones"
+
+msgid "Options couldn't load."
+msgstr "No se pudieron cargar las opciones."
+
+msgid "Or paste CSV"
+msgstr "O pega el CSV"
+
+msgid "Order"
+msgstr "Orden"
+
+msgid "Order by"
+msgstr "Ordenar por"
+
+msgid "Organizer"
+msgstr "Organizador"
+
+msgid "Original request ID"
+msgstr "ID de la solicitud original"
+
+msgid "Other"
+msgstr "Otro"
+
+msgid "Outside this period"
+msgstr "Fuera de este período"
+
+msgid "Overall Sentiment"
+msgstr "Sentimiento general"
+
+msgid "Overdue"
+msgstr "Vencida"
+
+msgid "Overdue tasks"
+msgstr "Tareas vencidas"
+
+msgid "Owner"
+msgstr "Propietario"
+
+msgid "PROJECT"
+msgstr "PROYECTO"
+
+msgid "Page"
+msgstr "Página"
+
+msgid "Page saved."
+msgstr "Página guardada."
+
+msgid "Page title"
+msgstr "Título de la página"
+
+msgid "Pages"
+msgstr "Páginas"
+
+msgid "Pages could not be loaded."
+msgstr "No se pudieron cargar las páginas."
+
+msgid "Parent Document"
+msgstr "Documento principal"
+
+msgid "Parent Objective"
+msgstr "Objetivo principal"
+
+msgid "Parent Task"
+msgstr "Tarea principal"
+
+msgid "Parent:"
+msgstr "Tarea principal:"
+
+msgid "Participants"
+msgstr "Participantes"
+
+msgid "Pause"
+msgstr "Pausar"
+
+msgid "Paused"
+msgstr "En pausa"
+
+msgid "Pending"
+msgstr "Pendiente"
+
+msgid "Pending Review"
+msgstr "Pendiente de revisión"
+
+msgid "Pending {0}"
+msgstr "Pendientes {0}"
+
+msgid "People could not be loaded."
+msgstr "No se pudieron cargar las personas."
+
+msgid "People to mention"
+msgstr "Personas para mencionar"
+
+msgid "Percent"
+msgstr "Porcentaje"
+
+msgid "Percentage"
+msgstr "Porcentaje"
+
+msgid "Period label, e.g. 2026 or FY2026-27"
+msgstr "Etiqueta del período, p. ej., 2026 o FY2026-27"
+
+msgid "Personal"
+msgstr "Personal"
+
+msgid "Personal view"
+msgstr "Vista personal"
+
+msgid "Personal workspace"
+msgstr "Espacio de trabajo personal"
+
+msgid "Pick up where you left off."
+msgstr "Retoma donde lo dejaste."
+
+msgid "Pie"
+msgstr "Circular"
+
+msgid "Plan a cycle and track its progress."
+msgstr "Planifica un ciclo y sigue su progreso."
+
+msgid "Plan into"
+msgstr "Planificar en"
+
+msgid "Plan, prioritise and accomplish your work with ease."
+msgstr "Planifica, prioriza y completa tu trabajo con facilidad."
+
+msgid "Planned"
+msgstr "Planificado"
+
+msgid "Planned Tasks"
+msgstr "Tareas planificadas"
+
+msgid "Planning settings saved."
+msgstr "Configuración de planificación guardada."
+
+msgid "Planning tasks could not be loaded."
+msgstr "No se pudieron cargar las tareas de planificación."
+
+msgid "Planning views"
+msgstr "Vistas de planificación"
+
+msgid "Points"
+msgstr "Puntos"
+
+msgid "Portfolio"
+msgstr "Portafolio"
+
+msgid "Portfolio Name"
+msgstr "Nombre del portafolio"
+
+msgid "Post comment"
+msgstr "Publicar comentario"
+
+msgid "Post reply"
+msgstr "Publicar respuesta"
+
+msgid "Posting…"
+msgstr "Publicando…"
+
+msgid "Press 'Enter' to add another work item"
+msgstr "Presiona Enter para agregar otro elemento de trabajo"
+
+msgid "Press Enter to create another work item · Esc to cancel"
+msgstr "Presiona Enter para crear otro elemento de trabajo · Esc para cancelar"
+
+msgid "Preview import"
+msgstr "Vista previa de la importación"
+
+msgid "Previous Value"
+msgstr "Valor anterior"
+
+msgid "Previous month"
+msgstr "Mes anterior"
+
+msgid "Previous options"
+msgstr "Opciones anteriores"
+
+msgid "Previous period"
+msgstr "Período anterior"
+
+msgid "Previous week"
+msgstr "Semana anterior"
+
+msgid "Previous: {0}"
+msgstr "Anterior: {0}"
+
+msgid "Priority"
+msgstr "Prioridad"
+
+msgid "Priority Changed"
+msgstr "Prioridad cambiada"
+
+msgid "Priority for {0}"
+msgstr "Prioridad de {0}"
+
+msgid "Priority: {0}"
+msgstr "Prioridad: {0}"
+
+msgid "Probability"
+msgstr "Probabilidad"
+
+msgid "Progress"
+msgstr "Progreso"
+
+msgid "Progress Measure"
+msgstr "Medida de progreso"
+
+msgid "Progress Note"
+msgstr "Nota de progreso"
+
+msgid "Progress includes tasks you can access. Archived and cancelled tasks are excluded."
+msgstr "El progreso incluye las tareas a las que tienes acceso. Se excluyen las tareas archivadas y canceladas."
+
+msgid "Project"
+msgstr "Proyecto"
+
+msgid "Project / CRM record"
+msgstr "Proyecto / registro del CRM"
+
+msgid "Project Created"
+msgstr "Proyecto creado"
+
+msgid "Project Key"
+msgstr "Clave del proyecto"
+
+msgid "Project Name"
+msgstr "Nombre del proyecto"
+
+msgid "Project Ownership Changed"
+msgstr "Propiedad del proyecto cambiada"
+
+msgid "Project analytics"
+msgstr "Analítica de proyectos"
+
+msgid "Project backlog"
+msgstr "Backlog del proyecto"
+
+msgid "Project brief"
+msgstr "Resumen del proyecto"
+
+msgid "Project custom-field values are supported for one-off tasks. Scheduled templates do not store them."
+msgstr "Los valores de campos personalizados del proyecto se admiten en tareas únicas. Las plantillas programadas no los guardan."
+
+msgid "Project details"
+msgstr "Detalles del proyecto"
+
+msgid "Project fields"
+msgstr "Campos del proyecto"
+
+msgid "Project fields saved."
+msgstr "Campos del proyecto guardados."
+
+msgid "Project for new task"
+msgstr "Proyecto de la nueva tarea"
+
+msgid "Project member added."
+msgstr "Miembro del proyecto agregado."
+
+msgid "Project module"
+msgstr "Módulo del proyecto"
+
+msgid "Project name"
+msgstr "Nombre del proyecto"
+
+msgid "Project navigation"
+msgstr "Navegación del proyecto"
+
+msgid "Project owner: {0}"
+msgstr "Propietario del proyecto: {0}"
+
+msgid "Project ownership transferred."
+msgstr "Propiedad del proyecto transferida."
+
+msgid "Project pages"
+msgstr "Páginas del proyecto"
+
+msgid "Project progress"
+msgstr "Progreso del proyecto"
+
+msgid "Project task fields"
+msgstr "Campos de tarea del proyecto"
+
+msgid "Project task settings"
+msgstr "Configuración de tareas del proyecto"
+
+msgid "Project tasks"
+msgstr "Tareas de proyectos"
+
+msgid "Project tasks and CRM follow-ups assigned to you."
+msgstr "Tareas de proyectos y seguimientos del CRM asignados a ti."
+
+msgid "Project tasks could not be loaded. Please try again."
+msgstr "No se pudieron cargar las tareas de proyectos. Intenta de nuevo."
+
+msgid "Project template (optional)"
+msgstr "Plantilla de proyecto (opcional)"
+
+msgid "Project views"
+msgstr "Vistas de proyectos"
+
+msgid "Project {0} already has an active sprint ({1}). Close it first."
+msgstr "El proyecto {0} ya tiene un sprint activo ({1}). Ciérralo primero."
+
+msgid "Projects"
+msgstr "Proyectos"
+
+msgid "Projects could not be loaded."
+msgstr "No se pudieron cargar los proyectos."
+
+msgid "Projects couldn't load."
+msgstr "No se pudieron cargar los proyectos."
+
+msgid "Projects you can access will appear here."
+msgstr "Aquí aparecerán los proyectos a los que tienes acceso."
+
+msgid "Properties"
+msgstr "Propiedades"
+
+msgid "Proposed"
+msgstr "Propuesta"
+
+msgid "Proposed By"
+msgstr "Propuesta por"
+
+msgid "Public form settings could not be loaded."
+msgstr "No se pudo cargar la configuración del formulario público."
+
+msgid "Public form settings could not be saved."
+msgstr "No se pudo guardar la configuración del formulario público."
+
+msgid "Public form settings saved."
+msgstr "Configuración del formulario público guardada."
+
+msgid "Public instructions"
+msgstr "Instrucciones públicas"
+
+msgid "Public request form"
+msgstr "Formulario público de solicitudes"
+
+msgid "Public title"
+msgstr "Título público"
+
+msgid "Published"
+msgstr "Publicado"
+
+msgid "Pulse"
+msgstr "Pulse"
+
+msgid "Pulse Activity Log"
+msgstr "Registro de actividad de Pulse"
+
+msgid "Pulse Allocation"
+msgstr "Asignación de recursos de Pulse"
+
+msgid "Pulse Burndown"
+msgstr "Burndown de Pulse"
+
+msgid "Pulse Burnup"
+msgstr "Burnup de Pulse"
+
+msgid "Pulse Business Handoff"
+msgstr "Traspaso de negocio de Pulse"
+
+msgid "Pulse CR Approval"
+msgstr "Aprobación de CR de Pulse"
+
+msgid "Pulse CR Task"
+msgstr "Tarea de CR de Pulse"
+
+msgid "Pulse Change Request"
+msgstr "Solicitud de cambio de Pulse"
+
+msgid "Pulse Checklist"
+msgstr "Lista de verificación de Pulse"
+
+msgid "Pulse Comment"
+msgstr "Comentario de Pulse"
+
+msgid "Pulse Cumulative Flow"
+msgstr "Flujo acumulado de Pulse"
+
+msgid "Pulse Cycle Time"
+msgstr "Tiempo de ciclo de Pulse"
+
+msgid "Pulse Dashboard"
+msgstr "Panel de Pulse"
+
+msgid "Pulse Dashboard Widget"
+msgstr "Widget de panel de Pulse"
+
+msgid "Pulse Decision"
+msgstr "Decisión de Pulse"
+
+msgid "Pulse Dependency"
+msgstr "Dependencia de Pulse"
+
+msgid "Pulse Document"
+msgstr "Documento de Pulse"
+
+msgid "Pulse Document Task"
+msgstr "Tarea de documento de Pulse"
+
+msgid "Pulse External Comment"
+msgstr "Comentario externo de Pulse"
+
+msgid "Pulse External Share"
+msgstr "Uso compartido externo de Pulse"
+
+msgid "Pulse Goal"
+msgstr "Objetivo de Pulse"
+
+msgid "Pulse Import Batch"
+msgstr "Lote de importación de Pulse"
+
+msgid "Pulse Issue Type"
+msgstr "Tipo de incidencia de Pulse"
+
+msgid "Pulse Key Result"
+msgstr "Resultado clave de Pulse"
+
+msgid "Pulse Key Result Project"
+msgstr "Proyecto de resultado clave de Pulse"
+
+msgid "Pulse Label"
+msgstr "Etiqueta de Pulse"
+
+msgid "Pulse Lead Time"
+msgstr "Tiempo de entrega de Pulse"
+
+msgid "Pulse Leave"
+msgstr "Ausencia de Pulse"
+
+msgid "Pulse Meeting"
+msgstr "Reunión de Pulse"
+
+msgid "Pulse Meeting Action"
+msgstr "Acción de reunión de Pulse"
+
+msgid "Pulse Meeting Attendee"
+msgstr "Asistente de reunión de Pulse"
+
+msgid "Pulse Meeting Decision"
+msgstr "Decisión de reunión de Pulse"
+
+msgid "Pulse Module"
+msgstr "Módulo de Pulse"
+
+msgid "Pulse Module Task"
+msgstr "Tarea de módulo de Pulse"
+
+msgid "Pulse Notification"
+msgstr "Notificación de Pulse"
+
+msgid "Pulse OKR Check-in"
+msgstr "Seguimiento de OKR de Pulse"
+
+msgid "Pulse Objective"
+msgstr "Objetivo de Pulse"
+
+msgid "Pulse Personal Item"
+msgstr "Elemento personal de Pulse"
+
+msgid "Pulse Portfolio"
+msgstr "Portafolio de Pulse"
+
+msgid "Pulse Portfolio Project"
+msgstr "Proyecto de portafolio de Pulse"
+
+msgid "Pulse Project"
+msgstr "Proyecto de Pulse"
+
+msgid "Pulse Project Task Type"
+msgstr "Tipo de tarea de proyecto de Pulse"
+
+msgid "Pulse Project User"
+msgstr "Usuario de proyecto de Pulse"
+
+msgid "Pulse Recurring Task"
+msgstr "Tarea recurrente de Pulse"
+
+msgid "Pulse Request"
+msgstr "Solicitud de Pulse"
+
+msgid "Pulse Request Activity"
+msgstr "Actividad de solicitud de Pulse"
+
+msgid "Pulse Request Form"
+msgstr "Formulario de solicitud de Pulse"
+
+msgid "Pulse Retro Action"
+msgstr "Acción de retrospectiva de Pulse"
+
+msgid "Pulse Retro Item"
+msgstr "Elemento de retrospectiva de Pulse"
+
+msgid "Pulse Retro Participant"
+msgstr "Participante de retrospectiva de Pulse"
+
+msgid "Pulse Retrospective"
+msgstr "Retrospectiva de Pulse"
+
+msgid "Pulse Risk"
+msgstr "Riesgo de Pulse"
+
+msgid "Pulse Risk Action"
+msgstr "Acción de riesgo de Pulse"
+
+msgid "Pulse Risk Task"
+msgstr "Tarea de riesgo de Pulse"
+
+msgid "Pulse Role Rank"
+msgstr "Rango de rol de Pulse"
+
+msgid "Pulse Saved Filter"
+msgstr "Filtro guardado de Pulse"
+
+msgid "Pulse Saved View"
+msgstr "Vista guardada de Pulse"
+
+msgid "Pulse Settings"
+msgstr "Configuración de Pulse"
+
+msgid "Pulse Sprint"
+msgstr "Sprint de Pulse"
+
+msgid "Pulse Sprint Event"
+msgstr "Evento de sprint de Pulse"
+
+msgid "Pulse Sprint Report"
+msgstr "Informe de sprint de Pulse"
+
+msgid "Pulse Task"
+msgstr "Tarea de Pulse"
+
+msgid "Pulse Task Approval"
+msgstr "Aprobación de tarea de Pulse"
+
+msgid "Pulse Task Field Rule"
+msgstr "Regla de campo de tarea de Pulse"
+
+msgid "Pulse Task Label"
+msgstr "Etiqueta de tarea de Pulse"
+
+msgid "Pulse Task Status"
+msgstr "Estado de tarea de Pulse"
+
+msgid "Pulse Task Status Log"
+msgstr "Registro de estados de tarea de Pulse"
+
+msgid "Pulse Timer"
+msgstr "Temporizador de Pulse"
+
+msgid "Pulse Timesheet"
+msgstr "Hoja de horas de Pulse"
+
+msgid "Pulse Timesheet Entry"
+msgstr "Registro de hoja de horas de Pulse"
+
+msgid "Pulse Velocity"
+msgstr "Velocidad de Pulse"
+
+msgid "Pulse Workload"
+msgstr "Carga de trabajo de Pulse"
+
+msgid "Push Notifications (ntfy)"
+msgstr "Notificaciones push (ntfy)"
+
+msgid "Q1"
+msgstr "T1"
+
+msgid "Q2"
+msgstr "T2"
+
+msgid "Q3"
+msgstr "T3"
+
+msgid "Q4"
+msgstr "T4"
+
+msgid "Quarter"
+msgstr "Trimestre"
+
+msgid "Rank"
+msgstr "Rango"
+
+msgid "Rationale"
+msgstr "Justificación"
+
+msgid "Raw Layout"
+msgstr "Diseño sin procesar"
+
+msgid "Read"
+msgstr "Leída"
+
+msgid "Reason"
+msgstr "Motivo"
+
+msgid "Recent"
+msgstr "Reciente"
+
+msgid "Recently opened"
+msgstr "Abiertos recientemente"
+
+msgid "Recipient"
+msgstr "Destinatario"
+
+msgid "Record"
+msgstr "Registro"
+
+msgid "Record time"
+msgstr "Registrar tiempo"
+
+msgid "Record type"
+msgstr "Tipo de registro"
+
+msgid "Recorded history is unavailable for this sprint."
+msgstr "El historial registrado no está disponible para este sprint."
+
+msgid "Recurrence"
+msgstr "Recurrencia"
+
+msgid "Recurring Tasks"
+msgstr "Tareas recurrentes"
+
+msgid "Recurring task created ({0})"
+msgstr "Tarea recurrente creada ({0})"
+
+msgid "Recurring tasks"
+msgstr "Tareas recurrentes"
+
+msgid "Reference"
+msgstr "Referencia"
+
+msgid "Reference DocType"
+msgstr "DocType de referencia"
+
+msgid "Reference Name"
+msgstr "Nombre de referencia"
+
+msgid "Refresh"
+msgstr "Actualizar"
+
+msgid "Refresh access"
+msgstr "Actualizar acceso"
+
+msgid "Refresh tasks"
+msgstr "Actualizar tareas"
+
+msgid "Reject"
+msgstr "Rechazar"
+
+msgid "Rejected"
+msgstr "Rechazado"
+
+msgid "Relationships"
+msgstr "Relaciones"
+
+msgid "Release"
+msgstr "Versión"
+
+msgid "Releases"
+msgstr "Versiones"
+
+msgid "Reload page"
+msgstr "Recargar página"
+
+msgid "Reload the page to try again."
+msgstr "Recarga la página para intentarlo de nuevo."
+
+msgid "Remaining"
+msgstr "Restante"
+
+msgid "Reminder email queued"
+msgstr "Correo de recordatorio en cola"
+
+msgid "Reminders"
+msgstr "Recordatorios"
+
+msgid "Remove"
+msgstr "Quitar"
+
+msgid "Remove assignee"
+msgstr "Quitar responsable"
+
+msgid "Remove filter group"
+msgstr "Quitar grupo de filtros"
+
+msgid "Remove filter rule"
+msgstr "Quitar regla de filtro"
+
+msgid "Remove from {0}"
+msgstr "Quitar de {0}"
+
+msgid "Remove member"
+msgstr "Quitar miembro"
+
+msgid "Remove member…"
+msgstr "Quitar miembro…"
+
+msgid "Remove module from new task"
+msgstr "Quitar el módulo de la nueva tarea"
+
+msgid "Remove rule"
+msgstr "Quitar regla"
+
+msgid "Remove the module selection to create a repeating task."
+msgstr "Quita el módulo seleccionado para crear una tarea recurrente."
+
+msgid "Remove {0}"
+msgstr "Quitar {0}"
+
+msgid "Remove {0} from module"
+msgstr "Quitar {0} del módulo"
+
+msgid "Remove {0}?"
+msgstr "¿Quitar a {0}?"
+
+msgid "Removed during sprint"
+msgstr "Quitado durante el sprint"
+
+msgid "Removed label: {0}"
+msgstr "Etiqueta quitada: {0}"
+
+msgid "Removed {0} entry"
+msgstr "Entrada de {0} quitada"
+
+msgid "Removing…"
+msgstr "Quitando…"
+
+msgid "Repeat"
+msgstr "Repetir"
+
+msgid "Repeat every N units."
+msgstr "Repetir cada N unidades."
+
+msgid "Repeats on a schedule"
+msgstr "Se repite según un calendario"
+
+msgid "Replace membership"
+msgstr "Reemplazar membresía"
+
+msgid "Reply visible to external participants"
+msgstr "Respuesta visible para participantes externos"
+
+msgid "Reports"
+msgstr "Informes"
+
+msgid "Request ID"
+msgstr "ID de solicitud"
+
+msgid "Request accepted. Task {0} created."
+msgstr "Solicitud aceptada. Se creó la tarea {0}."
+
+msgid "Request approval"
+msgstr "Solicitar aprobación"
+
+msgid "Request details"
+msgstr "Detalles de la solicitud"
+
+msgid "Request details could not be loaded."
+msgstr "No se pudieron cargar los detalles de la solicitud."
+
+msgid "Request queue"
+msgstr "Cola de solicitudes"
+
+msgid "Request review from"
+msgstr "Solicitar revisión a"
+
+msgid "Request submitted for review."
+msgstr "Solicitud enviada para revisión."
+
+msgid "Requested by"
+msgstr "Solicitada por"
+
+msgid "Requested by {0} · {1}"
+msgstr "Solicitada por {0} · {1}"
+
+msgid "Requests could not be loaded."
+msgstr "No se pudieron cargar las solicitudes."
+
+msgid "Require approval before entering"
+msgstr "Requerir aprobación antes de entrar a"
+
+msgid "Required in"
+msgstr "Obligatorio en"
+
+msgid "Required in statuses"
+msgstr "Obligatorio en los estados"
+
+msgid "Required project fields are unavailable with your current access. Ask a project administrator to review field permissions."
+msgstr "Los campos obligatorios del proyecto no están disponibles con tu acceso actual. Pide a un administrador del proyecto que revise los permisos de los campos."
+
+msgid "Research"
+msgstr "Investigación"
+
+msgid "Reset"
+msgstr "Restablecer"
+
+msgid "Resize end of {0}; arrow keys change by one day"
+msgstr "Ajustar fin de {0}; las flechas cambian un día"
+
+msgid "Resize start of {0}; arrow keys change by one day"
+msgstr "Ajustar inicio de {0}; las flechas cambian un día"
+
+msgid "Resolved"
+msgstr "Resuelta"
+
+msgid "Resource"
+msgstr "Recurso"
+
+msgid "Restore"
+msgstr "Restaurar"
+
+msgid "Restore task"
+msgstr "Restaurar tarea"
+
+msgid "Result"
+msgstr "Resultado"
+
+msgid "Resume"
+msgstr "Reanudar"
+
+msgid "Retro"
+msgstr "Retrospectiva"
+
+msgid "Retro Items"
+msgstr "Elementos de retrospectiva"
+
+msgid "Retrospective"
+msgstr "Retrospectiva"
+
+msgid "Retrospectives"
+msgstr "Retrospectivas"
+
+msgid "Retry"
+msgstr "Reintentar"
+
+msgid "Retry details"
+msgstr "Reintentar detalles"
+
+msgid "Retry projects"
+msgstr "Reintentar proyectos"
+
+msgid "Retry sync"
+msgstr "Reintentar sincronización"
+
+msgid "Return to backlog"
+msgstr "Devolver al backlog"
+
+msgid "Reversed"
+msgstr "Revertida"
+
+msgid "Review"
+msgstr "Revisión"
+
+msgid "Review changes for {0}"
+msgstr "Revisa los cambios para {0}"
+
+msgid "Review current task content"
+msgstr "Revisa el contenido actual de la tarea"
+
+msgid "Review draft {0}"
+msgstr "Revisar borrador {0}"
+
+msgid "Review note"
+msgstr "Nota de revisión"
+
+msgid "Review offboarding plan"
+msgstr "Revisar plan de baja"
+
+msgid "Review requests before adding them to your project."
+msgstr "Revisa las solicitudes antes de agregarlas a tu proyecto."
+
+msgid "Review saved."
+msgstr "Revisión guardada."
+
+msgid "Reviewer"
+msgstr "Revisor"
+
+msgid "Reviewer choices could not be loaded. Re-select the project to retry."
+msgstr "No se pudieron cargar los revisores. Vuelve a seleccionar el proyecto para reintentar."
+
+msgid "Reviewer: {0}"
+msgstr "Revisor: {0}"
+
+msgid "Revision history"
+msgstr "Historial de revisiones"
+
+msgid "Revoke"
+msgstr "Revocar"
+
+msgid "Risk"
+msgstr "Riesgo"
+
+msgid "Risk Level"
+msgstr "Nivel de riesgo"
+
+msgid "Risk Matrix"
+msgstr "Matriz de riesgos"
+
+msgid "Risk Score"
+msgstr "Puntuación de riesgo"
+
+msgid "Risk Title"
+msgstr "Título del riesgo"
+
+msgid "Risks"
+msgstr "Riesgos"
+
+msgid "Role"
+msgstr "Rol"
+
+msgid "Role Hierarchy & Assignment"
+msgstr "Jerarquía de roles y asignación"
+
+msgid "Role Ranks"
+msgstr "Rangos de roles"
+
+msgid "Routine work that regenerates on a schedule — a fresh task lands in {0} each cycle, so it never rots in the backlog."
+msgstr "Trabajo rutinario que se regenera según un calendario: en cada ciclo llega una tarea nueva a {0}, para que nunca se estanque en el backlog."
+
+msgid "Running projects"
+msgstr "Proyectos en curso"
+
+msgid "Sales Order"
+msgstr "Orden de venta"
+
+msgid "Sales order"
+msgstr "Orden de venta"
+
+msgid "Same"
+msgstr "Igual"
+
+msgid "Sat"
+msgstr "Sáb"
+
+msgid "Save"
+msgstr "Guardar"
+
+msgid "Save as new view"
+msgstr "Guardar como nueva vista"
+
+msgid "Save changes"
+msgstr "Guardar cambios"
+
+msgid "Save changes or create a copy"
+msgstr "Guarda los cambios o crea una copia"
+
+msgid "Save description"
+msgstr "Guardar descripción"
+
+msgid "Save details"
+msgstr "Guardar detalles"
+
+msgid "Save label"
+msgstr "Guardar etiqueta"
+
+msgid "Save planning settings"
+msgstr "Guardar configuración de planificación"
+
+msgid "Save project fields"
+msgstr "Guardar campos del proyecto"
+
+msgid "Save public form"
+msgstr "Guardar formulario público"
+
+msgid "Save review"
+msgstr "Guardar revisión"
+
+msgid "Save task fields"
+msgstr "Guardar campos de tarea"
+
+msgid "Save the task or create the page before uploading images or files."
+msgstr "Guarda la tarea o crea la página antes de subir imágenes o archivos."
+
+msgid "Save this view"
+msgstr "Guardar esta vista"
+
+msgid "Save time entry"
+msgstr "Guardar registro de tiempo"
+
+msgid "Save view"
+msgstr "Guardar vista"
+
+msgid "Save workflow"
+msgstr "Guardar flujo de trabajo"
+
+msgid "Saved"
+msgstr "Guardado"
+
+msgid "Saved as a draft timesheet."
+msgstr "Se guarda como hoja de horas en borrador."
+
+msgid "Saved preferences could not be loaded."
+msgstr "No se pudieron cargar las preferencias guardadas."
+
+msgid "Saved view"
+msgstr "Vista guardada"
+
+msgid "Saved views could not be loaded."
+msgstr "No se pudieron cargar las vistas guardadas."
+
+msgid "Saving shared changes…"
+msgstr "Guardando cambios compartidos…"
+
+msgid "Saving..."
+msgstr "Guardando..."
+
+msgid "Saving…"
+msgstr "Guardando…"
+
+msgid "Schedule"
+msgstr "Cronograma"
+
+msgid "Schedule one in the Meetings module."
+msgstr "Programa una en el módulo de Reuniones."
+
+msgid "Schedule task on {0}"
+msgstr "Programar tarea el {0}"
+
+msgid "Schedule {0}"
+msgstr "Programar {0}"
+
+msgid "Schedule {0} on {1}"
+msgstr "Programar {0} el {1}"
+
+msgid "Scheduled"
+msgstr "Programada"
+
+msgid "Scope"
+msgstr "Alcance"
+
+msgid "Score"
+msgstr "Puntuación"
+
+msgid "Scrum"
+msgstr "Scrum"
+
+msgid "Scrum Settings"
+msgstr "Configuración de Scrum"
+
+msgid "Search"
+msgstr "Buscar"
+
+msgid "Search anything"
+msgstr "Buscar cualquier cosa"
+
+msgid "Search available tasks"
+msgstr "Buscar tareas disponibles"
+
+msgid "Search by name…"
+msgstr "Buscar por nombre…"
+
+msgid "Search could not load."
+msgstr "No se pudo cargar la búsqueda."
+
+msgid "Search modules"
+msgstr "Buscar módulos"
+
+msgid "Search pages"
+msgstr "Buscar páginas"
+
+msgid "Search pages…"
+msgstr "Buscar páginas…"
+
+msgid "Search projects by name, key, customer or order"
+msgstr "Buscar proyectos por nombre, clave, cliente u orden"
+
+msgid "Search projects…"
+msgstr "Buscar proyectos…"
+
+msgid "Search properties"
+msgstr "Buscar propiedades"
+
+msgid "Search tasks"
+msgstr "Buscar tareas"
+
+msgid "Search tasks by title or ID"
+msgstr "Buscar tareas por título o ID"
+
+msgid "Search tasks, projects and pages"
+msgstr "Buscar tareas, proyectos y páginas"
+
+msgid "Search tasks, projects and pages…"
+msgstr "Buscar tareas, proyectos y páginas…"
+
+msgid "Search tasks…"
+msgstr "Buscar tareas…"
+
+msgid "Search workspace"
+msgstr "Buscar en el espacio de trabajo"
+
+msgid "Search your tasks"
+msgstr "Buscar tus tareas"
+
+msgid "Search {0}"
+msgstr "Buscar {0}"
+
+msgid "Searching…"
+msgstr "Buscando…"
+
+msgid "Seen"
+msgstr "Vista"
+
+msgid "Select"
+msgstr "Selección"
+
+msgid "Select a date range and project, then calculate workload."
+msgstr "Selecciona un rango de fechas y un proyecto, y luego calcula la carga de trabajo."
+
+msgid "Select a page"
+msgstr "Selecciona una página"
+
+msgid "Select a project"
+msgstr "Selecciona un proyecto"
+
+msgid "Select a request to review its details and activity."
+msgstr "Selecciona una solicitud para revisar sus detalles y su actividad."
+
+msgid "Select a sprint"
+msgstr "Selecciona un sprint"
+
+msgid "Select a task above to start recording time, or change the date range."
+msgstr "Selecciona una tarea arriba para empezar a registrar tiempo o cambia el rango de fechas."
+
+msgid "Select all"
+msgstr "Seleccionar todo"
+
+msgid "Select an assigned task"
+msgstr "Selecciona una tarea asignada"
+
+msgid "Select project"
+msgstr "Selecciona un proyecto"
+
+msgid "Select visible"
+msgstr "Seleccionar visibles"
+
+msgid "Select visible tasks"
+msgstr "Seleccionar tareas visibles"
+
+msgid "Select {0}"
+msgstr "Seleccionar {0}"
+
+msgid "Select {0}: {1}"
+msgstr "Seleccionar {0}: {1}"
+
+msgid "Send"
+msgstr "Enviar"
+
+msgid "Send push notifications via an ntfy server (assignment + completion)."
+msgstr "Envía notificaciones push a través de un servidor ntfy (asignación + finalización)."
+
+msgid "Sentiment"
+msgstr "Sentimiento"
+
+msgid "Sequence"
+msgstr "Secuencia"
+
+msgid "Set up one project, bring in your team, and start delivering work."
+msgstr "Configura un proyecto, suma a tu equipo y empieza a entregar trabajo."
+
+msgid "Set your project’s rules"
+msgstr "Define las reglas de tu proyecto"
+
+msgid "Settings"
+msgstr "Configuración"
+
+msgid "Share progress with clients or vendors"
+msgstr "Comparte el avance con clientes o proveedores"
+
+msgid "Share task"
+msgstr "Compartir tarea"
+
+msgid "Share the dashboard before making it the default."
+msgstr "Comparte el panel antes de hacerlo predeterminado."
+
+msgid "Share this link:"
+msgstr "Comparte este enlace:"
+
+msgid "Share this task’s title, status, dates and a separate discussion. Internal descriptions, comments, attachments and assignees stay private."
+msgstr "Comparte el título, el estado, las fechas y una conversación aparte de esta tarea. Las descripciones internas, los comentarios, los adjuntos y los responsables siguen siendo privados."
+
+msgid "Share with the workspace"
+msgstr "Compartir con el espacio de trabajo"
+
+msgid "Shared"
+msgstr "Compartido"
+
+msgid "Shared discussion"
+msgstr "Conversación compartida"
+
+msgid "Shared page · changes save automatically"
+msgstr "Página compartida · los cambios se guardan automáticamente"
+
+msgid "Shared tasks"
+msgstr "Tareas compartidas"
+
+msgid "Shared view"
+msgstr "Vista compartida"
+
+msgid "Shared with all Pulse users"
+msgstr "Compartido con todos los usuarios de Pulse"
+
+msgid "Shared work"
+msgstr "Trabajo compartido"
+
+msgid "Shared work could not load."
+msgstr "No se pudo cargar el trabajo compartido."
+
+msgid "Shorter"
+msgstr "Más bajo"
+
+msgid "Show in task details"
+msgstr "Mostrar en los detalles de la tarea"
+
+msgid "Show subtasks"
+msgstr "Mostrar subtareas"
+
+msgid "Show weekends"
+msgstr "Mostrar fines de semana"
+
+msgid "Sick"
+msgstr "Enfermedad"
+
+msgid "Skip to content"
+msgstr "Saltar al contenido"
+
+msgid "Small Text"
+msgstr "Texto corto"
+
+msgid "Snapshot"
+msgstr "Instantánea"
+
+msgid "Some workspace items could not be loaded. Try again to refresh them."
+msgstr "No se pudieron cargar algunos elementos del espacio de trabajo. Intenta de nuevo para actualizarlos."
+
+msgid "Source"
+msgstr "Origen"
+
+msgid "Source Project"
+msgstr "Proyecto de origen"
+
+msgid "Source Task"
+msgstr "Tarea de origen"
+
+msgid "Source record ID"
+msgstr "ID del registro de origen"
+
+msgid "Source type"
+msgstr "Tipo de origen"
+
+msgid "Specification"
+msgstr "Especificación"
+
+msgid "Spreadsheet"
+msgstr "Hoja de cálculo"
+
+msgid "Sprint"
+msgstr "Sprint"
+
+msgid "Sprint & Board Defaults"
+msgstr "Valores predeterminados de sprint y tablero"
+
+msgid "Sprint Burndown"
+msgstr "Burndown del sprint"
+
+msgid "Sprint Burnup"
+msgstr "Burnup del sprint"
+
+msgid "Sprint Changed"
+msgstr "Sprint cambiado"
+
+msgid "Sprint Completed"
+msgstr "Sprint completado"
+
+msgid "Sprint Goal"
+msgstr "Objetivo del sprint"
+
+msgid "Sprint Name"
+msgstr "Nombre del sprint"
+
+msgid "Sprint Progress - by task count"
+msgstr "Progreso del sprint - por número de tareas"
+
+msgid "Sprint Report"
+msgstr "Informe del sprint"
+
+msgid "Sprint Started"
+msgstr "Sprint iniciado"
+
+msgid "Sprint burndown: recorded remaining work and ideal remaining work"
+msgstr "Burndown del sprint: trabajo restante registrado y trabajo restante ideal"
+
+msgid "Sprint closed. The summary is now frozen."
+msgstr "Sprint cerrado. El resumen ya está congelado."
+
+msgid "Sprint goal"
+msgstr "Objetivo del sprint"
+
+msgid "Sprint planning"
+msgstr "Planificación del sprint"
+
+msgid "Sprint progress could not be loaded."
+msgstr "No se pudo cargar el progreso del sprint."
+
+msgid "Sprint settings could not be saved."
+msgstr "No se pudo guardar la configuración del sprint."
+
+msgid "Sprint started."
+msgstr "Sprint iniciado."
+
+msgid "Sprint summary"
+msgstr "Resumen del sprint"
+
+msgid "Sprint work"
+msgstr "Trabajo del sprint"
+
+msgid "Sprints"
+msgstr "Sprints"
+
+msgid "Sprints could not be loaded."
+msgstr "No se pudieron cargar los sprints."
+
+msgid "Start"
+msgstr "Inicio"
+
+msgid "Start Date"
+msgstr "Fecha de inicio"
+
+msgid "Start Date cannot be after End Date."
+msgstr "La fecha de inicio no puede ser posterior a la fecha de fin."
+
+msgid "Start date"
+msgstr "Fecha de inicio"
+
+msgid "Start repeatable work from a template. Mark any project as a template in its business details."
+msgstr "Empieza trabajo repetible desde una plantilla. Marca cualquier proyecto como plantilla en sus detalles del negocio."
+
+msgid "Start sprint"
+msgstr "Iniciar sprint"
+
+msgid "Start time"
+msgstr "Hora de inicio"
+
+msgid "Start timer"
+msgstr "Iniciar temporizador"
+
+msgid "Start-to-Finish"
+msgstr "Inicio a fin"
+
+msgid "Start-to-Start"
+msgstr "Inicio a inicio"
+
+msgid "Start/Stop/Continue"
+msgstr "Empezar/Dejar/Continuar"
+
+msgid "Started At"
+msgstr "Iniciado el"
+
+msgid "Started On"
+msgstr "Iniciado el"
+
+msgid "Started {0}"
+msgstr "Iniciado {0}"
+
+msgid "Status"
+msgstr "Estado"
+
+msgid "Status Change"
+msgstr "Cambio de estado"
+
+msgid "Status Changed"
+msgstr "Estado cambiado"
+
+msgid "Status for {0}"
+msgstr "Estado de {0}"
+
+msgid "Status of Issues Across Projects"
+msgstr "Estado de las incidencias en todos los proyectos"
+
+msgid "Status {0} name"
+msgstr "Nombre del estado {0}"
+
+msgid "Stop & save"
+msgstr "Detener y guardar"
+
+msgid "Story"
+msgstr "Historia"
+
+msgid "Story Points"
+msgstr "Puntos de historia"
+
+msgid "Story points"
+msgstr "Puntos de historia"
+
+msgid "Sub-task"
+msgstr "Subtarea"
+
+msgid "Sub-task {0} added"
+msgstr "Subtarea {0} agregada"
+
+msgid "Sub-tasks"
+msgstr "Subtareas"
+
+msgid "Subject"
+msgstr "Asunto"
+
+msgid "Submit request"
+msgstr "Enviar solicitud"
+
+msgid "Submitted"
+msgstr "Enviado"
+
+msgid "Submitted Entries"
+msgstr "Registros enviados"
+
+msgid "Submitting…"
+msgstr "Enviando…"
+
+msgid "Summary"
+msgstr "Resumen"
+
+msgid "Summary of your team's agile report with the most useful metrics."
+msgstr "Resumen del informe ágil de tu equipo con las métricas más útiles."
+
+msgid "Sun"
+msgstr "Dom"
+
+msgid "Superseded"
+msgstr "Reemplazada"
+
+msgid "Superseded By"
+msgstr "Reemplazada por"
+
+msgid "Switch between List, Board, Calendar, Table, and Timeline in the task toolbar. Filter the tasks, choose visible columns, and save a view for work you revisit. Calendar dates and timeline bars use the same native task dates."
+msgstr "Cambia entre Lista, Tablero, Calendario, Tabla y Cronograma en la barra de herramientas de tareas. Filtra las tareas, elige las columnas visibles y guarda una vista para el trabajo que revisas con frecuencia. Las fechas del calendario y las barras del cronograma usan las mismas fechas nativas de la tarea."
+
+msgid "Switch to dark mode"
+msgstr "Cambiar a modo oscuro"
+
+msgid "Switch to light mode"
+msgstr "Cambiar a modo claro"
+
+msgid "Synchronizing shared changes…"
+msgstr "Sincronizando cambios compartidos…"
+
+msgid "Syncing"
+msgstr "Sincronizando"
+
+msgid "System"
+msgstr "Sistema"
+
+msgid "Table properties"
+msgstr "Propiedades de la tabla"
+
+msgid "Tag a task with a release (e.g. {0}) in its detail panel — they group here automatically."
+msgstr "Etiqueta una tarea con una versión (p. ej., {0}) en su panel de detalles; se agrupan aquí automáticamente."
+
+msgid "Taller"
+msgstr "Más alto"
+
+msgid "Target Date"
+msgstr "Fecha objetivo"
+
+msgid "Target Project"
+msgstr "Proyecto de destino"
+
+msgid "Target Task"
+msgstr "Tarea de destino"
+
+msgid "Target Value"
+msgstr "Valor objetivo"
+
+msgid "Targets"
+msgstr "Objetivos"
+
+msgid "Task"
+msgstr "Tarea"
+
+msgid "Task Completed"
+msgstr "Tarea completada"
+
+msgid "Task Completion"
+msgstr "Avance de tareas"
+
+msgid "Task Counter"
+msgstr "Contador de tareas"
+
+msgid "Task Created"
+msgstr "Tarea creada"
+
+msgid "Task ID"
+msgstr "ID de tarea"
+
+msgid "Task ID and title stay pinned. Choose other properties and their order."
+msgstr "El ID y el título de la tarea quedan fijos. Elige las demás propiedades y su orden."
+
+msgid "Task List"
+msgstr "Lista de tareas"
+
+msgid "Task Status Distribution"
+msgstr "Distribución por estado de tarea"
+
+msgid "Task Template"
+msgstr "Plantilla de tarea"
+
+msgid "Task Type"
+msgstr "Tipo de tarea"
+
+msgid "Task Type Distribution"
+msgstr "Distribución por tipo de tarea"
+
+msgid "Task Updated"
+msgstr "Tarea actualizada"
+
+msgid "Task activity"
+msgstr "Actividad de la tarea"
+
+msgid "Task added to sprint."
+msgstr "Tarea agregada al sprint."
+
+msgid "Task assigned"
+msgstr "Tarea asignada"
+
+msgid "Task could not be created. Your title is kept; try again."
+msgstr "No se pudo crear la tarea. Conservamos tu título; inténtalo de nuevo."
+
+msgid "Task could not be created. Your title is still here; try again."
+msgstr "No se pudo crear la tarea. Tu título sigue aquí; inténtalo de nuevo."
+
+msgid "Task could not be moved. Check your access and retry."
+msgstr "No se pudo mover la tarea. Revisa tu acceso y reintenta."
+
+msgid "Task could not be rescheduled."
+msgstr "No se pudo reprogramar la tarea."
+
+msgid "Task could not be scheduled."
+msgstr "No se pudo programar la tarea."
+
+msgid "Task could not be updated."
+msgstr "No se pudo actualizar la tarea."
+
+msgid "Task created."
+msgstr "Tarea creada."
+
+msgid "Task dates could not be updated."
+msgstr "No se pudieron actualizar las fechas de la tarea."
+
+msgid "Task dependency links"
+msgstr "Dependencias entre tareas"
+
+msgid "Task description"
+msgstr "Descripción de la tarea"
+
+msgid "Task details"
+msgstr "Detalles de la tarea"
+
+msgid "Task field"
+msgstr "Campo de tarea"
+
+msgid "Task fields and stage requirements"
+msgstr "Campos de tarea y requisitos por etapa"
+
+msgid "Task fields saved."
+msgstr "Campos de tarea guardados."
+
+msgid "Task generated in To Do"
+msgstr "Tarea generada en Por hacer"
+
+msgid "Task layout"
+msgstr "Diseño de tareas"
+
+msgid "Task link copied"
+msgstr "Enlace de la tarea copiado"
+
+msgid "Task list (filtered)"
+msgstr "Lista de tareas (filtrada)"
+
+msgid "Task modules"
+msgstr "Módulos de la tarea"
+
+msgid "Task returned to backlog."
+msgstr "Tarea devuelta al backlog."
+
+msgid "Task scheduled."
+msgstr "Tarea programada."
+
+msgid "Task sections"
+msgstr "Secciones de la tarea"
+
+msgid "Task settings"
+msgstr "Configuración de tareas"
+
+msgid "Task settings let administrators configure statuses, task types, and fields required at specific stages. When a stage requires approval, request a review from another team member before moving the task there. Updating the reviewed content requires a fresh approval."
+msgstr "La configuración de tareas permite a los administradores definir estados, tipos de tarea y campos obligatorios en etapas específicas. Cuando una etapa requiere aprobación, pide una revisión a otro miembro del equipo antes de mover la tarea ahí. Si actualizas el contenido revisado, se necesita una nueva aprobación."
+
+msgid "Task shared. Ask the participant to sign in at {0}."
+msgstr "Tarea compartida. Pide al participante que inicie sesión en {0}."
+
+msgid "Task status"
+msgstr "Estado de la tarea"
+
+msgid "Task statuses could not be loaded. Try again."
+msgstr "No se pudieron cargar los estados de las tareas. Inténtalo de nuevo."
+
+msgid "Task time"
+msgstr "Tiempo de la tarea"
+
+msgid "Task timeline"
+msgstr "Cronograma de tareas"
+
+msgid "Task title"
+msgstr "Título de la tarea"
+
+msgid "Task updated"
+msgstr "Tarea actualizada"
+
+msgid "Task updated."
+msgstr "Tarea actualizada."
+
+msgid "Tasks"
+msgstr "Tareas"
+
+msgid "Tasks Per Assignee"
+msgstr "Tareas por responsable"
+
+msgid "Tasks completed per day."
+msgstr "Tareas completadas por día."
+
+msgid "Tasks completed, captured when the sprint is closed."
+msgstr "Tareas completadas, registradas al cerrar el sprint."
+
+msgid "Tasks could not be loaded. Close and try again."
+msgstr "No se pudieron cargar las tareas. Cierra e inténtalo de nuevo."
+
+msgid "Tasks could not be scheduled. Nothing was changed; try again."
+msgstr "No se pudieron programar las tareas. No se cambió nada; inténtalo de nuevo."
+
+msgid "Tasks explicitly shared with your account."
+msgstr "Tareas compartidas explícitamente con tu cuenta."
+
+msgid "Tasks scheduled."
+msgstr "Tareas programadas."
+
+msgid "Team"
+msgstr "Equipo"
+
+msgid "Team Workload"
+msgstr "Carga de trabajo del equipo"
+
+msgid "Team capacity"
+msgstr "Capacidad del equipo"
+
+msgid "Team collaboration"
+msgstr "Colaboración del equipo"
+
+msgid "Team member"
+msgstr "Miembro del equipo"
+
+msgid "Technical"
+msgstr "Técnico"
+
+msgid "Template"
+msgstr "Plantilla"
+
+msgid "Templates"
+msgstr "Plantillas"
+
+msgid "Testing"
+msgstr "Pruebas"
+
+msgid "Text"
+msgstr "Texto"
+
+msgid "Text / Markdown note"
+msgstr "Nota de texto / Markdown"
+
+msgid "Text Note"
+msgstr "Nota de texto"
+
+msgid "The assigned reviewer or a project lead can review this request."
+msgstr "El revisor asignado o un líder del proyecto puede revisar esta solicitud."
+
+msgid "The new owner keeps project access through ownership. Membership and task assignments are preserved."
+msgstr "El nuevo propietario mantiene el acceso al proyecto por ser propietario. Se conservan los miembros y las asignaciones de tareas."
+
+msgid "The page could not be saved. Your draft is still here."
+msgstr "No se pudo guardar la página. Tu borrador sigue aquí."
+
+msgid "The page is still syncing. Please try again in a moment."
+msgstr "La página aún se está sincronizando. Inténtalo de nuevo en un momento."
+
+msgid "The recurring start status requires approval. Create a one-off task or ask an administrator to choose an unprotected start status."
+msgstr "El estado inicial recurrente requiere aprobación. Crea una tarea única o pide a un administrador que elija un estado inicial sin protección."
+
+msgid "The replacement will join the projects above. The departing account will be disabled and its sessions ended. Other HR, accounting and payroll records are unchanged."
+msgstr "El reemplazo se unirá a los proyectos anteriores. La cuenta que se va se desactivará y se cerrarán sus sesiones. Los demás registros de RR. HH., contabilidad y nómina no cambian."
+
+msgid "The request could not be accepted."
+msgstr "No se pudo aceptar la solicitud."
+
+msgid "The review could not be saved."
+msgstr "No se pudo guardar la revisión."
+
+msgid "The saved page could not be refreshed. Keep the editor open and try Close again."
+msgstr "No se pudo actualizar la página guardada. Mantén el editor abierto e intenta Cerrar de nuevo."
+
+msgid "The sprint could not be closed. Review the destination and retry."
+msgstr "No se pudo cerrar el sprint. Revisa el destino y vuelve a intentarlo."
+
+msgid "The upload did not return a private attachment. The image was not inserted."
+msgstr "La carga no devolvió un adjunto privado. No se insertó la imagen."
+
+msgid "These layout preferences are saved for you."
+msgstr "Estas preferencias de diseño se guardan para ti."
+
+msgid "This affects the whole ERP account across all projects. Review the plan before applying it. The account and its history are retained."
+msgstr "Esto afecta a toda la cuenta del ERP en todos los proyectos. Revisa el plan antes de aplicarlo. La cuenta y su historial se conservan."
+
+msgid "This creates a native ERPNext Task custom field. Projects choose whether to display or require it."
+msgstr "Esto crea un campo personalizado nativo en Task de ERPNext. Cada proyecto elige si lo muestra o lo exige."
+
+msgid "This dependency is also managed in ERPNext"
+msgstr "Esta dependencia también se gestiona en ERPNext"
+
+msgid "This exact batch was already imported. No duplicate tasks were created."
+msgstr "Este mismo lote ya se importó. No se crearon tareas duplicadas."
+
+msgid "This file could not be read. Try pasting the CSV instead."
+msgstr "No se pudo leer este archivo. Intenta pegar el CSV."
+
+msgid "This form can't be edited here."
+msgstr "Este formulario no se puede editar aquí."
+
+msgid "This page couldn't load"
+msgstr "No se pudo cargar esta página"
+
+msgid "This project's recurring start status requires custom fields. Create a one-off task instead, or ask an administrator to change its field requirements."
+msgstr "El estado inicial recurrente de este proyecto requiere campos personalizados. Crea una tarea única o pide a un administrador que cambie los requisitos de campos."
+
+msgid "This record can't be deleted here."
+msgstr "Este registro no se puede eliminar aquí."
+
+msgid "This record can't be edited here."
+msgstr "Este registro no se puede editar aquí."
+
+msgid "This record can't be read here."
+msgstr "Este registro no se puede leer aquí."
+
+msgid "This report could not be generated."
+msgstr "No se pudo generar este informe."
+
+msgid "This request has been accepted."
+msgstr "Esta solicitud fue aceptada."
+
+msgid "This source already has a delivery project."
+msgstr "Este origen ya tiene un proyecto de entrega."
+
+msgid "This week"
+msgstr "Esta semana"
+
+msgid "Thu"
+msgstr "Jue"
+
+msgid "Time Entries"
+msgstr "Registros de tiempo"
+
+msgid "Time Logged"
+msgstr "Tiempo registrado"
+
+msgid "Time options & breakdown"
+msgstr "Opciones y desglose de tiempo"
+
+msgid "Time tracked this week"
+msgstr "Tiempo registrado esta semana"
+
+msgid "Time tracking"
+msgstr "Registro de tiempo"
+
+msgid "Time unavailable"
+msgstr "Hora no disponible"
+
+msgid "Timeline"
+msgstr "Cronograma"
+
+msgid "Timeline scale"
+msgstr "Escala del cronograma"
+
+msgid "Timer discarded"
+msgstr "Temporizador descartado"
+
+msgid "Timer running on a task you can no longer access"
+msgstr "Temporizador en marcha en una tarea a la que ya no tienes acceso"
+
+msgid "Timer running on this task"
+msgstr "Temporizador en marcha en esta tarea"
+
+msgid "Timer running on {0}"
+msgstr "Temporizador en marcha en {0}"
+
+msgid "Timer started"
+msgstr "Temporizador iniciado"
+
+msgid "Timesheet"
+msgstr "Hoja de horas"
+
+msgid "Timesheets"
+msgstr "Hojas de horas"
+
+msgid "Timestamp"
+msgstr "Fecha y hora"
+
+msgid "Timestamped monitor log of activity across Pulse."
+msgstr "Registro con fecha y hora de la actividad en Pulse."
+
+msgid "Title"
+msgstr "Título"
+
+msgid "Title for {0}"
+msgstr "Título de {0}"
+
+msgid "To"
+msgstr "Hasta"
+
+msgid "To Date"
+msgstr "Hasta"
+
+msgid "To Do"
+msgstr "Por hacer"
+
+msgid "To State"
+msgstr "Estado de destino"
+
+msgid "To backlog"
+msgstr "Al backlog"
+
+msgid "To do"
+msgstr "Por hacer"
+
+msgid "To sprint"
+msgstr "Al sprint"
+
+msgid "Today"
+msgstr "Hoy"
+
+msgid "Todo"
+msgstr "Por hacer"
+
+msgid "Total"
+msgstr "Total"
+
+msgid "Total Hours"
+msgstr "Horas totales"
+
+msgid "Total Tasks"
+msgstr "Total de tareas"
+
+msgid "Total projects"
+msgstr "Total de proyectos"
+
+msgid "Totals include draft and submitted entries you can access."
+msgstr "Los totales incluyen los registros en borrador y enviados a los que tienes acceso."
+
+msgid "Totals include only timesheets you have permission to read. New entries are saved as drafts."
+msgstr "Los totales incluyen solo las hojas de horas que tienes permiso para ver. Los registros nuevos se guardan como borradores."
+
+msgid "Track your work and review time entries."
+msgstr "Registra tu trabajo y revisa tus registros de tiempo."
+
+msgid "Transfer ownership"
+msgstr "Transferir propiedad"
+
+msgid "Transfer ownership and membership"
+msgstr "Transferir propiedad y membresía"
+
+msgid "Transfer project ownership"
+msgstr "Transferir la propiedad del proyecto"
+
+msgid "Try again"
+msgstr "Intentar de nuevo"
+
+msgid "Try another search or clear the status filter."
+msgstr "Prueba otra búsqueda o borra el filtro de estado."
+
+msgid "Try another task name, project, or task ID."
+msgstr "Prueba con otro nombre de tarea, proyecto o ID de tarea."
+
+msgid "Tue"
+msgstr "Mar"
+
+msgid "Type"
+msgstr "Tipo"
+
+msgid "Type for {0}"
+msgstr "Tipo de {0}"
+
+msgid "Type, dates and estimates"
+msgstr "Tipo, fechas y estimaciones"
+
+msgid "Unable to add member."
+msgstr "No se pudo agregar el miembro."
+
+msgid "Unable to apply offboarding. Review a fresh preview and try again."
+msgstr "No se pudo aplicar la baja. Revisa una vista previa nueva e inténtalo de nuevo."
+
+msgid "Unable to complete this action. Try again."
+msgstr "No se pudo completar esta acción. Intenta de nuevo."
+
+msgid "Unable to create delivery work. Check the source and your permissions."
+msgstr "No se pudo crear el trabajo de entrega. Revisa el origen y tus permisos."
+
+msgid "Unable to download CSV template."
+msgstr "No se pudo descargar la plantilla CSV."
+
+msgid "Unable to export tasks."
+msgstr "No se pudieron exportar las tareas."
+
+msgid "Unable to invite user. Check the ERP outgoing email configuration and try again."
+msgstr "No se pudo invitar al usuario. Revisa la configuración de correo saliente del ERP e inténtalo de nuevo."
+
+msgid "Unable to load project team."
+msgstr "No se pudo cargar el equipo del proyecto."
+
+msgid "Unable to load shared work. Please retry."
+msgstr "No se pudo cargar el trabajo compartido. Vuelve a intentarlo."
+
+msgid "Unable to prepare offboarding. Check the users and your access to their records."
+msgstr "No se pudo preparar la baja. Revisa los usuarios y tu acceso a sus registros."
+
+msgid "Unable to preview the CSV. Check its headers and row values."
+msgstr "No se pudo previsualizar el CSV. Revisa sus encabezados y los valores de las filas."
+
+msgid "Unable to remove member. No changes were saved."
+msgstr "No se pudo quitar el miembro. No se guardó ningún cambio."
+
+msgid "Unable to transfer ownership."
+msgstr "No se pudo transferir la propiedad."
+
+msgid "Unable to update external access. Check your sharing permission."
+msgstr "No se pudo actualizar el acceso externo. Revisa tu permiso para compartir."
+
+msgid "Unassigned"
+msgstr "Sin asignar"
+
+msgid "Unassigned estimates:"
+msgstr "Estimaciones sin asignar:"
+
+msgid "Under Review"
+msgstr "En revisión"
+
+msgid "Unfinished work"
+msgstr "Trabajo sin terminar"
+
+msgid "Unfinished work at close"
+msgstr "Trabajo sin terminar al cierre"
+
+msgid "Unit"
+msgstr "Unidad"
+
+msgid "Unknown project task status."
+msgstr "Estado de tarea del proyecto desconocido."
+
+msgid "Unknown report: {0}"
+msgstr "Informe desconocido: {0}"
+
+msgid "Unknown user"
+msgstr "Usuario desconocido"
+
+msgid "Unplanned work, ready for your next sprint."
+msgstr "Trabajo sin planificar, listo para tu próximo sprint."
+
+msgid "Unread"
+msgstr "No leídas"
+
+msgid "Unscheduled"
+msgstr "Sin programar"
+
+msgid "Unscheduled ({0})"
+msgstr "Sin programar ({0})"
+
+msgid "Unscheduled tasks"
+msgstr "Tareas sin programar"
+
+msgid "Unsupported or read-only fields: {0}"
+msgstr "Campos no compatibles o de solo lectura: {0}"
+
+msgid "Untitled page"
+msgstr "Página sin título"
+
+msgid "Up"
+msgstr "Sube"
+
+msgid "Upcoming"
+msgstr "Próximas"
+
+msgid "Update selected view"
+msgstr "Actualizar vista seleccionada"
+
+msgid "Updated"
+msgstr "Actualizado"
+
+msgid "Updated by"
+msgstr "Actualizado por"
+
+msgid "Updated date"
+msgstr "Fecha de actualización"
+
+msgid "Updated {0} entry"
+msgstr "Entrada de {0} actualizada"
+
+msgid "Updated: {0}"
+msgstr "Actualizado: {0}"
+
+msgid "Upload failed"
+msgstr "Error al subir el archivo"
+
+msgid "Uploading…"
+msgstr "Subiendo…"
+
+msgid "Urgent"
+msgstr "Urgente"
+
+msgid "Use Ctrl or Command to select several tasks."
+msgstr "Usa Ctrl o Comando para seleccionar varias tareas."
+
+msgid "Use template"
+msgstr "Usar plantilla"
+
+msgid "Use this project as a reusable template"
+msgstr "Usar este proyecto como plantilla reutilizable"
+
+msgid "Used to compute working days for burndown charts."
+msgstr "Se usa para calcular los días hábiles de los gráficos de burndown."
+
+msgid "User"
+msgstr "Usuario"
+
+msgid "User created and welcome email queued. Delivery depends on ERP email processing."
+msgstr "Usuario creado y correo de bienvenida en cola. La entrega depende del procesamiento de correo del ERP."
+
+msgid "Users"
+msgstr "Usuarios"
+
+msgid "Vacation"
+msgstr "Vacaciones"
+
+msgid "Velocity"
+msgstr "Velocidad"
+
+msgid "Velocity (tasks)"
+msgstr "Velocidad (tareas)"
+
+msgid "View Type"
+msgstr "Tipo de vista"
+
+msgid "View all"
+msgstr "Ver todo"
+
+msgid "View all projects"
+msgstr "Ver todos los proyectos"
+
+msgid "View all →"
+msgstr "Ver todo →"
+
+msgid "View changes"
+msgstr "Ver cambios"
+
+msgid "View could not be saved."
+msgstr "No se pudo guardar la vista."
+
+msgid "View daily values"
+msgstr "Ver valores diarios"
+
+msgid "View filters"
+msgstr "Filtros de la vista"
+
+msgid "View layout"
+msgstr "Diseño de la vista"
+
+msgid "View name"
+msgstr "Nombre de la vista"
+
+msgid "View saved."
+msgstr "Vista guardada."
+
+msgid "View submitted timesheet {0}"
+msgstr "Ver hoja de horas enviada {0}"
+
+msgid "View timer"
+msgstr "Ver temporizador"
+
+msgid "Views"
+msgstr "Vistas"
+
+msgid "Votes"
+msgstr "Votos"
+
+msgid "Wed"
+msgstr "Mié"
+
+msgid "Week"
+msgstr "Semana"
+
+msgid "Week Starting"
+msgstr "Semana que inicia"
+
+msgid "Week layout"
+msgstr "Vista semanal"
+
+msgid "Week {0}"
+msgstr "Semana {0}"
+
+msgid "Weight"
+msgstr "Peso"
+
+msgid "Went Well/To Improve"
+msgstr "Salió bien/A mejorar"
+
+msgid "What did you work on?"
+msgstr "¿En qué trabajaste?"
+
+msgid "What does this module cover?"
+msgstr "¿Qué abarca este módulo?"
+
+msgid "What needs to be done?"
+msgstr "¿Qué hay que hacer?"
+
+msgid "What should this sprint accomplish?"
+msgstr "¿Qué debería lograr este sprint?"
+
+msgid "When enabled, a user may assign work only to users whose highest role rank is at or below their own (assign down/sideways, never up)."
+msgstr "Si está habilitado, un usuario solo puede asignar trabajo a usuarios cuyo rango de rol más alto sea igual o inferior al suyo (hacia abajo o al mismo nivel, nunca hacia arriba)."
+
+msgid "Whose personal dashboard this is. Blank = shared template / admin default."
+msgstr "A quién pertenece este panel personal. Vacío = plantilla compartida / predeterminado del administrador."
+
+msgid "Wider"
+msgstr "Más ancho"
+
+msgid "Widget Type"
+msgstr "Tipo de widget"
+
+msgid "Widgets"
+msgstr "Widgets"
+
+msgid "Width (cols)"
+msgstr "Ancho (columnas)"
+
+msgid "Within capacity"
+msgstr "Dentro de la capacidad"
+
+msgid "Work"
+msgstr "Trabajo"
+
+msgid "Work & planning"
+msgstr "Trabajo y planificación"
+
+msgid "Work across your projects, organized your way."
+msgstr "Trabaja en todos tus proyectos, organizado a tu manera."
+
+msgid "Work could not be loaded."
+msgstr "No se pudo cargar el trabajo."
+
+msgid "Work description"
+msgstr "Descripción del trabajo"
+
+msgid "Work item title"
+msgstr "Título del elemento de trabajo"
+
+msgid "Work items"
+msgstr "Elementos de trabajo"
+
+msgid "Workflow State"
+msgstr "Estado del flujo de trabajo"
+
+msgid "Working"
+msgstr "En curso"
+
+msgid "Working Days (Holiday List)"
+msgstr "Días hábiles (lista de feriados)"
+
+msgid "Working on"
+msgstr "Trabajando en"
+
+msgid "Working…"
+msgstr "Procesando…"
+
+msgid "Workload"
+msgstr "Carga de trabajo"
+
+msgid "Workload by Assignee"
+msgstr "Carga de trabajo por responsable"
+
+msgid "Workspace"
+msgstr "Espacio de trabajo"
+
+msgid "Workspace preferences could not be saved."
+msgstr "No se pudieron guardar las preferencias del espacio de trabajo."
+
+msgid "Workspace settings"
+msgstr "Configuración del espacio de trabajo"
+
+msgid "Workspace tools"
+msgstr "Herramientas del espacio de trabajo"
+
+msgid "Write a comment..."
+msgstr "Escribe un comentario..."
+
+msgid "Write together. Type @ to mention a teammate."
+msgstr "Escriban juntos. Escribe @ para mencionar a un compañero."
+
+msgid "Write your page. Type @ to mention a teammate."
+msgstr "Escribe tu página. Escribe @ para mencionar a un compañero."
+
+msgid "Yes"
+msgstr "Sí"
+
+msgid "You can also record time from any task."
+msgstr "También puedes registrar tiempo desde cualquier tarea."
+
+msgid "You can only assign work to people at or below your role level. "
+msgstr "Solo puedes asignar trabajo a personas de tu mismo nivel de rol o inferior. "
+
+msgid "You can only assign work to people at or below your role level. {0} is ranked above you."
+msgstr "Solo puedes asignar trabajo a personas de tu mismo nivel de rol o inferior. {0} tiene un rango superior al tuyo."
+
+msgid "You can only manage your own dashboard."
+msgstr "Solo puedes gestionar tu propio panel."
+
+msgid "You can save your own copy of this shared view."
+msgstr "Puedes guardar tu propia copia de esta vista compartida."
+
+msgid "You cannot assign work to {0}: their role rank ({1}) is higher than yours ({2}). "
+msgstr "No puedes asignar trabajo a {0}: su rango de rol ({1}) es superior al tuyo ({2}). "
+
+msgid "You cannot assign work to {0}: their role rank ({1}) is higher than yours ({2}). Assignment is allowed only down or across the hierarchy."
+msgstr "No puedes asignar trabajo a {0}: su rango de rol ({1}) es superior al tuyo ({2}). Solo se permite asignar hacia abajo o al mismo nivel de la jerarquía."
+
+msgid "You have read-only access to this CRM task."
+msgstr "Tienes acceso de solo lectura a esta tarea del CRM."
+
+msgid "Your assigned work will appear here as your team plans tasks."
+msgstr "Tu trabajo asignado aparecerá aquí a medida que tu equipo planifique tareas."
+
+msgid "Your assignments, mentions, and followed task updates will appear here."
+msgstr "Aquí aparecerán tus asignaciones, menciones y novedades de las tareas que sigues."
+
+msgid "Your comment"
+msgstr "Tu comentario"
+
+msgid "Your entries"
+msgstr "Tus registros"
+
+msgid "Your open tasks are on schedule or have no due date."
+msgstr "Tus tareas abiertas van a tiempo o no tienen fecha de vencimiento."
+
+msgid "Your projects"
+msgstr "Tus proyectos"
+
+msgid "Your projects start here"
+msgstr "Tus proyectos empiezan aquí"
+
+msgid "Your projects will appear here."
+msgstr "Tus proyectos aparecerán aquí."
+
+msgid "Your recent work, one click away"
+msgstr "Tu trabajo reciente, a un clic"
+
+msgid "Your request could not be submitted. Your text has been kept."
+msgstr "No se pudo enviar tu solicitud. Tu texto se conservó."
+
+msgid "Your tasks could not be loaded. Please try again."
+msgstr "No se pudieron cargar tus tareas. Intenta de nuevo."
+
+msgid "Your team's projects and client work."
+msgstr "Los proyectos y el trabajo con clientes de tu equipo."
+
+msgid "Your time entries"
+msgstr "Tus registros de tiempo"
+
+msgid "Your timer is on a task you can no longer access."
+msgstr "Tu temporizador está en una tarea a la que ya no tienes acceso."
+
+msgid "Your workspace"
+msgstr "Tu espacio de trabajo"
+
+msgid "Your workspace could not be loaded. Please try again."
+msgstr "No se pudo cargar tu espacio de trabajo. Intenta de nuevo."
+
+msgid "You’re all caught up"
+msgstr "Estás al día"
+
+msgid "all (AND)"
+msgstr "todas (AND)"
+
+msgid "any (OR)"
+msgstr "cualquiera (OR)"
+
+msgid "calendar"
+msgstr "calendario"
+
+msgid "completed"
+msgstr "completado"
+
+msgid "contains"
+msgstr "contiene"
+
+msgid "days"
+msgstr "días"
+
+msgid "e.g. %, #, $"
+msgstr "p. ej., %, #, $"
+
+msgid "e.g. Client delivery"
+msgstr "p. ej., Entrega al cliente"
+
+msgid "e.g. September client onboarding"
+msgstr "p. ej., Incorporación de clientes de septiembre"
+
+msgid "e.g. Website launch"
+msgstr "p. ej., Lanzamiento del sitio web"
+
+msgid "e.g. https://ntfy.sh or your self-hosted https://ntfy.yourdomain.com"
+msgstr "p. ej., https://ntfy.sh o tu servidor autoalojado https://ntfy.yourdomain.com"
+
+msgid "e.g. v1.2"
+msgstr "p. ej., v1.2"
+
+msgid "every day"
+msgstr "cada día"
+
+msgid "every month"
+msgstr "cada mes"
+
+msgid "every week"
+msgstr "cada semana"
+
+msgid "every {0} days"
+msgstr "cada {0} días"
+
+msgid "every {0} months"
+msgstr "cada {0} meses"
+
+msgid "every {0} weeks"
+msgstr "cada {0} semanas"
+
+msgid "greater than / after"
+msgstr "mayor que / después de"
+
+msgid "is"
+msgstr "es"
+
+msgid "is empty"
+msgstr "está vacío"
+
+msgid "is not"
+msgstr "no es"
+
+msgid "is overdue"
+msgstr "está vencido"
+
+msgid "kept in this sprint"
+msgstr "mantenido en este sprint"
+
+msgid "last 7 days"
+msgstr "últimos 7 días"
+
+msgid "last: {0}"
+msgstr "última: {0}"
+
+msgid "less than / before"
+msgstr "menor que / antes de"
+
+msgid "moved to another sprint"
+msgstr "movido a otro sprint"
+
+msgid "next: {0}"
+msgstr "próxima: {0}"
+
+msgid "ntfy Auth Token"
+msgstr "Token de autenticación de ntfy"
+
+msgid "ntfy Server URL"
+msgstr "URL del servidor ntfy"
+
+msgid "paused"
+msgstr "en pausa"
+
+msgid "returned to backlog"
+msgstr "devuelto al backlog"
+
+msgid "rules"
+msgstr "las reglas"
+
+msgid "tasks"
+msgstr "tareas"
+
+msgid "total"
+msgstr "total"
+
+msgid "visible"
+msgstr "visibles"
+
+msgid "{0} / Import and export"
+msgstr "{0} / Importar y exportar"
+
+msgid "{0} / Team"
+msgstr "{0} / Equipo"
+
+msgid "{0} / {1} tasks"
+msgstr "{0} / {1} tareas"
+
+msgid "{0} assigned"
+msgstr "{0} asignados"
+
+msgid "{0} assignees"
+msgstr "{0} responsables"
+
+msgid "{0} completed"
+msgstr "{0} completada"
+
+msgid "{0} completed on {1}"
+msgstr "{0} completadas el {1}"
+
+msgid "{0} created"
+msgstr "{0} creada"
+
+msgid "{0} created & assigned"
+msgstr "{0} creada y asignada"
+
+msgid "{0} created, but {1} assignment(s) blocked by hierarchy"
+msgstr "{0} creada, pero {1} asignación(es) bloqueada(s) por jerarquía"
+
+msgid "{0} created."
+msgstr "{0} creada."
+
+msgid "{0} deleted"
+msgstr "{0}: eliminado"
+
+msgid "{0} for {1}"
+msgstr "{0} de {1}"
+
+msgid "{0} for {1}, comma separated"
+msgstr "{0} de {1}, separados por comas"
+
+msgid "{0} h"
+msgstr "{0} h"
+
+msgid "{0} h billable · {1} h nonbillable · {2} h draft"
+msgstr "{0} h facturables · {1} h no facturables · {2} h en borrador"
+
+msgid "{0} h draft"
+msgstr "{0} h en borrador"
+
+msgid "{0} h estimated"
+msgstr "{0} h estimadas"
+
+msgid "{0} h logged"
+msgstr "{0} h registradas"
+
+msgid "{0} h over"
+msgstr "{0} h de más"
+
+msgid "{0} h submitted"
+msgstr "{0} h enviadas"
+
+msgid "{0} hours"
+msgstr "{0} horas"
+
+msgid "{0} moved to {1}"
+msgstr "{0} movida a {1}"
+
+msgid "{0} of {1} hours completed · {2}%"
+msgstr "{0} de {1} horas completadas · {2}%"
+
+msgid "{0} of {1} points completed · {2}%"
+msgstr "{0} de {1} puntos completados · {2}%"
+
+msgid "{0} of {1} tasks completed"
+msgstr "{0} de {1} tareas completadas"
+
+msgid "{0} of {1} tasks completed · {2}%"
+msgstr "{0} de {1} tareas completadas · {2}%"
+
+msgid "{0} open"
+msgstr "{0} abiertas"
+
+msgid "{0} open ERP assignments will move to {1}. {2} direct shares will be removed and {3} external portal grants revoked."
+msgstr "{0} asignaciones abiertas del ERP pasarán a {1}. Se eliminarán {2} accesos compartidos directos y se revocarán {3} permisos del portal externo."
+
+msgid "{0} pts"
+msgstr "{0} pts"
+
+msgid "{0} remaining · solid: recorded work · dashed: ideal"
+msgstr "{0} restantes · continua: trabajo registrado · discontinua: ideal"
+
+msgid "{0} saved"
+msgstr "{0}: guardado"
+
+msgid "{0} selected"
+msgstr "{0} seleccionadas"
+
+msgid "{0} sub-tasks · {1} blockers"
+msgstr "{0} subtareas · {1} bloqueos"
+
+msgid "{0} tasks"
+msgstr "{0} tareas"
+
+msgid "{0} tasks completed. Unfinished work: {1}."
+msgstr "{0} tareas completadas. Trabajo sin terminar: {1}."
+
+msgid "{0} tasks updated"
+msgstr "{0} tareas actualizadas"
+
+msgid "{0} to create · {1} to update"
+msgstr "{0} por crear · {1} por actualizar"
+
+msgid "{0} unfinished tasks remain. Choose where this work belongs before freezing the sprint summary."
+msgstr "Quedan {0} tareas sin terminar. Elige a dónde va este trabajo antes de congelar el resumen del sprint."
+
+msgid "{0} view"
+msgstr "Vista {0}"
+
+msgid "{0} · {1} h · {2} points"
+msgstr "{0} · {1} h · {2} puntos"
+
+msgid "{0}% completed"
+msgstr "{0}% completado"
+
+msgid "{0}/{1} done"
+msgstr "{0}/{1} hechas"
+
+msgid "{0}d"
+msgstr "{0} d"
+
+msgid "{0}h"
+msgstr "{0} h"
+
+msgid "— none —"
+msgstr "— ninguno —"
+
+msgid "← Modules"
+msgstr "← Módulos"
+
+msgid "↑ ↓ select · Enter opens · Ctrl/⌘ K search · N creates a task"
+msgstr "↑ ↓ seleccionar · Enter abre · Ctrl/⌘ K buscar · N crea una tarea"
+
+msgid "★ Favorited"
+msgstr "★ En favoritos"
+
+msgid "☆ Favorite"
+msgstr "☆ Favorito"
+
+msgctxt "Move"
+msgid "Up"
+msgstr "Subir"
+
+msgctxt "Move"
+msgid "Down"
+msgstr "Bajar"

@@ -11,8 +11,8 @@ function harness() {
   const task = { name: 'TASK-QA', can_write: true, exp_start_date: '2026-09-09', exp_end_date: '2026-09-12' }
   const pending = { value: new Set() }, error = { value: '' }, optimistic = new Set(), requests = [], loads = []
   const call = (method, args) => new Promise((resolve, reject) => requests.push({ method, args, resolve, reject }))
-  const handlers = new Function('tasks', 'pending', 'error', 'optimisticDateTasks', 'call', 'load', 'dateValue', `let version = 0; const notice = {value:''}; ${requestError}; ${move}; ${edit}; return {rescheduleTask, edit}`)(
-    {value:[task]}, pending, error, optimistic, call, async options => loads.push(options), value => String(value).slice(0,10))
+  const handlers = new Function('tasks', 'pending', 'error', 'optimisticDateTasks', 'call', 'load', 'dateValue', '__', `let version = 0; const notice = {value:''}; ${requestError}; ${move}; ${edit}; return {rescheduleTask, edit}`)(
+    {value:[task]}, pending, error, optimistic, call, async options => loads.push(options), value => String(value).slice(0,10), (m, r) => r ? m.replace(/\{(\d+)\}/g, (x, i) => r[i] ?? x) : m)
   return { task, pending, error, optimistic, requests, loads, ...handlers }
 }
 test('moving keeps new dates throughout a delayed save and preserves duration', async () => {

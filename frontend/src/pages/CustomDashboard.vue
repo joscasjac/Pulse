@@ -2,21 +2,21 @@
   <div class="p-6">
     <header class="flex items-center justify-between mb-5">
       <div>
-        <h1 class="text-2xl font-bold">My Dashboard</h1>
-        <p class="text-sm text-muted">Customize your widgets - drag sizes, add, remove, and save.</p>
+        <h1 class="text-2xl font-bold">{{ __('My Dashboard') }}</h1>
+        <p class="text-sm text-muted">{{ __('Customize your widgets - drag sizes, add, remove, and save.') }}</p>
       </div>
       <div class="flex items-center gap-2">
-        <button class="btn-secondary" @click="showPalette = !showPalette">+ Add widget</button>
-        <button class="btn-secondary" @click="reset" :disabled="saving">Reset</button>
+        <button class="btn-secondary" @click="showPalette = !showPalette">{{ __('+ Add widget') }}</button>
+        <button class="btn-secondary" @click="reset" :disabled="saving">{{ __('Reset') }}</button>
         <button class="btn-primary" @click="save" :disabled="saving">
-          {{ saving ? 'Saving...' : dirty ? 'Save changes' : 'Saved' }}
+          {{ saving ? __('Saving...') : dirty ? __('Save changes') : __('Saved') }}
         </button>
       </div>
     </header>
 
     <!-- Add-widget palette -->
     <div v-if="showPalette" class="mb-4 p-3 border border-app rounded-lg bg-surface">
-      <div class="text-xs font-medium text-muted mb-2">Add a widget</div>
+      <div class="text-xs font-medium text-muted mb-2">{{ __('Add a widget') }}</div>
       <div class="flex flex-wrap gap-2">
         <button
           v-for="c in catalog"
@@ -24,12 +24,12 @@
           class="px-3 py-1.5 text-sm rounded-md border border-app hover-app"
           @click="addWidget(c)"
         >
-          {{ c.label }}
+          {{ __(c.label) }}
         </button>
       </div>
     </div>
 
-    <div v-if="loading" class="text-muted py-20 text-center">Loading dashboard...</div>
+    <div v-if="loading" class="text-muted py-20 text-center">{{ __('Loading dashboard...') }}</div>
 
     <!-- Widget grid (12-col) -->
     <div v-else class="grid grid-cols-12 gap-3 auto-rows-[52px]">
@@ -46,14 +46,14 @@
       >
         <div class="flex items-start justify-between">
           <div class="text-[11px] font-medium uppercase tracking-wide text-faint flex items-center gap-1.5">
-            <span class="w-1.5 h-1.5 rounded-full" :style="{ background: w.color || 'var(--accent)' }" />{{ w.title || w.widget_type }}
+            <span class="w-1.5 h-1.5 rounded-full" :style="{ background: w.color || 'var(--accent)' }" />{{ __(w.title || w.widget_type) }}
           </div>
           <div class="opacity-0 group-hover:opacity-100 flex gap-1 text-muted">
-            <button title="Narrower" @click="resize(w, 'w', -1)">&lt;</button>
-            <button title="Wider" @click="resize(w, 'w', 1)">&gt;</button>
-            <button title="Shorter" @click="resize(w, 'h', -1)">-</button>
-            <button title="Taller" @click="resize(w, 'h', 1)">+</button>
-            <button title="Remove" class="text-muted hover:text-app" @click="remove(i)">x</button>
+            <button :title="__('Narrower')" @click="resize(w, 'w', -1)">&lt;</button>
+            <button :title="__('Wider')" @click="resize(w, 'w', 1)">&gt;</button>
+            <button :title="__('Shorter')" @click="resize(w, 'h', -1)">-</button>
+            <button :title="__('Taller')" @click="resize(w, 'h', 1)">+</button>
+            <button :title="__('Remove')" class="text-muted hover:text-app" @click="remove(i)">x</button>
           </div>
         </div>
         <DashboardWidget :widget="w" :stats="stats" :series="series" />
@@ -67,6 +67,7 @@ import { ref, computed, onMounted } from 'vue'
 import { call } from 'frappe-ui'
 import DashboardWidget from '@/components/DashboardWidget.vue'
 import { toast } from '@/ui/toast'
+import { __ } from '@/translation'
 
 const loading = ref(true)
 const saving = ref(false)
@@ -135,7 +136,7 @@ async function save() {
   await call('pulse.api.dashboards.save_dashboard', { widgets: JSON.stringify(widgets.value) })
   dirty.value = false
   saving.value = false
-  toast.success('Dashboard saved')
+  toast.success(__('Dashboard saved'))
 }
 
 async function reset() {

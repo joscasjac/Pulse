@@ -1,25 +1,25 @@
 <template>
-  <section class="time-section" aria-label="Task time">
-    <header class="time-header"><h2>Time tracking</h2><p v-if="summary" class="time-total"><strong>{{ hours(summary.actual_hours) }} h</strong> logged <span>/</span> {{ hours(summary.estimated_hours) }} h estimated</p></header>
-    <p v-if="loading" class="time-message" role="status">Loading time entries…</p>
-    <div v-if="error" class="time-message" role="alert"><p>{{ error }}</p><button class="time-button secondary" @click="load">Retry</button></div>
+  <section class="time-section" :aria-label="__('Task time')">
+    <header class="time-header"><h2>{{ __('Time tracking') }}</h2><p v-if="summary" class="time-total"><strong>{{ __('{0} h logged', [hours(summary.actual_hours)]) }}</strong> <span>/</span> {{ __('{0} h estimated', [hours(summary.estimated_hours)]) }}</p></header>
+    <p v-if="loading" class="time-message" role="status">{{ __('Loading time entries…') }}</p>
+    <div v-if="error" class="time-message" role="alert"><p>{{ error }}</p><button class="time-button secondary" @click="load">{{ __('Retry') }}</button></div>
     <template v-if="summary">
       <div class="timer-actions">
-        <button v-if="!timer" class="time-button" :disabled="busy" @click="operate('start_timer', { task: taskId, billable })"><span aria-hidden="true">▷</span> Start timer</button>
+        <button v-if="!timer" class="time-button" :disabled="busy" @click="operate('start_timer', { task: taskId, billable })"><span aria-hidden="true">▷</span> {{ __('Start timer') }}</button>
         <template v-else>
-          <p class="timer-state"><span class="running-dot" aria-hidden="true"></span>Timer running {{ timer.restricted ? 'on a task you can no longer access' : timer.task === taskId ? 'on this task' : 'on ' + timer.task }}<small>Started {{ timer.started_at }}</small></p>
-          <button class="time-button" :disabled="busy || timer.restricted" @click="operate('stop_timer', { note })">Stop &amp; save</button>
+          <p class="timer-state"><span class="running-dot" aria-hidden="true"></span>{{ timer.restricted ? __('Timer running on a task you can no longer access') : timer.task === taskId ? __('Timer running on this task') : __('Timer running on {0}', [timer.task]) }}<small>{{ __('Started {0}', [timer.started_at]) }}</small></p>
+          <button class="time-button" :disabled="busy || timer.restricted" @click="operate('stop_timer', { note })">{{ __('Stop & save') }}</button>
         </template>
-        <button class="time-button secondary" :aria-expanded="showForm" @click="showForm = !showForm">{{ showForm ? 'Close entry' : 'Add time' }}</button>
+        <button class="time-button secondary" :aria-expanded="showForm" @click="showForm = !showForm">{{ showForm ? __('Close entry') : __('Add time') }}</button>
       </div>
-      <details class="time-options"><summary>Time options &amp; breakdown</summary><div class="options-content"><label><input v-model="billable" type="checkbox" :disabled="Boolean(timer)" /> Billable time</label><p>{{ hours(summary.billable_hours) }} h billable · {{ hours(summary.nonbillable_hours) }} h nonbillable · {{ hours(summary.draft_hours) }} h draft</p><p>Totals include draft and submitted entries you can access.</p><button v-if="timer" class="time-button secondary" :disabled="busy" @click="discard">Discard timer</button></div></details>
+      <details class="time-options"><summary>{{ __('Time options & breakdown') }}</summary><div class="options-content"><label><input v-model="billable" type="checkbox" :disabled="Boolean(timer)" /> {{ __('Billable time') }}</label><p>{{ __('{0} h billable · {1} h nonbillable · {2} h draft', [hours(summary.billable_hours), hours(summary.nonbillable_hours), hours(summary.draft_hours)]) }}</p><p>{{ __('Totals include draft and submitted entries you can access.') }}</p><button v-if="timer" class="time-button secondary" :disabled="busy" @click="discard">{{ __('Discard timer') }}</button></div></details>
       <form v-if="showForm" class="entry-form" @submit.prevent="addTime">
-        <div class="entry-fields"><label>Start time<input v-model="start" required type="datetime-local" class="time-field" /></label><label>Hours<input v-model.number="duration" required type="number" min="0.01" max="24" step="0.01" class="time-field" /></label></div>
-        <label>Work description<textarea v-model="note" rows="2" class="time-field" placeholder="What did you work on?" /></label>
-        <div class="form-footer"><span>Saved as a draft timesheet.</span><button class="time-button" :disabled="busy" type="submit">{{ busy ? 'Saving…' : 'Save time entry' }}</button></div>
+        <div class="entry-fields"><label>{{ __('Start time') }}<input v-model="start" required type="datetime-local" class="time-field" /></label><label>{{ __('Hours') }}<input v-model.number="duration" required type="number" min="0.01" max="24" step="0.01" class="time-field" /></label></div>
+        <label>{{ __('Work description') }}<textarea v-model="note" rows="2" class="time-field" :placeholder="__('What did you work on?')" /></label>
+        <div class="form-footer"><span>{{ __('Saved as a draft timesheet.') }}</span><button class="time-button" :disabled="busy" type="submit">{{ busy ? __('Saving…') : __('Save time entry') }}</button></div>
       </form>
-      <p v-if="!summary.entries.length" class="time-empty">No time recorded. Start a timer or add an entry.</p>
-      <ul v-else class="time-entries"><li v-for="entry in summary.entries" :key="entry.name"><div class="entry-line"><span>{{ entry.date }}</span><strong>{{ hours(entry.hours) }} h</strong><span class="billing-label">{{ entry.billable ? 'Billable' : 'Nonbillable' }}</span><a :href="'/app/timesheet/' + encodeURIComponent(entry.timesheet)" :aria-label="'Open timesheet ' + entry.timesheet">{{ entry.docstatus === 0 ? 'Draft' : 'Submitted' }} <span aria-hidden="true">↗</span></a></div><p v-if="entry.description" class="entry-description">{{ entry.description }}</p><p class="entry-user">{{ entry.user }}</p></li></ul>
+      <p v-if="!summary.entries.length" class="time-empty">{{ __('No time recorded. Start a timer or add an entry.') }}</p>
+      <ul v-else class="time-entries"><li v-for="entry in summary.entries" :key="entry.name"><div class="entry-line"><span>{{ entry.date }}</span><strong>{{ __('{0} h', [hours(entry.hours)]) }}</strong><span class="billing-label">{{ entry.billable ? __('Billable') : __('Nonbillable') }}</span><a :href="'/app/timesheet/' + encodeURIComponent(entry.timesheet)" :aria-label="__('Open timesheet {0}', [entry.timesheet])">{{ entry.docstatus === 0 ? __('Draft') : __('Submitted') }} <span aria-hidden="true">↗</span></a></div><p v-if="entry.description" class="entry-description">{{ entry.description }}</p><p class="entry-user">{{ entry.user }}</p></li></ul>
     </template>
   </section>
 </template>
@@ -27,6 +27,7 @@
 import { ref, watch } from 'vue'
 import { call } from 'frappe-ui'
 import { toast } from '@/ui/toast'
+import { __ } from '@/translation'
 const props = defineProps({ taskId: { type: String, required: true } })
 const emit = defineEmits(['changed'])
 const summary = ref(null), timer = ref(null), error = ref(''), loading = ref(false), busy = ref(false)
@@ -44,7 +45,7 @@ async function load() {
     ])
     if (seq !== request) return
     summary.value = data; timer.value = active
-  } catch (e) { if (seq === request) { summary.value = null; error.value = e?.messages?.[0] || 'Could not load time. Check your access and try again.' } }
+  } catch (e) { if (seq === request) { summary.value = null; error.value = e?.messages?.[0] || __('Could not load time. Check your access and try again.') } }
   finally { if (seq === request) loading.value = false }
 }
 async function operate(method, args) {
@@ -52,14 +53,14 @@ async function operate(method, args) {
   busy.value = true; error.value = ''
   try {
     await call('pulse.api.time.' + method, args)
-    toast.success(method === 'start_timer' ? 'Timer started' : method === 'discard_timer' ? 'Timer discarded' : 'Draft time saved')
+    toast.success(method === 'start_timer' ? __('Timer started') : method === 'discard_timer' ? __('Timer discarded') : __('Draft time saved'))
     if (method === 'log_time') { showForm.value = false; note.value = '' }
     await load(); emit('changed')
-  } catch (e) { error.value = e?.messages?.[0] || 'Could not save time. Check for overlapping entries and try again.' }
+  } catch (e) { error.value = e?.messages?.[0] || __('Could not save time. Check for overlapping entries and try again.') }
   finally { busy.value = false }
 }
 function discard() {
-  if (window.confirm('Discard this timer without saving its elapsed time?')) operate('discard_timer', {})
+  if (window.confirm(__('Discard this timer without saving its elapsed time?'))) operate('discard_timer', {})
 }
 function addTime() {
   return operate('log_time', { task: props.taskId, hours: duration.value,

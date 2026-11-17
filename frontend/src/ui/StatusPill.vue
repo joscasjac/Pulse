@@ -1,6 +1,6 @@
 <template>
   <span class="pill" :style="{ color: c.fg, background: c.bg }">
-    <span class="dot" :style="{ background: c.fg }" />{{ label || value }}
+    <span class="dot" :style="{ background: c.fg }" />{{ __(label || value) }}
   </span>
 </template>
 
